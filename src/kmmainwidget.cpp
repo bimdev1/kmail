@@ -1,15 +1,156 @@
-/*
-  This file is part of KMail, the KDE mail client.
-  SPDX-FileCopyrightText: 2002 Don Sanders <sanders@kde.org>
-  SPDX-FileCopyrightText: 2009-2025 Laurent Montel <montel@kde.org>
-
-  Based on the work of Stefan Taferner <taferner@kde.org>
-
-  SPDX-License-Identifier: GPL-2.0-only
-*/
-
-// KMail includes
 #include "kmmainwidget.h"
+#include "editor/composer.h"
+#include "job/clearcachejobinfolderandsubfolderjob.h"
+#include "job/composenewmessagejob.h"
+#include "kmcommands.h"
+#include "kmreadermainwin.h"
+#include "searchdialog/searchwindowdialog.h"
+#include "undostack.h"
+#include "util.h"
+#include "widgets/vacationscriptindicatorwidget.h"
+#include "widgets/zoomlabelwidget.h"
+#include <MailCommon/FolderSelectionDialog>
+#include <PimCommon/PimUtil>
+#include <PimCommonAkonadi/MailUtil>
+#include <TemplateParser/CustomTemplatesMenu>
+#include "dialog/archivefolderdialog.h"
+#include "foldershortcutactionmanager.h"
+#include "job/markallmessagesasreadinfolderandsubfolderjob.h"
+#include "job/removeduplicatemessageinfolderandsubfolderjob.h"
+#include "manageshowcollectionproperties.h"
+#include "plugininterface/kmailplugininterface.h"
+#include "settings/kmailsettings.h"
+#include "sieveimapinterface/kmsieveimappasswordprovider.h"
+#include "tag/tagactionmanager.h"
+#include "widgets/collectionpane.h"
+#include "widgets/kactionmenuaccount.h"
+#include "widgets/kactionmenutransport.h"
+#include <KSieveUi/SieveDebugDialog>
+#include <MailCommon/FolderTreeView>
+#include <MailCommon/MailKernel>
+#include <MailCommon/MailUtil>
+#include <MailCommon/SearchRuleStatus>
+#include "collectionpage/collectionmailinglistpage.h"
+#include "collectionpage/collectionquotapage.h"
+#include "collectionpage/collectionshortcutpage.h"
+#include "collectionpage/collectiontemplatespage.h"
+#include "collectionpage/collectionviewpage.h"
+#include "folderarchive/folderarchivemanager.h"
+#include "folderarchive/folderarchiveutil.h"
+#include "job/createnewcontactjob.h"
+#include "tag/tagselectdialog.h"
+#include <Akonadi/CollectionMaintenancePage>
+#include <Akonadi/AgentConfigurationDialog>
+#include <MailCommon/CollectionExpiryPage>
+#include <MailCommon/CollectionGeneralPage>
+#include <MailCommon/ExpireCollectionAttribute>
+#include <MailCommon/FavoriteCollectionOrderProxyModel>
+#include <MailCommon/FavoriteCollectionWidget>
+#include <MailCommon/FilterManager>
+#include <MailCommon/MailFilter>
+#include <PimCommon/PimUtil>
+#include <PimCommonAkonadi/CollectionAclPage>
+#include <mailcommon/mailcommonsettings_base.h>
+#include <MessageViewer/HeaderStyle>
+#include <MessageViewer/HeaderStylePlugin>
+#include <MessageViewer/MessageViewerSettings>
+#include <MessageViewer/Viewer>
+#include <MessageViewer/AttachmentStrategy>
+#include <MessageViewer/MessageViewerCheckBeforeDeletingPluginManager>
+#include <KColorSchemeMenu>
+#include <KCursorSaver>
+#include <MessageComposer/MessageHelper>
+#include <MessageComposer/MessageSender>
+#include <MessageCore/MailingList>
+#include <MessageCore/MessageCoreSettings>
+#include "dialog/kmknotify.h"
+#include "widgets/displaymessageformatactionmenu.h"
+#include "kmlaunchexternalcomponent.h"
+#include <KSieveUi/VacationManager>
+#include <Libkdepim/ProgressManager>
+#include <PimCommon/BroadcastStatus>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AgentType>
+#include <Akonadi/AttributeFactory>
+#include <Akonadi/CachePolicy>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/ClearCacheFoldersJob>
+#include <Akonadi/CollectionAttributesSynchronizationJob>
+#include <Akonadi/CollectionDialog>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionFetchScope>
+#include <Akonadi/CollectionPropertiesDialog>
+#include <Akonadi/CollectionStatistics>
+#include <Akonadi/ContactSearchJob>
+#include <Akonadi/ControlGui>
+#include <Akonadi/ETMViewStateSaver>
+#include <Akonadi/EntityDisplayAttribute>
+#include <Akonadi/EntityListView>
+#include <Akonadi/EntityMimeTypeFilterModel>
+#include <Akonadi/EntityTreeModel>
+#include <Akonadi/FavoriteCollectionsModel>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/MessageFlags>
+#include <Akonadi/Session>
+#include <Akonadi/StandardActionManager>
+#include <KEmailAddress>
+#include <KIdentityManagementCore/Identity>
+#include <KIdentityManagementCore/IdentityManager>
+#include <KMime/HeaderParsing>
+#include <KMime/Message>
+#include <KSieveCore/Util>
+#include <KSieveUi/ManageSieveScriptsDialog>
+#include <MailTransport/Transport>
+#include <MailTransport/TransportManager>
+#include "kmail_debug.h"
+#include <KAcceleratorManager>
+#include <KActionMenu>
+#include <KMessageBox>
+#include <KStandardShortcut>
+#include <KWindowSystem>
+#include <KConfigGroup>
+#include <KNotification>
+#include <KRecentFilesMenu>
+#include <KStandardAction>
+#include <KStringHandler>
+#include <KToggleAction>
+#include <KXMLGUIFactory>
+#include <QAction>
+#include <QByteArray>
+#include <QHeaderView>
+#include <QKeyCombination>
+#include <QList>
+#include <QMenu>
+#include <QProcess>
+#include <QSplitter>
+#include <QStatusBar>
+#include <QVBoxLayout>
+#include <WebEngineViewer/WebHitTestResult>
+#include "activities/accountactivities.h"
+#include "activities/activitiesmanager.h"
+#include <KColorSchemeManager>
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <QStandardPaths>
+#include "historyclosedreader/historyclosedreadermanager.h"
+#include "historyclosedreader/historyclosedreadermenu.h"
+#include "job/removecollectionjob.h"
+#include "job/removeduplicatemailjob.h"
+#include <MessageViewer/DKIMViewerMenu>
+#include <MessageViewer/DKIMWidgetInfo>
+#include <MessageViewer/RemoteContentMenu>
+#include "historyswitchfolder/collectionswitchertreeviewmanager.h"
+#include "plugininterface/kmailplugincheckbeforedeletingmanagerinterface.h"
+#include <KUserFeedback/NotificationPopup>
+#include <KUserFeedback/Provider>
+#include <chrono>
+#include "moc_kmmainwidget.cpp"
+#include "ai/kmainwidgetaiintegration.h"
+#include "ai/aimainwidgetextension.h"
 #include "editor/composer.h"
 #include "job/clearcachejobinfolderandsubfolderjob.h"
 #include "job/composenewmessagejob.h"
@@ -199,6 +340,7 @@ using PimCommon::BroadcastStatus;
 static KMMainWidget *myMainWidget = nullptr;
 //-----------------------------------------------------------------------------
 KMMainWidget::KMMainWidget(QWidget *parent, KXMLGUIClient *aGUIClient, KActionCollection *actionCollection, const KSharedConfig::Ptr &config)
+    , m_aiExtension(nullptr)
     : QWidget(parent)
     , mToolbarActionSeparator(new QAction(this))
     , mSievePasswordProvider(new KMSieveImapPasswordProvider(this))
@@ -241,6 +383,8 @@ KMMainWidget::KMMainWidget(QWidget *parent, KXMLGUIClient *aGUIClient, KActionCo
     setupActions();
 
     readConfig();
+    KMail::initializeAIExtension(this, actionCollection());
+    connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);
 
     if (!kmkernel->isOffline()) { // kmail is set to online mode, make sure the agents are also online
         kmkernel->setAccountStatus(true);
@@ -377,6 +521,7 @@ void KMMainWidget::restoreCollectionFolderViewConfig()
 // The kernel may have already been deleted when this method is called,
 // perform all cleanup that requires the kernel in destruct()
 KMMainWidget::~KMMainWidget()
+    KMail::cleanupAIExtension(this);
 {
     myMainWidget = nullptr;
     qDeleteAll(mFilterCommands);
@@ -833,6 +978,8 @@ void KMMainWidget::refreshFavoriteFoldersViewProperties()
 
 //-----------------------------------------------------------------------------
 void KMMainWidget::readConfig()
+    KMail::initializeAIExtension(this, actionCollection());
+    connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);
 {
     const bool oldLongFolderList = mLongFolderList;
     const bool oldReaderWindowActive = mReaderWindowActive;
@@ -868,11 +1015,17 @@ void KMMainWidget::readConfig()
         // Read the config of the folder views and the header
         if (mMsgView) {
             mMsgView->readConfig();
+    KMail::initializeAIExtension(this, actionCollection());
+    connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);
         }
         mMessagePane->reloadGlobalConfiguration();
         mFolderTreeWidget->readConfig();
+    KMail::initializeAIExtension(this, actionCollection());
+    connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);
         if (mFavoriteCollectionsView) {
             mFavoriteCollectionsView->readConfig();
+    KMail::initializeAIExtension(this, actionCollection());
+    connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);
         }
         refreshFavoriteFoldersViewProperties();
     }
@@ -2327,6 +2480,8 @@ void KMMainWidget::slotDebugSieve()
 void KMMainWidget::slotConfigChanged()
 {
     readConfig();
+    KMail::initializeAIExtension(this, actionCollection());
+    connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);
     mMsgActions->setupForwardActions(actionCollection());
     mMsgActions->setupForwardingActionsList(mGUIClient);
 }
@@ -4699,6 +4854,7 @@ void KMMainWidget::slotMessageSelected(const Akonadi::Item &item)
             }
         }
     }
+    Q_EMIT selectionChanged();
 }
 
 void KMMainWidget::itemsReceived(const Akonadi::Item::List &list)
@@ -5101,3 +5257,10 @@ void KMMainWidget::slotHistoryClosedReaderChanged()
 }
 
 #include "moc_kmmainwidget.cpp"
+
+void KMMainWidget::slotUpdateAIActions()
+{
+    if (m_aiExtension) {
+        m_aiExtension->updateActions(currentSelection());
+    }
+}

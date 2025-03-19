@@ -77,6 +77,7 @@ class SearchWindowDialog;
 class VacationScriptIndicatorWidget;
 class TagActionManager;
 class FolderShortcutActionManager;
+class AIMainWidgetExtension;
 }
 
 namespace KSieveCore
@@ -214,6 +215,8 @@ public Q_SLOTS:
     void slotSelectCollectionFolder(const Akonadi::Collection &col);
 
     void slotUpdateConfig();
+    void slotUpdateAIActions();
+
 Q_SIGNALS:
     void captionChangeRequest(const QString &caption);
     void recreateGui();
@@ -671,4 +674,6 @@ private:
     CollectionSwitcherTreeViewManager *const mCollectionSwitcherTreeViewManager;
     QAction *mClearFolderCacheAction = nullptr;
     HistoryClosedReaderMenu *mRestoreClosedMessageMenu = nullptr;
+
+    KMail::AIMainWidgetExtension *m_aiExtension = nullptr;
 };

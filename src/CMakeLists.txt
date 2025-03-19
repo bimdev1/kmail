@@ -14,6 +14,7 @@ add_custom_target(kmail_xml ALL
 add_subdirectory(pics)
 add_subdirectory(icons)
 add_subdirectory(kontactplugin)
+add_subdirectory(ai)
 
 ########### kmailprivate ###############
 
@@ -148,8 +149,6 @@ target_sources(kmailprivate PRIVATE
     job/createreplymessagejob.cpp
     job/createforwardmessagejob.cpp
     job/dndfromarkjob.cpp
-    job/clearcachejobinfolderandsubfolderjob.cpp
-    job/clearcachejobinfolderandsubfolderjob.h
     widgets/collectionpane.cpp
     widgets/vacationscriptindicatorwidget.cpp
     widgets/displaymessageformatactionmenu.cpp
@@ -334,6 +333,21 @@ target_sources(kmailprivate PRIVATE
     historyclosedreader/historyclosedreadermanager.cpp
     historyclosedreader/historyclosedreadermenu.h
     historyclosedreader/historyclosedreadermenu.cpp
+    ai/aiserviceinterface.h
+    ai/localaiservice.cpp
+    ai/localaiservice.h
+    ai/aimanager.cpp
+    ai/aimanager.h
+    ai/aiconfigwidget.cpp
+    ai/aiconfigwidget.h
+    ai/aimainwidgetextension.cpp
+    ai/aimainwidgetextension.h
+    ai/kmainwidgetaiintegration.cpp
+    ai/kmainwidgetaiintegration.h
+    ai/widgets/aicategoryindicatorwidget.cpp
+    ai/widgets/aicategoryindicatorwidget.h
+    ai/widgets/aireplydraftwidget.cpp
+    ai/widgets/aireplydraftwidget.h
 )
 
 if(KMAIL_HAVE_ACTIVITY_SUPPORT)
@@ -443,7 +457,20 @@ if(TARGET KF6::UserFeedbackWidgets)
 endif()
 
 target_sources(kmailprivate PRIVATE ${kmailprivate_LIB_SRCS})
-
+target_sources(kmailprivate PRIVATE
+    historyclosedreader/historyclosedreadermenu.cpp
+    ai/aiserviceinterface.h
+    ai/localaiservice.cpp
+    ai/localaiservice.h
+    ai/aimanager.cpp
+    ai/aimanager.h
+    ai/aiconfigwidget.cpp
+    ai/aiconfigwidget.h
+    ai/aimainwidgetextension.cpp
+    ai/aimainwidgetextension.h
+    ai/kmainwidgetaiintegration.cpp
+    ai/kmainwidgetaiintegration.h
+)
 
 if(COMPILE_WITH_UNITY_CMAKE_SUPPORT)
     set_target_properties(kmailprivate PROPERTIES UNITY_BUILD ON)
@@ -621,4 +648,3 @@ install(FILES
 
 configure_file(data/org.kde.kmail.service.in org.kde.kmail.service)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.kmail.service DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR})
-
