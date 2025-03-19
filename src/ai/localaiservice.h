@@ -1,29 +1,22 @@
-/*
- * This file is part of KMail, the KDE mail client.
- * SPDX-FileCopyrightText: 2025 KMail AI Integration Team
- * SPDX-License-Identifier: GPL-2.0-only
- */
-
 #pragma once
 
-#include "aiserviceinterface.h"
 #include <QObject>
 #include <QString>
 #include <QMap>
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <QCache>
-#include <QCryptographicHash>
+#include <functional>
 
 namespace KMail {
 
 /**
- * @brief Local implementation of the AI service interface
+ * @brief Local implementation of the AI service using DeepSeek API
  * 
- * This class implements the AI service interface using local Python scripts
+ * This class implements the AI service interface using the DeepSeek API
  * for email categorization, reply drafting, task extraction, and follow-up reminders.
  */
-class LocalAIService : public QObject, public AIServiceInterface
+class LocalAIService : public QObject
 {
     Q_OBJECT
 
@@ -35,14 +28,14 @@ public:
      * Initialize the AI service
      * @return true if initialization was successful, false otherwise
      */
-    bool initialize() override;
+    bool initialize();
 
     /**
      * Set the API key for DeepSeek integration
      * @param apiKey The API key to set
      */
     void setApiKey(const QString &apiKey);
-    
+
     /**
      * Get the API key for DeepSeek integration
      * @return The API key
@@ -54,31 +47,31 @@ public:
      * @param emailContent The content of the email to reply to
      * @param prompt The prompt to use for generating the reply
      */
-    void generateReply(const QString &emailContent, const QString &prompt) override;
+    void generateReply(const QString &emailContent, const QString &prompt);
 
     /**
      * Categorize an email based on its content
      * @param emailContent The content of the email to categorize
      */
-    void categorizeEmail(const QString &emailContent) override;
+    void categorizeEmail(const QString &emailContent);
 
     /**
      * Extract tasks from an email
      * @param emailContent The content of the email to extract tasks from
      */
-    void extractTasks(const QString &emailContent) override;
+    void extractTasks(const QString &emailContent);
 
     /**
      * Determine if an email needs a follow-up reminder
      * @param emailContent The content of the email to check
      */
-    void detectFollowUp(const QString &emailContent) override;
+    void detectFollowUp(const QString &emailContent);
 
     /**
      * Summarize an email
      * @param emailContent The content of the email to summarize
      */
-    void summarizeEmail(const QString &emailContent) override;
+    void summarizeEmail(const QString &emailContent);
 
     /**
      * Set the cache size
@@ -96,71 +89,56 @@ Q_SIGNALS:
      * Emitted when an error occurs
      * @param message The error message
      */
-    void error(const QString &message) override;
+    void error(const QString &message);
 
     /**
-     * Emitted when a reply is generated
+     * Emitted when a reply has been generated
      * @param reply The generated reply
      */
-    void replyGenerated(const QString &reply) override;
+    void replyGenerated(const QString &reply);
 
     /**
-     * Emitted when tasks are extracted
+     * Emitted when an email has been categorized
+     * @param category The category assigned to the email
+     */
+    void emailCategorized(const QString &category);
+
+    /**
+     * Emitted when tasks have been extracted
      * @param tasks The extracted tasks
      */
-    void tasksExtracted(const QStringList &tasks) override;
+    void tasksExtracted(const QString &tasks);
 
     /**
-     * Emitted when a follow-up is detected
-     * @param needsFollowUp True if the email needs a follow-up, false otherwise
+     * Emitted when follow-up status has been determined
+     * @param needsFollowUp Whether the email needs a follow-up
      */
-    void followUpDetected(bool needsFollowUp) override;
+    void followUpDetected(const QString &followUp);
 
     /**
-     * Emitted when an email is summarized
-     * @param summary The summary of the email
+     * Emitted when a summary has been generated
+     * @param summary The generated summary
      */
-    void emailSummarized(const QString &summary) override;
-
-    /**
-     * Emitted when an email is categorized
-     * @param category The category of the email
-     */
-    void emailCategorized(EmailCategory category) override;
+    void summaryGenerated(const QString &summary);
 
 private:
-    struct PendingRequest {
-        QString endpoint;
+    struct PendingRetry {
+        QUrl url;
+        QByteArray auth;
+        QByteArray contentType;
         QByteArray data;
-        int retryCount{0};
-        QTimer *retryTimer{nullptr};
     };
 
-    struct CacheEntry {
-        QString result;
-        qint64 timestamp;
-    };
+    void makeRequest(const QString &endpoint, const QByteArray &data,
+                    const std::function<void(const QString &)> &callback);
+    void handleError(QNetworkReply *reply);
+    void retryRequest();
 
-    void makeRequest(const QString &endpoint, const QByteArray &data);
-    void handleNetworkError(QNetworkReply *reply, const PendingRequest &request);
-    void retryRequest(const PendingRequest &request);
-    void cleanupRequest(const PendingRequest &request);
-    
-    QString getCachedResponse(const QString &key) const;
-    void cacheResponse(const QString &key, const QString &response);
-    QString generateCacheKey(const QString &endpoint, const QByteArray &data) const;
-
-    static constexpr int MAX_RETRIES = 3;
-    static constexpr int RETRY_DELAY_MS = 1000; // Start with 1 second
-    static constexpr int DEFAULT_CACHE_SIZE = 1000;
-    static constexpr qint64 CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-    
-    QNetworkAccessManager *m_networkManager;
     QString m_apiKey;
-    QMap<QNetworkReply*, PendingRequest> m_pendingRequests;
-    QCache<QString, CacheEntry> m_cache;
-    bool m_initialized;
-    QMap<QString, EmailCategory> m_categoryMap;
-}; // class LocalAIService
+    QNetworkAccessManager *m_networkManager;
+    QTimer *m_retryTimer;
+    QCache<QString, QString> *m_cache;
+    PendingRetry m_pendingRetry;
+};
 
 } // namespace KMail
