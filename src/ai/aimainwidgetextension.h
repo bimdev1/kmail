@@ -19,6 +19,8 @@ class KToggleAction;
 namespace KMail {
 
 class KMMainWidget;
+class KMMainWidgetAIFilter;
+class KMMessage;
 
 /**
  * @brief Extension for KMMainWidget that adds AI-powered features
@@ -33,10 +35,9 @@ class AIMainWidgetExtension : public QObject
 public:
     /**
      * Constructor
-     * @param parent The parent KMMainWidget
-     * @param actionCollection The action collection to add actions to
+     * @param mainWidget The parent KMMainWidget
      */
-    explicit AIMainWidgetExtension(KMMainWidget *parent, KActionCollection *actionCollection);
+    explicit AIMainWidgetExtension(KMMainWidget *mainWidget);
 
     /**
      * Destructor
@@ -44,15 +45,15 @@ public:
     ~AIMainWidgetExtension() override;
 
     /**
-     * Initialize the extension
+     * Handle a new message
+     * @param message The new message
      */
-    void initialize();
+    void handleNewMessage(KMMessage *message);
 
     /**
-     * Update the AI actions based on the current selection
-     * @param selectedItems The currently selected items
+     * Update the AI actions
      */
-    void updateActions(const Akonadi::Item::List &selectedItems);
+    void updateActions();
 
 private Q_SLOTS:
     /**
@@ -66,30 +67,14 @@ private Q_SLOTS:
     void slotSummarizeEmail();
 
     /**
+     * Prioritize the selected message using AI
+     */
+    void slotPrioritizeEmail();
+
+    /**
      * Extract tasks from the selected message using AI
      */
     void slotExtractTasks();
-
-    /**
-     * Categorize the selected message using AI
-     */
-    void slotCategorizeEmail();
-
-    /**
-     * Check if the selected message needs a follow-up
-     */
-    void slotCheckFollowUp();
-
-    /**
-     * Show the AI settings dialog
-     */
-    void slotShowAISettings();
-
-    /**
-     * Handle AI service enabled/disabled state changes
-     * @param enabled true if AI service is enabled, false otherwise
-     */
-    void slotAIServiceEnabledChanged(bool enabled);
 
 private:
     /**
@@ -98,55 +83,44 @@ private:
     void createActions();
 
     /**
-     * Get the selected message
-     * @return The selected message
+     * Setup connections
      */
-    Akonadi::Item selectedMessage() const;
+    void setupConnections();
 
     /**
      * The parent KMMainWidget
      */
-    KMMainWidget *m_mainWidget;
+    QPointer<KMMainWidget> m_mainWidget;
 
     /**
-     * The action collection
+     * The AI filter
      */
-    KActionCollection *m_actionCollection;
-
-    /**
-     * The AI reply action
-     */
-    QAction *m_aiReplyAction;
-
-    /**
-     * The AI summarize action
-     */
-    QAction *m_aiSummarizeAction;
-
-    /**
-     * The AI extract tasks action
-     */
-    QAction *m_aiExtractTasksAction;
-
-    /**
-     * The AI categorize action
-     */
-    QAction *m_aiCategorizeAction;
-
-    /**
-     * The AI follow-up action
-     */
-    QAction *m_aiFollowUpAction;
-
-    /**
-     * The AI settings action
-     */
-    QAction *m_aiSettingsAction;
+    KMMainWidgetAIFilter *m_aiFilter;
 
     /**
      * The AI menu
      */
     KActionMenu *m_aiMenu;
+
+    /**
+     * The AI generate reply action
+     */
+    QAction *m_generateReplyAction;
+
+    /**
+     * The AI summarize action
+     */
+    QAction *m_summarizeAction;
+
+    /**
+     * The AI prioritize action
+     */
+    QAction *m_prioritizeAction;
+
+    /**
+     * The AI extract tasks action
+     */
+    QAction *m_extractTasksAction;
 };
 
 } // namespace KMail

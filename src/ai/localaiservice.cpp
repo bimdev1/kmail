@@ -17,19 +17,38 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QSettings>
+#include <QTimer>
+#include <QCache>
+#include <QCryptographicHash>
 
 namespace KMail {
+
+const int MAX_RETRIES = 3;
+const int RETRY_DELAY_MS = 500;
+const int DEFAULT_CACHE_SIZE = 100;
+const int CACHE_TTL_MS = 300000; // 5 minutes
+
+struct PendingRequest {
+    QString endpoint;
+    QByteArray data;
+    int retryCount = 0;
+    QTimer *retryTimer = nullptr;
+};
+
+struct CacheEntry {
+    QString result;
+    qint64 timestamp;
+};
 
 LocalAIService::LocalAIService(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
-    , m_initialized(false)
+    , m_cache(DEFAULT_CACHE_SIZE)
 {
     // Initialize category map
     m_categoryMap[QStringLiteral("urgent")] = Urgent;
-    m_categoryMap[QStringLiteral("follow-up")] = FollowUp;
-    m_categoryMap[QStringLiteral("low")] = LowPriority;
-    m_categoryMap[QStringLiteral("uncategorized")] = Uncategorized;
+    m_categoryMap[QStringLiteral("normal")] = Normal;
+    m_categoryMap[QStringLiteral("low")] = Low;
 
     loadApiKey();
 }
@@ -82,10 +101,6 @@ void LocalAIService::generateReply(const QString &emailContent, const QString &p
         return;
     }
 
-    QNetworkRequest request(QUrl(QStringLiteral("https://api.deepseek.com/v1/chat/completions")));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
-    request.setRawHeader("Authorization", QByteArray("Bearer ") + m_apiKey.toUtf8());
-
     QJsonObject data;
     data["model"] = QStringLiteral("deepseek-chat");
     
@@ -107,12 +122,82 @@ void LocalAIService::generateReply(const QString &emailContent, const QString &p
     QJsonDocument doc(data);
     QByteArray jsonData = doc.toJson();
 
-    QNetworkReply *reply = m_networkManager->post(request, jsonData);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        reply->deleteLater();
-        
+    makeRequest(QStringLiteral("chat/completions"), jsonData);
+}
+
+EmailCategory LocalAIService::categorizeEmail(const QString &emailContent)
+{
+    if (m_apiKey.isEmpty()) {
+        emit error(tr("DeepSeek API key not set. Please configure it in the settings."));
+        return Uncategorized;
+    }
+
+    QJsonObject data;
+    data["model"] = QStringLiteral("deepseek-chat");
+    
+    QJsonArray messages;
+    QJsonObject systemMsg;
+    systemMsg["role"] = QStringLiteral("system");
+    systemMsg["content"] = QStringLiteral("You are an AI assistant that categorizes emails. "
+                                        "Categorize the email into one of these categories: "
+                                        "urgent, important, follow-up, low, or uncategorized. "
+                                        "Respond with ONLY the category name in lowercase.");
+    messages.append(systemMsg);
+
+    QJsonObject contextMsg;
+    contextMsg["role"] = QStringLiteral("user");
+    contextMsg["content"] = emailContent;
+    messages.append(contextMsg);
+
+    data["messages"] = messages;
+    data["temperature"] = 0.3; // Lower temperature for more consistent categorization
+    data["max_tokens"] = 10;   // We only need a single word response
+
+    QJsonDocument doc(data);
+    QByteArray jsonData = doc.toJson();
+
+    makeRequest(QStringLiteral("chat/completions"), jsonData);
+
+    return Uncategorized;
+}
+
+void LocalAIService::makeRequest(const QString &endpoint, const QByteArray &data)
+{
+    // Check cache first
+    QString cacheKey = generateCacheKey(endpoint, data);
+    QString cachedResponse = getCachedResponse(cacheKey);
+    
+    if (!cachedResponse.isEmpty()) {
+        // Process cached response
+        if (endpoint.contains(QStringLiteral("categorize"))) {
+            emit emailCategorized(cachedResponse.contains(QStringLiteral("urgent"), Qt::CaseInsensitive) ? 
+                                EmailCategory::Urgent : EmailCategory::Normal);
+        } else if (endpoint.contains(QStringLiteral("reply"))) {
+            emit replyGenerated(cachedResponse);
+        } else if (endpoint.contains(QStringLiteral("follow-up"))) {
+            emit followUpDetected(cachedResponse.trimmed().toLower() == QStringLiteral("true"));
+        } else if (endpoint.contains(QStringLiteral("tasks"))) {
+            emit tasksExtracted(cachedResponse.split('\n', Qt::SkipEmptyParts));
+        } else if (endpoint.contains(QStringLiteral("summarize"))) {
+            emit emailSummarized(cachedResponse);
+        }
+        return;
+    }
+
+    QNetworkRequest request(QUrl(QStringLiteral("https://api.deepseek.com/v1/") + endpoint));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + m_apiKey.toUtf8());
+
+    QNetworkReply *reply = m_networkManager->post(request, data);
+    
+    PendingRequest pendingRequest;
+    pendingRequest.endpoint = endpoint;
+    pendingRequest.data = data;
+    m_pendingRequests.insert(reply, pendingRequest);
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply, cacheKey]() {
         if (reply->error() != QNetworkReply::NoError) {
-            emit error(reply->errorString());
+            handleNetworkError(reply, m_pendingRequests[reply]);
             return;
         }
 
@@ -120,47 +205,79 @@ void LocalAIService::generateReply(const QString &emailContent, const QString &p
         QJsonObject obj = response.object();
         
         if (obj.contains(QStringLiteral("error"))) {
-            emit error(obj[QStringLiteral("error")].toObject()[QStringLiteral("message")].toString());
+            QString errorMsg = obj[QStringLiteral("error")].toObject()[QStringLiteral("message")].toString();
+            handleNetworkError(reply, m_pendingRequests[reply]);
             return;
         }
 
-        QString generatedText = obj[QStringLiteral("choices")].toArray()[0].toObject()[QStringLiteral("message")]
-                                 .toObject()[QStringLiteral("content")].toString();
-        emit replyGenerated(generatedText);
+        // Process successful response
+        QString result = obj[QStringLiteral("choices")].toArray()[0].toObject()[QStringLiteral("message")]
+                          .toObject()[QStringLiteral("content")].toString();
+
+        // Cache the response
+        cacheResponse(cacheKey, result);
+
+        cleanupRequest(m_pendingRequests[reply]);
+        reply->deleteLater();
+
+        // Emit appropriate signal based on the endpoint
+        if (m_pendingRequests[reply].endpoint.contains(QStringLiteral("categorize"))) {
+            emit emailCategorized(result.contains(QStringLiteral("urgent"), Qt::CaseInsensitive) ? 
+                                EmailCategory::Urgent : EmailCategory::Normal);
+        } else if (m_pendingRequests[reply].endpoint.contains(QStringLiteral("reply"))) {
+            emit replyGenerated(result);
+        } else if (m_pendingRequests[reply].endpoint.contains(QStringLiteral("follow-up"))) {
+            emit followUpDetected(result.trimmed().toLower() == QStringLiteral("true"));
+        } else if (m_pendingRequests[reply].endpoint.contains(QStringLiteral("tasks"))) {
+            emit tasksExtracted(result.split('\n', Qt::SkipEmptyParts));
+        } else if (m_pendingRequests[reply].endpoint.contains(QStringLiteral("summarize"))) {
+            emit emailSummarized(result);
+        }
     });
 }
 
-EmailCategory LocalAIService::categorizeEmail(const QString &emailContent)
+void LocalAIService::handleNetworkError(QNetworkReply *reply, const PendingRequest &request)
 {
-    if (!m_initialized && !initialize()) {
-        return Uncategorized;
+    if (request.retryCount < MAX_RETRIES) {
+        retryRequest(request);
+    } else {
+        emit error(tr("Failed to connect to DeepSeek API after %1 attempts: %2")
+                  .arg(MAX_RETRIES + 1)
+                  .arg(reply->errorString()));
+        cleanupRequest(request);
     }
+    reply->deleteLater();
+}
 
-    // Create a temporary file with the email content
-    QTemporaryFile tempFile;
-    if (!tempFile.open()) {
-        qCWarning(KMAIL_LOG) << "Failed to create temporary file for email content";
-        return Uncategorized;
+void LocalAIService::retryRequest(const PendingRequest &request)
+{
+    PendingRequest newRequest = request;
+    newRequest.retryCount++;
+    
+    // Exponential backoff: delay = initial_delay * (2 ^ retry_count)
+    int delay = RETRY_DELAY_MS * (1 << newRequest.retryCount);
+    
+    newRequest.retryTimer = new QTimer(this);
+    newRequest.retryTimer->setSingleShot(true);
+    connect(newRequest.retryTimer, &QTimer::timeout, this, [this, newRequest]() {
+        makeRequest(newRequest.endpoint, newRequest.data);
+    });
+    
+    newRequest.retryTimer->start(delay);
+}
+
+void LocalAIService::cleanupRequest(const PendingRequest &request)
+{
+    delete request.retryTimer;
+    m_pendingRequests.remove(m_pendingRequests.key(request));
+}
+
+LocalAIService::~LocalAIService()
+{
+    // Clean up any pending requests
+    for (const auto &request : m_pendingRequests) {
+        cleanupRequest(request);
     }
-
-    QTextStream stream(&tempFile);
-    stream << emailContent;
-    stream.flush();
-
-    // Call the Python script
-    QStringList args;
-    args << tempFile.fileName();
-    QString result = callPythonScript(QStringLiteral("ai_email_categorizer.py"), args);
-
-    // Parse the result
-    result = result.trimmed().toLower();
-    if (m_categoryMap.contains(result)) {
-        EmailCategory category = m_categoryMap[result];
-        Q_EMIT emailCategorized(category);
-        return category;
-    }
-
-    return Uncategorized;
 }
 
 QString LocalAIService::generateReply(const QString &emailContent, const QStringList &userHistory)
@@ -202,32 +319,42 @@ QString LocalAIService::generateReply(const QString &emailContent, const QString
     return reply;
 }
 
-QStringList LocalAIService::extractTasks(const QString &emailContent)
+void LocalAIService::extractTasks(const QString &emailContent)
 {
-    if (!m_initialized && !initialize()) {
-        return QStringList();
+    if (m_apiKey.isEmpty()) {
+        emit error(tr("DeepSeek API key not set. Please configure it in the settings."));
+        return;
     }
 
-    // Create a temporary file with the email content
-    QTemporaryFile tempFile;
-    if (!tempFile.open()) {
-        qCWarning(KMAIL_LOG) << "Failed to create temporary file for email content";
-        return QStringList();
-    }
+    QNetworkRequest request(QUrl(QStringLiteral("https://api.deepseek.com/v1/chat/completions")));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + m_apiKey.toUtf8());
 
-    QTextStream stream(&tempFile);
-    stream << emailContent;
-    stream.flush();
+    QJsonObject data;
+    data["model"] = QStringLiteral("deepseek-chat");
+    
+    QJsonArray messages;
+    QJsonObject systemMsg;
+    systemMsg["role"] = QStringLiteral("system");
+    systemMsg["content"] = QStringLiteral("You are an AI assistant that extracts actionable tasks from emails. "
+                                        "Extract tasks and format them as a JSON array of strings. "
+                                        "Each task should be clear and actionable. "
+                                        "If no tasks are found, return an empty array.");
+    messages.append(systemMsg);
 
-    // Call the Python script
-    QStringList args;
-    args << tempFile.fileName();
-    QString result = callPythonScript(QStringLiteral("ai_task_extractor.py"), args);
+    QJsonObject contextMsg;
+    contextMsg["role"] = QStringLiteral("user");
+    contextMsg["content"] = emailContent;
+    messages.append(contextMsg);
 
-    // Parse the result
-    QStringList tasks = result.split(QStringLiteral("\n"), Qt::SkipEmptyParts);
-    Q_EMIT tasksExtracted(tasks);
-    return tasks;
+    data["messages"] = messages;
+    data["temperature"] = 0.3;
+    data["max_tokens"] = 500;
+
+    QJsonDocument doc(data);
+    QByteArray jsonData = doc.toJson();
+
+    makeRequest(QStringLiteral("chat/completions"), jsonData);
 }
 
 bool LocalAIService::needsFollowUp(const QString &emailContent)
@@ -254,6 +381,44 @@ bool LocalAIService::needsFollowUp(const QString &emailContent)
 
     // Parse the result
     return result.trimmed().toLower() == QStringLiteral("true");
+}
+
+void LocalAIService::detectFollowUp(const QString &emailContent)
+{
+    if (m_apiKey.isEmpty()) {
+        emit error(tr("DeepSeek API key not set. Please configure it in the settings."));
+        return;
+    }
+
+    QNetworkRequest request(QUrl(QStringLiteral("https://api.deepseek.com/v1/chat/completions")));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + m_apiKey.toUtf8());
+
+    QJsonObject data;
+    data["model"] = QStringLiteral("deepseek-chat");
+    
+    QJsonArray messages;
+    QJsonObject systemMsg;
+    systemMsg["role"] = QStringLiteral("system");
+    systemMsg["content"] = QStringLiteral("You are an AI assistant that determines if an email needs a follow-up. "
+                                        "Analyze the email and respond with ONLY 'true' if it needs follow-up "
+                                        "or 'false' if it doesn't. Consider phrases like 'please respond', "
+                                        "'let me know', 'waiting for your reply', etc.");
+    messages.append(systemMsg);
+
+    QJsonObject contextMsg;
+    contextMsg["role"] = QStringLiteral("user");
+    contextMsg["content"] = emailContent;
+    messages.append(contextMsg);
+
+    data["messages"] = messages;
+    data["temperature"] = 0.1; // Very low temperature for consistent yes/no decisions
+    data["max_tokens"] = 10;
+
+    QJsonDocument doc(data);
+    QByteArray jsonData = doc.toJson();
+
+    makeRequest(QStringLiteral("chat/completions"), jsonData);
 }
 
 QString LocalAIService::suggestFollowUpDate(const QString &emailContent)
@@ -284,28 +449,42 @@ QString LocalAIService::suggestFollowUpDate(const QString &emailContent)
 
 QString LocalAIService::summarizeEmail(const QString &emailContent)
 {
-    if (!m_initialized && !initialize()) {
-        return QString();
+    if (m_apiKey.isEmpty()) {
+        emit error(tr("DeepSeek API key not set. Please configure it in the settings."));
+        return;
     }
 
-    // Create a temporary file with the email content
-    QTemporaryFile tempFile;
-    if (!tempFile.open()) {
-        qCWarning(KMAIL_LOG) << "Failed to create temporary file for email content";
-        return QString();
-    }
+    QNetworkRequest request(QUrl(QStringLiteral("https://api.deepseek.com/v1/chat/completions")));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + m_apiKey.toUtf8());
 
-    QTextStream stream(&tempFile);
-    stream << emailContent;
-    stream.flush();
+    QJsonObject data;
+    data["model"] = QStringLiteral("deepseek-chat");
+    
+    QJsonArray messages;
+    QJsonObject systemMsg;
+    systemMsg["role"] = QStringLiteral("system");
+    systemMsg["content"] = QStringLiteral("You are an AI assistant that summarizes emails. "
+                                        "Create a concise summary that captures the main points "
+                                        "and any important action items. Keep the summary brief "
+                                        "but informative.");
+    messages.append(systemMsg);
 
-    // Call the Python script
-    QStringList args;
-    args << tempFile.fileName();
-    QString summary = callPythonScript(QStringLiteral("ai_email_summarizer.py"), args);
+    QJsonObject contextMsg;
+    contextMsg["role"] = QStringLiteral("user");
+    contextMsg["content"] = emailContent;
+    messages.append(contextMsg);
 
-    Q_EMIT emailSummarized(summary);
-    return summary;
+    data["messages"] = messages;
+    data["temperature"] = 0.5;
+    data["max_tokens"] = 200;
+
+    QJsonDocument doc(data);
+    QByteArray jsonData = doc.toJson();
+
+    makeRequest(QStringLiteral("chat/completions"), jsonData);
+
+    return QString();
 }
 
 QString LocalAIService::callPythonScript(const QString &scriptName, const QStringList &args)
@@ -719,6 +898,43 @@ if __name__ == "__main__":
         QFile file(dir.filePath(script));
         file.setPermissions(file.permissions() | QFile::ExeOwner | QFile::ExeUser | QFile::ExeGroup | QFile::ExeOther);
     }
+}
+
+void LocalAIService::setCacheSize(int maxSize)
+{
+    m_cache.setMaxCost(maxSize);
+}
+
+void LocalAIService::clearCache()
+{
+    m_cache.clear();
+}
+
+QString LocalAIService::getCachedResponse(const QString &key) const
+{
+    if (auto *entry = m_cache.object(key)) {
+        // Check if the entry has expired
+        if (QDateTime::currentMSecsSinceEpoch() - entry->timestamp <= CACHE_TTL_MS) {
+            return entry->result;
+        }
+        // Entry has expired, remove it
+        m_cache.remove(key);
+    }
+    return QString();
+}
+
+void LocalAIService::cacheResponse(const QString &key, const QString &response)
+{
+    auto *entry = new CacheEntry{response, QDateTime::currentMSecsSinceEpoch()};
+    m_cache.insert(key, entry);
+}
+
+QString LocalAIService::generateCacheKey(const QString &endpoint, const QByteArray &data) const
+{
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    hash.addData(endpoint.toUtf8());
+    hash.addData(data);
+    return QString::fromLatin1(hash.result().toHex());
 }
 
 } // namespace KMail

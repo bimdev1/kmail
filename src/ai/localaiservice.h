@@ -10,8 +10,10 @@
 #include <QObject>
 #include <QString>
 #include <QMap>
-
-class QNetworkAccessManager;
+#include <QNetworkAccessManager>
+#include <QTimer>
+#include <QCache>
+#include <QCryptographicHash>
 
 namespace KMail {
 
@@ -27,7 +29,7 @@ class LocalAIService : public QObject, public AIServiceInterface
 
 public:
     explicit LocalAIService(QObject *parent = nullptr);
-    ~LocalAIService() override = default;
+    ~LocalAIService() override;
 
     /**
      * Initialize the AI service
@@ -41,6 +43,12 @@ public:
      */
     void setApiKey(const QString &apiKey);
     
+    /**
+     * Get the API key for DeepSeek integration
+     * @return The API key
+     */
+    QString apiKey() const { return m_apiKey; }
+
     /**
      * Generate a reply to an email based on its content and user's writing style
      * @param emailContent The content of the email to reply to
@@ -71,6 +79,17 @@ public:
      * @param emailContent The content of the email to summarize
      */
     void summarizeEmail(const QString &emailContent) override;
+
+    /**
+     * Set the cache size
+     * @param maxSize The maximum size of the cache
+     */
+    void setCacheSize(int maxSize);
+
+    /**
+     * Clear the cache
+     */
+    void clearCache();
 
 Q_SIGNALS:
     /**
@@ -110,13 +129,36 @@ Q_SIGNALS:
     void emailCategorized(EmailCategory category) override;
 
 private:
-    /**
-     * Load the API key from storage
-     */
-    void loadApiKey();
+    struct PendingRequest {
+        QString endpoint;
+        QByteArray data;
+        int retryCount{0};
+        QTimer *retryTimer{nullptr};
+    };
+
+    struct CacheEntry {
+        QString result;
+        qint64 timestamp;
+    };
+
+    void makeRequest(const QString &endpoint, const QByteArray &data);
+    void handleNetworkError(QNetworkReply *reply, const PendingRequest &request);
+    void retryRequest(const PendingRequest &request);
+    void cleanupRequest(const PendingRequest &request);
+    
+    QString getCachedResponse(const QString &key) const;
+    void cacheResponse(const QString &key, const QString &response);
+    QString generateCacheKey(const QString &endpoint, const QByteArray &data) const;
+
+    static constexpr int MAX_RETRIES = 3;
+    static constexpr int RETRY_DELAY_MS = 1000; // Start with 1 second
+    static constexpr int DEFAULT_CACHE_SIZE = 1000;
+    static constexpr qint64 CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
     
     QNetworkAccessManager *m_networkManager;
     QString m_apiKey;
+    QMap<QNetworkReply*, PendingRequest> m_pendingRequests;
+    QCache<QString, CacheEntry> m_cache;
     bool m_initialized;
     QMap<QString, EmailCategory> m_categoryMap;
 }; // class LocalAIService

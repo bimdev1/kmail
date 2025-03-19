@@ -676,4 +676,6 @@ private:
     HistoryClosedReaderMenu *mRestoreClosedMessageMenu = nullptr;
 
     KMail::AIMainWidgetExtension *m_aiExtension = nullptr;
+
+    KMMailFilter *m_mailFilter = nullptr;
 };

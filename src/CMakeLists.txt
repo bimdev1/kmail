@@ -593,6 +593,22 @@ target_link_libraries(kmailpart
 ########### KMail executable ###############
 
 set(kmail_SRCS main.cpp ${kmail_debugcategory_SRCS})
+set(kmail_SRCS 
+    ${kmail_SRCS}
+    filter/kmmailfilter.cpp
+    ai/kmmainwidgetaifilter.cpp
+    ai/aitaskdialog.cpp
+    ai/aireplydialog.cpp
+    ai/aifollowupdialog.cpp
+)
+set(kmail_SRCS 
+    ${kmail_SRCS}
+    ai/korganizerintegration.cpp
+)
+set(kmail_SRCS 
+    ${kmail_SRCS}
+    ai/aisummarydialog.cpp
+)
 file(GLOB ICONS_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/*-apps-kmail.png")
 ecm_add_app_icon(kmail_SRCS ICONS ${ICONS_SRCS})
 add_executable(kmail ${kmail_SRCS})

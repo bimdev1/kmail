@@ -7,76 +7,41 @@
 #pragma once
 
 #include <QWidget>
-#include <KCModule>
 
-class QCheckBox;
-class QSpinBox;
-class QComboBox;
+class QLineEdit;
+class QPushButton;
+class QLabel;
 
 namespace KMail {
 
-/**
- * @brief Configuration widget for AI features
- * 
- * This widget provides a configuration UI for AI features in KMail.
- */
-class AIConfigWidget : public KCModule
+class AIConfigWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit AIConfigWidget(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
-    ~AIConfigWidget() override;
+    explicit AIConfigWidget(QWidget *parent = nullptr);
+    ~AIConfigWidget() override = default;
 
-    void load() override;
-    void save() override;
-    void defaults() override;
+    void loadSettings();
+    void saveSettings();
+
+Q_SIGNALS:
+    void configChanged();
+    void testConnectionFinished(bool success, const QString &message);
+
+private Q_SLOTS:
+    void slotTestConnection();
+    void slotApiKeyChanged();
+    void updateTestButton();
 
 private:
-    /**
-     * Create the UI components
-     */
-    void createUI();
+    void setupUi();
+    void createConnections();
 
-    /**
-     * Enable or disable the UI components based on the AI enabled state
-     */
-    void updateUIState();
-
-    /**
-     * Checkbox to enable/disable AI features
-     */
-    QCheckBox *m_enableAICheckbox;
-
-    /**
-     * Checkbox to enable/disable AI inbox categorization
-     */
-    QCheckBox *m_enableCategorization;
-
-    /**
-     * Checkbox to enable/disable AI reply drafting
-     */
-    QCheckBox *m_enableReplyDrafting;
-
-    /**
-     * Checkbox to enable/disable AI task extraction
-     */
-    QCheckBox *m_enableTaskExtraction;
-
-    /**
-     * Checkbox to enable/disable AI follow-up reminders
-     */
-    QCheckBox *m_enableFollowUpReminders;
-
-    /**
-     * Spin box to set the maximum number of emails to analyze for user style
-     */
-    QSpinBox *m_maxEmailsForStyle;
-
-    /**
-     * Combo box to select the AI model quality
-     */
-    QComboBox *m_modelQuality;
+    QLineEdit *m_apiKeyEdit;
+    QPushButton *m_testButton;
+    QLabel *m_statusLabel;
+    bool m_isValidating;
 };
 
 } // namespace KMail
