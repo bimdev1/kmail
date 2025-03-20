@@ -48,21 +48,15 @@ sudo dnf install -y akonadi-devel
 
 ## Qt5 Compatibility
 
-This project has been adapted to work with Qt5 and KDE Frameworks 5 (KF5). Key compatibility changes include:
+We've adapted this project to work with Qt5 and KDE Frameworks 5 when it was originally written for Qt6. Check out our [Compatibility Documentation](docs/COMPATIBILITY.md) for details on how we made it work.
 
-- Replaced Qt6 string literals (`_L1` operator) with Qt5 `QLatin1String`
-- Converted signal-slot connections to use the Qt5 syntax where needed
-- Updated DBus adaptor generation to use `qt5_add_dbus_adaptor` instead of `qt_add_dbus_adaptor`
-- Modified CMakeLists.txt to properly handle optional dependencies in Qt5
-- Created proper configuration files to define build options and features
-- Added porting scripts in the `tools/` directory to help with Qt5/6 transitions
+Key compatibility changes include:
 
-The following header files are now properly generated:
-- `config-kmail.h`: Main configuration options
-- `config-enterprise.h`: Enterprise-specific settings
-- `kmail-version.h`: Version information
-
-All components and modules have optional dependencies properly configured, allowing the application to build and run even when certain libraries (such as `KF5Activities` or `Qt5Keychain`) are not available.
+- Created compatibility headers for newer components
+- Fixed string literals to work with Qt5
+- Added compatibility for collection classes that changed between versions
+- Updated namespace handling for KDE PIM components
+- Modified build system to work with KF5
 
 ## Building from Source
 
@@ -108,6 +102,7 @@ sudo make install
 - `/src/collectionpage/`: Folder property pages
 - `/src/folderarchive/`: Email archiving functionality
 - `/src/kontactplugin/`: KDE Kontact integration
+- `/src/compat/`: Qt5/KF5 compatibility headers
 
 ## Configuration
 
