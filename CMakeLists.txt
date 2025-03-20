@@ -114,29 +114,28 @@ find_package(KF5CalendarCore ${KF_MIN_VERSION} CONFIG REQUIRED)
 find_package(KF5StatusNotifierItem ${KF_MIN_VERSION} CONFIG)
 set_package_properties(KF5StatusNotifierItem PROPERTIES DESCRIPTION "KDE Status Notifier Item" URL "https://invent.kde.org/frameworks/kstatusnotifieritem" TYPE OPTIONAL PURPOSE "Provides system tray integration")
 
-find_package(KF5Akonadi ${AKONADI_VERSION} CONFIG REQUIRED)
-find_package(KF5AkonadiMime ${AKONADI_MIMELIB_VERSION} CONFIG REQUIRED)
-find_package(KF5AkonadiContact ${AKONADI_CONTACT_VERSION} CONFIG REQUIRED)
-find_package(KF5CalendarUtils ${CALENDARUTILS_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5IdentityManagement ${IDENTITYMANAGEMENT_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5IMAP ${KIMAP_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5LDAP ${KLDAP_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5LibKleo ${LIBKLEO_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MailTransport ${KMAILTRANSPORT_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MessageCore ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MessageList ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MessageViewer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MessageComposer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MimeTreeParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5TemplateParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5PimCommon ${PIMCOMMON_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5LibKdepim ${LIBKDEPIM_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5KSieve ${LIBKSIEVE_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5KontactInterface ${KONTACTINTERFACE_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5Libkdepim ${LIBKDEPIM_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5MailCommon ${MAILCOMMON_LIB_VERSION} CONFIG REQUIRED)
-find_package(KF5Gravatar ${LIBGRAVATAR_VERSION} CONFIG REQUIRED)
-find_package(KF5Tnef ${KTNEF_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5Akonadi ${AKONADI_VERSION} CONFIG REQUIRED)
+find_package(KPim5AkonadiMime ${AKONADI_MIMELIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5AkonadiContact ${AKONADI_CONTACT_VERSION} CONFIG REQUIRED)
+find_package(KPim5CalendarUtils ${CALENDARUTILS_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5IdentityManagement ${IDENTITYMANAGEMENT_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5IMAP ${KIMAP_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5Ldap ${KLDAP_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5Libkleo ${LIBKLEO_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MailTransport ${KMAILTRANSPORT_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MessageCore ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MessageList ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MessageViewer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MessageComposer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MimeTreeParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5TemplateParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5PimCommon ${PIMCOMMON_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5Libkdepim ${LIBKDEPIM_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5LibKSieve ${LIBKSIEVE_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5KontactInterface ${KONTACTINTERFACE_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5MailCommon ${MAILCOMMON_LIB_VERSION} CONFIG REQUIRED)
+find_package(KPim5Gravatar ${LIBGRAVATAR_VERSION} CONFIG REQUIRED)
+find_package(KPim5Tnef ${KTNEF_LIB_VERSION} CONFIG REQUIRED)
 
 find_package(Gpgmepp ${GPGME_REQUIRED_VERSION} CONFIG REQUIRED)
 find_package(QGpgme ${GPGME_REQUIRED_VERSION} CONFIG REQUIRED)
@@ -183,3 +182,25 @@ endif()
 ecm_feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
+
+# Add linting targets
+find_program(CLANG_FORMAT clang-format)
+find_program(CLANG_TIDY clang-tidy)
+find_program(CPPCHECK cppcheck)
+find_program(FLAKE8 flake8)
+
+if(CLANG_FORMAT)
+    add_custom_target(format
+        COMMAND ${CMAKE_SOURCE_DIR}/tools/lint.sh
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running linters on the codebase"
+        VERBATIM)
+endif()
+
+if(CLANG_FORMAT)
+    add_custom_target(format-fix
+        COMMAND find src agents -name "*.cpp" -o -name "*.h" | xargs ${CLANG_FORMAT} -i
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Fixing code format with clang-format"
+        VERBATIM)
+endif()

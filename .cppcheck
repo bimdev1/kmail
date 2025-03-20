@@ -1,0 +1,12 @@
+--enable=all
+--std=c++17
+--language=c++
+--suppress=missingIncludeSystem
+--suppress=unmatchedSuppression
+--suppress=unusedFunction
+--suppress=noExplicitConstructor
+--suppress=passedByValue
+--inline-suppr
+--error-exitcode=1
+-I src/
+-I build/ 

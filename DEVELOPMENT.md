@@ -218,3 +218,59 @@ Email → AIMainWidgetExtension → LocalAIService → DeepSeek API
 - Use conventional commits
 - Include detailed descriptions
 - Reference issues/tickets
+
+## Code Quality Tools
+
+KMail uses several code quality tools to maintain high standards in the codebase:
+
+### Linting and Formatting
+
+#### Code Style and Formatting
+The project follows KDE coding style guidelines with clang-format. Configuration is provided in `.clang-format`.
+
+To manually format your code:
+```bash
+# Run CMake to generate format target
+mkdir -p build && cd build
+cmake ..
+
+# Format all code
+make format-fix
+
+# Check format issues without fixing
+make format
+```
+
+#### Static Analysis
+
+Several static analyzers are configured:
+
+1. **Clang-Tidy**: C++ static analyzer with modern checks
+   - Configuration: `.clang-tidy`
+   - Run: `clang-tidy -p build src/file.cpp`
+
+2. **Cppcheck**: Comprehensive C++ static analyzer
+   - Configuration: `.cppcheck`
+   - Run: `cppcheck --project=build/compile_commands.json`
+
+3. **Flake8**: Python code linter for AI Python components
+   - Configuration: `.flake8`
+   - Run: `flake8 src/ai/python`
+
+#### Integrated Linting Tool
+
+A comprehensive linting script is available:
+
+```bash
+# Make sure the script is executable
+chmod +x tools/lint.sh
+
+# Run all linters
+./tools/lint.sh
+```
+
+#### CI Integration
+
+The project includes GitLab CI configuration `.gitlab-ci-lint.yml` to run linters automatically on every commit.
+
+All these tools help maintain code quality and consistency across the codebase.

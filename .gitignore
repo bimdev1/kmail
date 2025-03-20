@@ -21,7 +21,8 @@ Makefile
 CMakeLists.txt.user*
 *.unc-backup*
 compile_commands.json
-.clang-format
+# Allow linting configs
+#.clang-format  
 .clangd
 .idea
 /cmake-build*

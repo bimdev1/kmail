@@ -1,0 +1,15 @@
+lint:
+  stage: test
+  image: fedora:latest
+  before_script:
+    - dnf install -y clang clang-tools-extra cppcheck python3-flake8 cmake gcc-c++ qt5-qtbase-devel
+    - mkdir -p build
+    - cd build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && cd ..
+  script:
+    - chmod +x tools/lint.sh
+    - ./tools/lint.sh
+  artifacts:
+    paths:
+      - build/lint-results/
+    when: on_failure
+    expire_in: 1 week 
