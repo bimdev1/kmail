@@ -18,12 +18,12 @@ class DropWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DropWidget(QWidget *parent);
+    explicit DropWidget(QWidget* parent);
 
 Q_SIGNALS:
-    void summaryWidgetDropped(QWidget *target, QObject *source, int alignment);
+    void summaryWidgetDropped(QWidget* target, QObject* source, int alignment);
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *) override;
-    void dropEvent(QDropEvent *) override;
+    void dragEnterEvent(QDragEnterEvent*) override;
+    void dropEvent(QDropEvent*) override;
 };

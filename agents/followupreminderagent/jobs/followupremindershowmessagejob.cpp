@@ -5,14 +5,13 @@
 */
 
 #include "followupremindershowmessagejob.h"
-#include "followupreminderagent_debug.h"
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
+#include "followupreminderagent_debug.h"
 
-FollowUpReminderShowMessageJob::FollowUpReminderShowMessageJob(Akonadi::Item::Id id, QObject *parent)
-    : QObject(parent)
-    , mId(id)
+FollowUpReminderShowMessageJob::FollowUpReminderShowMessageJob(Akonadi::Item::Id id, QObject* parent)
+    : QObject(parent), mId(id)
 {
 }
 

@@ -21,7 +21,7 @@ class KMailPart : public KParts::ReadOnlyPart
     Q_CLASSINFO("D-Bus Interface", "org.kde.kmail.kmailpart")
 
 public:
-    explicit KMailPart(QWidget *parentWidget, QObject *parent, const KPluginMetaData &data, const QVariantList &);
+    explicit KMailPart(QWidget* parentWidget, QObject* parent, const KPluginMetaData& data, const QVariantList&);
     ~KMailPart() override;
 
 public Q_SLOTS:
@@ -31,8 +31,8 @@ public Q_SLOTS:
 
 protected:
     bool openFile() override;
-    void guiActivateEvent(KParts::GUIActivateEvent *e) override;
+    void guiActivateEvent(KParts::GUIActivateEvent* e) override;
 
 private:
-    KMMainWidget *mainWidget = nullptr;
+    KMMainWidget* mainWidget = nullptr;
 };

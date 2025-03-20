@@ -23,13 +23,13 @@
 #include <KConfigGroup>
 #include <KSharedConfig>
 #include <KWindowConfig>
+#include <chrono>
 #include <QDBusInterface>
 #include <QDBusMetaType>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QTimer>
 #include <QWindow>
-#include <chrono>
 
 using namespace std::chrono_literals;
 Q_DECLARE_METATYPE(Qt::CheckState)
@@ -38,7 +38,7 @@ Q_DECLARE_METATYPE(QList<qint64>)
 class SearchCollectionProxyModel : public QSortFilterProxyModel
 {
 public:
-    explicit SearchCollectionProxyModel(const QList<qint64> &unindexedCollections, QObject *parent = nullptr)
+    explicit SearchCollectionProxyModel(const QList<qint64>& unindexedCollections, QObject* parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
         mFilterCollections.reserve(unindexedCollections.size());
@@ -47,7 +47,7 @@ public:
         }
     }
 
-    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override
+    [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override
     {
         if (role == Qt::CheckStateRole) {
             if (index.isValid() && index.column() == 0) {
@@ -59,7 +59,7 @@ public:
         return QSortFilterProxyModel::data(index, role);
     }
 
-    bool setData(const QModelIndex &index, const QVariant &data, int role) override
+    bool setData(const QModelIndex& index, const QVariant& data, int role) override
     {
         if (role == Qt::CheckStateRole) {
             if (index.isValid() && index.column() == 0) {
@@ -72,7 +72,7 @@ public:
         return QSortFilterProxyModel::setData(index, data, role);
     }
 
-    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex &index) const override
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override
     {
         if (index.isValid() && index.column() == 0) {
             return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable;
@@ -82,7 +82,7 @@ public:
     }
 
 protected:
-    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
+    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
     {
         const QModelIndex source_idx = sourceModel()->index(source_row, 0, source_parent);
         const qint64 colId = sourceModel()->data(source_idx, Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
@@ -90,7 +90,7 @@ protected:
     }
 
 private:
-    [[nodiscard]] qint64 collectionIdForIndex(const QModelIndex &index) const
+    [[nodiscard]] qint64 collectionIdForIndex(const QModelIndex& index) const
     {
         return data(index, Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
     }
@@ -99,14 +99,12 @@ private:
     QHash<qint64, bool> mFilterCollections;
 };
 
-namespace
-{
+namespace {
 static const char myIncompleteIndexDialogGroupName[] = "IncompleteIndexDialog";
 }
 
-IncompleteIndexDialog::IncompleteIndexDialog(const QList<qint64> &unindexedCollections, QWidget *parent)
-    : QDialog(parent)
-    , mUi(new Ui::IncompleteIndexDialog)
+IncompleteIndexDialog::IncompleteIndexDialog(const QList<qint64>& unindexedCollections, QWidget* parent)
+    : QDialog(parent), mUi(new Ui::IncompleteIndexDialog)
 {
     auto mainLayout = new QHBoxLayout(this);
     auto w = new QWidget(this);
@@ -115,7 +113,7 @@ IncompleteIndexDialog::IncompleteIndexDialog(const QList<qint64> &unindexedColle
 
     mUi->setupUi(w);
 
-    Akonadi::EntityTreeModel *etm = KMKernel::self()->entityTreeModel();
+    Akonadi::EntityTreeModel* etm = KMKernel::self()->entityTreeModel();
     auto mimeProxy = new Akonadi::EntityMimeTypeFilterModel(this);
     mimeProxy->addMimeTypeInclusionFilter(Akonadi::Collection::mimeType());
     mimeProxy->setSourceModel(etm);
@@ -173,7 +171,7 @@ void IncompleteIndexDialog::unselectAll()
 
 void IncompleteIndexDialog::updateAllSelection(bool select)
 {
-    QAbstractItemModel *model = mUi->collectionView->model();
+    QAbstractItemModel* model = mUi->collectionView->model();
     for (int i = 0, cnt = model->rowCount(); i < cnt; ++i) {
         const QModelIndex idx = model->index(i, 0, QModelIndex());
         model->setData(idx, select ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
@@ -184,7 +182,7 @@ QList<qlonglong> IncompleteIndexDialog::collectionsToReindex() const
 {
     QList<qlonglong> res;
 
-    QAbstractItemModel *model = mUi->collectionView->model();
+    QAbstractItemModel* model = mUi->collectionView->model();
     for (int i = 0, cnt = model->rowCount(); i < cnt; ++i) {
         const QModelIndex idx = model->index(i, 0, QModelIndex());
         if (model->data(idx, Qt::CheckStateRole).toInt() == Qt::Checked) {
@@ -197,11 +195,9 @@ QList<qlonglong> IncompleteIndexDialog::collectionsToReindex() const
 
 void IncompleteIndexDialog::waitForIndexer()
 {
-    mIndexer = new QDBusInterface(PimCommon::MailUtil::indexerServiceName(),
-                                  QStringLiteral("/"),
-                                  QStringLiteral("org.freedesktop.Akonadi.Indexer"),
-                                  QDBusConnection::sessionBus(),
-                                  this);
+    mIndexer =
+        new QDBusInterface(PimCommon::MailUtil::indexerServiceName(), QStringLiteral("/"),
+                           QStringLiteral("org.freedesktop.Akonadi.Indexer"), QDBusConnection::sessionBus(), this);
 
     if (!mIndexer->isValid()) {
         qCWarning(KMAIL_LOG) << "Invalid indexer dbus interface ";
@@ -221,7 +217,8 @@ void IncompleteIndexDialog::waitForIndexer()
     mProgressDialog->setLabelText(i18n("Indexing Collections…"));
     connect(mProgressDialog, &QDialog::rejected, this, &IncompleteIndexDialog::slotStopIndexing);
 
-    connect(mIndexer, SIGNAL(collectionIndexingFinished(qlonglong)), this, SLOT(slotCurrentlyIndexingCollectionChanged(qlonglong)));
+    connect(mIndexer, SIGNAL(collectionIndexingFinished(qlonglong)), this,
+            SLOT(slotCurrentlyIndexingCollectionChanged(qlonglong)));
 
     mIndexer->asyncCall(QStringLiteral("reindexCollections"), QVariant::fromValue(mIndexingQueue));
     mProgressDialog->show();

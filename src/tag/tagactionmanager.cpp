@@ -26,15 +26,13 @@ using namespace KMail;
 
 static int s_numberMaxTag = 10;
 
-TagActionManager::TagActionManager(QObject *parent, KActionCollection *actionCollection, MessageActions *messageActions, KXMLGUIClient *guiClient)
-    : QObject(parent)
-    , mActionCollection(actionCollection)
-    , mMessageActions(messageActions)
-    , mGUIClient(guiClient)
+TagActionManager::TagActionManager(QObject* parent, KActionCollection* actionCollection, MessageActions* messageActions,
+                                   KXMLGUIClient* guiClient)
+    : QObject(parent), mActionCollection(actionCollection), mMessageActions(messageActions), mGUIClient(guiClient)
 {
     mMessageActions->messageStatusMenu()->menu()->addSeparator();
 
-    TagMonitorManager *tagMonitorManager = TagMonitorManager::self();
+    TagMonitorManager* tagMonitorManager = TagMonitorManager::self();
     connect(tagMonitorManager, &TagMonitorManager::tagAdded, this, &TagActionManager::fillTagList);
     connect(tagMonitorManager, &TagMonitorManager::tagRemoved, this, &TagActionManager::fillTagList);
     connect(tagMonitorManager, &TagMonitorManager::tagChanged, this, &TagActionManager::fillTagList);
@@ -55,7 +53,7 @@ void TagActionManager::clearActions()
 
     // Remove the tag actions from the status menu and the action collection,
     // then delete them.
-    for (KToggleAction *action : std::as_const(mTagActions)) {
+    for (KToggleAction* action : std::as_const(mTagActions)) {
         mMessageActions->messageStatusMenu()->removeAction(action);
 
         // This removes and deletes the action at the same time
@@ -81,7 +79,7 @@ void TagActionManager::clearActions()
     mTagActions.clear();
 }
 
-void TagActionManager::createTagAction(const MailCommon::Tag::Ptr &tag, bool addToMenu)
+void TagActionManager::createTagAction(const MailCommon::Tag::Ptr& tag, bool addToMenu)
 {
     QString cleanName(i18n("Message Tag: %1", tag->tagName));
     cleanName.replace(QLatin1Char('&'), QStringLiteral("&&"));
@@ -92,9 +90,7 @@ void TagActionManager::createTagAction(const MailCommon::Tag::Ptr &tag, bool add
     mActionCollection->addAction(tag->name(), tagAction);
     mActionCollection->setDefaultShortcut(tagAction, QKeySequence(tag->shortcut));
     const QString tagName = QString::number(tag->tag().id());
-    connect(tagAction, &KToggleAction::triggered, this, [this, tagName] {
-        onSignalMapped(tagName);
-    });
+    connect(tagAction, &KToggleAction::triggered, this, [this, tagName] { onSignalMapped(tagName); });
 
     // The shortcut configuration is done in the config dialog.
     // The shortcut set in the shortcut dialog would not be saved back to
@@ -116,12 +112,12 @@ void TagActionManager::createActions()
     createTagActions(TagMonitorManager::self()->tags());
 }
 
-void TagActionManager::onSignalMapped(const QString &tag)
+void TagActionManager::onSignalMapped(const QString& tag)
 {
     Q_EMIT tagActionTriggered(Akonadi::Tag(tag.toLongLong()));
 }
 
-void TagActionManager::createTagActions(const QList<MailCommon::Tag::Ptr> &tags)
+void TagActionManager::createTagActions(const QList<MailCommon::Tag::Ptr>& tags)
 {
     clearActions();
 
@@ -130,7 +126,7 @@ void TagActionManager::createTagActions(const QList<MailCommon::Tag::Ptr> &tags)
     bool needToAddMoreAction = false;
     const int numberOfTag(tags.size());
     // It is assumed the tags are sorted
-    for (const MailCommon::Tag::Ptr &tag : tags) {
+    for (const MailCommon::Tag::Ptr& tag : tags) {
         if (i < s_numberMaxTag) {
             createTagAction(tag, true);
         } else {
@@ -176,18 +172,18 @@ void TagActionManager::createTagActions(const QList<MailCommon::Tag::Ptr> &tags)
     }
 }
 
-void TagActionManager::updateActionStates(int numberOfSelectedMessages, const Akonadi::Item &selectedItem)
+void TagActionManager::updateActionStates(int numberOfSelectedMessages, const Akonadi::Item& selectedItem)
 {
     mNewTagId = -1;
-    QMap<qint64, KToggleAction *>::const_iterator it = mTagActions.constBegin();
-    QMap<qint64, KToggleAction *>::const_iterator end = mTagActions.constEnd();
+    QMap<qint64, KToggleAction*>::const_iterator it = mTagActions.constBegin();
+    QMap<qint64, KToggleAction*>::const_iterator end = mTagActions.constEnd();
     if (numberOfSelectedMessages >= 1) {
         Q_ASSERT(selectedItem.isValid());
         for (; it != end; ++it) {
             // FIXME Not very performant tag label retrieval
             QString label(i18n("Tag not Found"));
             const auto tags = TagMonitorManager::self()->tags();
-            for (const MailCommon::Tag::Ptr &tag : tags) {
+            for (const MailCommon::Tag::Ptr& tag : tags) {
                 if (tag->id() == it.key()) {
                     label = tag->name();
                     break;
@@ -223,7 +219,8 @@ void TagActionManager::fillTagList()
 
 void TagActionManager::newTagActionClicked()
 {
-    QPointer<MailCommon::AddTagDialog> dialog = new MailCommon::AddTagDialog(QList<KActionCollection *>() << mActionCollection, nullptr);
+    QPointer<MailCommon::AddTagDialog> dialog =
+        new MailCommon::AddTagDialog(QList<KActionCollection*>() << mActionCollection, nullptr);
     dialog->setTags(TagMonitorManager::self()->tags());
     if (dialog->exec() == QDialog::Accepted) {
         mNewTagId = dialog->tag().id();
@@ -233,7 +230,7 @@ void TagActionManager::newTagActionClicked()
     delete dialog;
 }
 
-void TagActionManager::checkTags(const QList<qint64> &tags)
+void TagActionManager::checkTags(const QList<qint64>& tags)
 {
     for (const qint64 id : tags) {
         if (mTagActions.contains(id)) {
@@ -244,8 +241,8 @@ void TagActionManager::checkTags(const QList<qint64> &tags)
 
 QList<qint64> TagActionManager::checkedTags() const
 {
-    QMap<qint64, KToggleAction *>::const_iterator it = mTagActions.constBegin();
-    QMap<qint64, KToggleAction *>::const_iterator end = mTagActions.constEnd();
+    QMap<qint64, KToggleAction*>::const_iterator it = mTagActions.constBegin();
+    QMap<qint64, KToggleAction*>::const_iterator end = mTagActions.constEnd();
     QList<qint64> checked;
     for (; it != end; ++it) {
         if (it.value()->isChecked()) {

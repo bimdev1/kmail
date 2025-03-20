@@ -5,21 +5,21 @@
 */
 
 #pragma once
-#include "kmail_private_export.h"
 #include <KSieveCore/SieveImapPasswordProvider>
 #include <qt6keychain/keychain.h>
+#include "kmail_private_export.h"
 class KMAILTESTS_TESTS_EXPORT KMSieveImapPasswordProvider : public KSieveCore::SieveImapPasswordProvider
 {
     Q_OBJECT
 public:
-    explicit KMSieveImapPasswordProvider(QObject *parent = nullptr);
+    explicit KMSieveImapPasswordProvider(QObject* parent = nullptr);
     ~KMSieveImapPasswordProvider() override;
 
-    void passwords(const QString &identifier) override;
+    void passwords(const QString& identifier) override;
 
 private:
-    KMAIL_NO_EXPORT void readSieveServerPasswordFinished(QKeychain::Job *baseJob);
-    KMAIL_NO_EXPORT void readSieveServerCustomPasswordFinished(QKeychain::Job *baseJob);
+    KMAIL_NO_EXPORT void readSieveServerPasswordFinished(QKeychain::Job* baseJob);
+    KMAIL_NO_EXPORT void readSieveServerCustomPasswordFinished(QKeychain::Job* baseJob);
     QString mIdentifier;
     QString mSievePassword;
     QString mSieveCustomPassword;

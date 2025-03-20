@@ -6,35 +6,28 @@
 #include "archivemailinfo.h"
 using namespace Qt::Literals::StringLiterals;
 
-#include "archivemailagent_debug.h"
 #include <KLocalizedString>
 #include <QDir>
+#include "archivemailagent_debug.h"
 
 ArchiveMailInfo::ArchiveMailInfo() = default;
 
-ArchiveMailInfo::ArchiveMailInfo(const KConfigGroup &config)
+ArchiveMailInfo::ArchiveMailInfo(const KConfigGroup& config)
 {
     readConfig(config);
 }
 
-ArchiveMailInfo::ArchiveMailInfo(const ArchiveMailInfo &info)
-    : mLastDateSaved(info.lastDateSaved())
-    , mArchiveAge(info.archiveAge())
-    , mArchiveType(info.archiveType())
-    , mArchiveUnit(info.archiveUnit())
-    , mSaveCollectionId(info.saveCollectionId())
-    , mPath(info.url())
-    , mRanges(info.range())
-    , mMaximumArchiveCount(info.maximumArchiveCount())
-    , mSaveSubCollection(info.saveSubCollection())
-    , mIsEnabled(info.isEnabled())
-    , mUseRange(info.useRange())
+ArchiveMailInfo::ArchiveMailInfo(const ArchiveMailInfo& info)
+    : mLastDateSaved(info.lastDateSaved()), mArchiveAge(info.archiveAge()), mArchiveType(info.archiveType()),
+      mArchiveUnit(info.archiveUnit()), mSaveCollectionId(info.saveCollectionId()), mPath(info.url()),
+      mRanges(info.range()), mMaximumArchiveCount(info.maximumArchiveCount()),
+      mSaveSubCollection(info.saveSubCollection()), mIsEnabled(info.isEnabled()), mUseRange(info.useRange())
 {
 }
 
 ArchiveMailInfo::~ArchiveMailInfo() = default;
 
-ArchiveMailInfo &ArchiveMailInfo::operator=(const ArchiveMailInfo &old)
+ArchiveMailInfo& ArchiveMailInfo::operator=(const ArchiveMailInfo& old)
 {
     mLastDateSaved = old.lastDateSaved();
     mArchiveAge = old.archiveAge();
@@ -50,14 +43,14 @@ ArchiveMailInfo &ArchiveMailInfo::operator=(const ArchiveMailInfo &old)
     return *this;
 }
 
-QString normalizeFolderName(const QString &folderName)
+QString normalizeFolderName(const QString& folderName)
 {
     QString adaptFolderName(folderName);
     adaptFolderName.replace(QLatin1Char('/'), QLatin1Char('_'));
     return adaptFolderName;
 }
 
-QString ArchiveMailInfo::dirArchive(bool &dirExit) const
+QString ArchiveMailInfo::dirArchive(bool& dirExit) const
 {
     const QDir dir(url().path());
     QString dirPath = url().path();
@@ -76,7 +69,7 @@ QList<int> ArchiveMailInfo::range() const
     return mRanges;
 }
 
-void ArchiveMailInfo::setRange(const QList<int> &newRanges)
+void ArchiveMailInfo::setRange(const QList<int>& newRanges)
 {
     mRanges = newRanges;
 }
@@ -91,31 +84,34 @@ void ArchiveMailInfo::setUseRange(bool newUseRange)
     mUseRange = newUseRange;
 }
 
-QUrl ArchiveMailInfo::realUrl(const QString &folderName, bool &dirExist) const
+QUrl ArchiveMailInfo::realUrl(const QString& folderName, bool& dirExist) const
 {
     const int numExtensions = 4;
     // The extensions here are also sorted, like the enum order of BackupJob::ArchiveType
-    const char *extensions[numExtensions] = {".zip", ".tar", ".tar.bz2", ".tar.gz"};
+    const char* extensions[numExtensions] = {".zip", ".tar", ".tar.bz2", ".tar.gz"};
     const QString dirPath = dirArchive(dirExist);
 
-    const QString path = dirPath + QLatin1Char('/') + i18nc("Start of the filename for a mail archive file", "Archive") + QLatin1Char('_')
-        + normalizeFolderName(folderName) + QLatin1Char('_') + QDate::currentDate().toString(Qt::ISODate) + QString::fromLatin1(extensions[mArchiveType]);
+    const QString path = dirPath + QLatin1Char('/') +
+                         i18nc("Start of the filename for a mail archive file", "Archive") + QLatin1Char('_') +
+                         normalizeFolderName(folderName) + QLatin1Char('_') +
+                         QDate::currentDate().toString(Qt::ISODate) + QString::fromLatin1(extensions[mArchiveType]);
     const QUrl real(QUrl::fromLocalFile(path));
     return real;
 }
 
-QStringList ArchiveMailInfo::listOfArchive(const QString &folderName, bool &dirExist) const
+QStringList ArchiveMailInfo::listOfArchive(const QString& folderName, bool& dirExist) const
 {
     const int numExtensions = 4;
     // The extensions here are also sorted, like the enum order of BackupJob::ArchiveType
-    const char *extensions[numExtensions] = {".zip", ".tar", ".tar.bz2", ".tar.gz"};
+    const char* extensions[numExtensions] = {".zip", ".tar", ".tar.bz2", ".tar.gz"};
     const QString dirPath = dirArchive(dirExist);
 
     QDir dir(dirPath);
 
     QStringList nameFilters;
-    nameFilters << i18nc("Start of the filename for a mail archive file", "Archive") + QLatin1Char('_') + normalizeFolderName(folderName) + QLatin1Char('_')
-            + "*"_L1 + QString::fromLatin1(extensions[mArchiveType]);
+    nameFilters << i18nc("Start of the filename for a mail archive file", "Archive") + QLatin1Char('_') +
+                       normalizeFolderName(folderName) + QLatin1Char('_') + "*"_L1 +
+                       QString::fromLatin1(extensions[mArchiveType]);
     const QStringList lst = dir.entryList(nameFilters, QDir::Files | QDir::NoDotAndDotDot, QDir::Time | QDir::Reversed);
     return lst;
 }
@@ -165,7 +161,7 @@ QDate ArchiveMailInfo::lastDateSaved() const
     return mLastDateSaved;
 }
 
-void ArchiveMailInfo::readConfig(const KConfigGroup &config)
+void ArchiveMailInfo::readConfig(const KConfigGroup& config)
 {
     mPath = QUrl::fromUserInput(config.readEntry("storePath"));
 
@@ -173,7 +169,8 @@ void ArchiveMailInfo::readConfig(const KConfigGroup &config)
         mLastDateSaved = QDate::fromString(config.readEntry("lastDateSaved"), Qt::ISODate);
     }
     mSaveSubCollection = config.readEntry("saveSubCollection", false);
-    mArchiveType = static_cast<MailCommon::BackupJob::ArchiveType>(config.readEntry("archiveType", (int)MailCommon::BackupJob::Zip));
+    mArchiveType = static_cast<MailCommon::BackupJob::ArchiveType>(
+        config.readEntry("archiveType", (int)MailCommon::BackupJob::Zip));
     mArchiveUnit = static_cast<ArchiveUnit>(config.readEntry("archiveUnit", (int)ArchiveDays));
     Akonadi::Collection::Id tId = config.readEntry("saveCollectionId", mSaveCollectionId);
     mArchiveAge = config.readEntry("archiveAge", 1);
@@ -186,7 +183,7 @@ void ArchiveMailInfo::readConfig(const KConfigGroup &config)
     mIsEnabled = config.readEntry("enabled", true);
 }
 
-void ArchiveMailInfo::writeConfig(KConfigGroup &config)
+void ArchiveMailInfo::writeConfig(KConfigGroup& config)
 {
     if (!isValid()) {
         return;
@@ -214,7 +211,7 @@ QUrl ArchiveMailInfo::url() const
     return mPath;
 }
 
-void ArchiveMailInfo::setUrl(const QUrl &url)
+void ArchiveMailInfo::setUrl(const QUrl& url)
 {
     mPath = url;
 }
@@ -259,15 +256,16 @@ void ArchiveMailInfo::setEnabled(bool b)
     mIsEnabled = b;
 }
 
-bool ArchiveMailInfo::operator==(const ArchiveMailInfo &other) const
+bool ArchiveMailInfo::operator==(const ArchiveMailInfo& other) const
 {
-    return saveCollectionId() == other.saveCollectionId() && saveSubCollection() == other.saveSubCollection() && url() == other.url()
-        && archiveType() == other.archiveType() && archiveUnit() == other.archiveUnit() && archiveAge() == other.archiveAge()
-        && lastDateSaved() == other.lastDateSaved() && maximumArchiveCount() == other.maximumArchiveCount() && isEnabled() == other.isEnabled()
-        && useRange() == other.useRange() && range() == other.range();
+    return saveCollectionId() == other.saveCollectionId() && saveSubCollection() == other.saveSubCollection() &&
+           url() == other.url() && archiveType() == other.archiveType() && archiveUnit() == other.archiveUnit() &&
+           archiveAge() == other.archiveAge() && lastDateSaved() == other.lastDateSaved() &&
+           maximumArchiveCount() == other.maximumArchiveCount() && isEnabled() == other.isEnabled() &&
+           useRange() == other.useRange() && range() == other.range();
 }
 
-QDebug operator<<(QDebug d, const ArchiveMailInfo &t)
+QDebug operator<<(QDebug d, const ArchiveMailInfo& t)
 {
     d.space() << "mLastDateSaved" << t.lastDateSaved();
     d.space() << "mArchiveAge" << t.archiveAge();

@@ -13,10 +13,12 @@ class CollectionPane : public MessageList::Pane
 {
     Q_OBJECT
 public:
-    explicit CollectionPane(bool restoreSession, QAbstractItemModel *model, QItemSelectionModel *selectionModel, QWidget *parent = nullptr);
+    explicit CollectionPane(bool restoreSession, QAbstractItemModel* model, QItemSelectionModel* selectionModel,
+                            QWidget* parent = nullptr);
     ~CollectionPane() override;
 
-    MessageList::StorageModel *createStorageModel(QAbstractItemModel *model, QItemSelectionModel *selectionModel, QObject *parent) override;
+    MessageList::StorageModel* createStorageModel(QAbstractItemModel* model, QItemSelectionModel* selectionModel,
+                                                  QObject* parent) override;
     void writeConfig(bool restoreSession) override;
 };
 
@@ -27,7 +29,8 @@ public:
     /**
      * Create a StorageModel wrapping the specified folder.
      */
-    explicit CollectionStorageModel(QAbstractItemModel *model, QItemSelectionModel *selectionModel, QObject *parent = nullptr);
+    explicit CollectionStorageModel(QAbstractItemModel* model, QItemSelectionModel* selectionModel,
+                                    QObject* parent = nullptr);
     ~CollectionStorageModel() override;
-    [[nodiscard]] bool isOutBoundFolder(const Akonadi::Collection &c) const override;
+    [[nodiscard]] bool isOutBoundFolder(const Akonadi::Collection& c) const override;
 };

@@ -12,8 +12,7 @@
 #include <QStandardPaths>
 #include <QTest>
 
-FollowUpReminderInfoTest::FollowUpReminderInfoTest(QObject *parent)
-    : QObject(parent)
+FollowUpReminderInfoTest::FollowUpReminderInfoTest(QObject* parent) : QObject(parent)
 {
     QStandardPaths::setTestModeEnabled(true);
 }

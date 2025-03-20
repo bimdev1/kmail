@@ -20,10 +20,7 @@ class ConfigModuleTab : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ConfigModuleTab(QWidget *parent = nullptr)
-        : QWidget(parent)
-    {
-    }
+    explicit ConfigModuleTab(QWidget* parent = nullptr) : QWidget(parent) {}
 
     ~ConfigModuleTab() override = default;
 
@@ -42,21 +39,15 @@ protected:
 private:
     // reimplement this for loading values of settings which are available
     // via GlobalSettings
-    virtual void doLoadFromGlobalSettings()
-    {
-    }
+    virtual void doLoadFromGlobalSettings() {}
 
     // reimplement this for loading values of settings which are not available
     // via GlobalSettings
-    virtual void doLoadOther()
-    {
-    }
+    virtual void doLoadOther() {}
 
     // reimplement this for loading default values of settings which are
     // not available via GlobalSettings (KConfigXT).
-    virtual void doResetToDefaultsOther()
-    {
-    }
+    virtual void doResetToDefaultsOther() {}
 };
 
 /*
@@ -67,7 +58,7 @@ class KMAIL_EXPORT ConfigModuleWithTabs : public ConfigModule
 {
     Q_OBJECT
 public:
-    explicit ConfigModuleWithTabs(QObject *parent, const KPluginMetaData &data);
+    explicit ConfigModuleWithTabs(QObject* parent, const KPluginMetaData& data);
     ~ConfigModuleWithTabs() override = default;
 
     // don't reimplement any of those methods
@@ -76,9 +67,9 @@ public:
     void defaults() override;
 
 protected:
-    void addTab(ConfigModuleTab *tab, const QString &title);
+    void addTab(ConfigModuleTab* tab, const QString& title);
 
 private:
-    QTabWidget *const mTabWidget;
+    QTabWidget* const mTabWidget;
     bool mWasInitialized = false;
 };

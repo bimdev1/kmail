@@ -12,7 +12,7 @@ class CreateReplyMessageJobTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit CreateReplyMessageJobTest(QObject *parent = nullptr);
+    explicit CreateReplyMessageJobTest(QObject* parent = nullptr);
     ~CreateReplyMessageJobTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValue();

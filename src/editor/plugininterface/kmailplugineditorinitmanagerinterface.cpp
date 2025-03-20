@@ -5,32 +5,29 @@
 */
 
 #include "kmailplugineditorinitmanagerinterface.h"
-#include "kmail_debug.h"
 #include <MessageComposer/PluginEditorInit>
 #include <MessageComposer/PluginEditorInitInterface>
 #include <MessageComposer/PluginEditorInitManager>
+#include "kmail_debug.h"
 
-KMailPluginEditorInitManagerInterface::KMailPluginEditorInitManagerInterface(QObject *parent)
-    : QObject(parent)
-{
-}
+KMailPluginEditorInitManagerInterface::KMailPluginEditorInitManagerInterface(QObject* parent) : QObject(parent) {}
 
-KPIMTextEdit::RichTextComposer *KMailPluginEditorInitManagerInterface::richTextEditor() const
+KPIMTextEdit::RichTextComposer* KMailPluginEditorInitManagerInterface::richTextEditor() const
 {
     return mRichTextEditor;
 }
 
-void KMailPluginEditorInitManagerInterface::setRichTextEditor(KPIMTextEdit::RichTextComposer *richTextEditor)
+void KMailPluginEditorInitManagerInterface::setRichTextEditor(KPIMTextEdit::RichTextComposer* richTextEditor)
 {
     mRichTextEditor = richTextEditor;
 }
 
-QWidget *KMailPluginEditorInitManagerInterface::parentWidget() const
+QWidget* KMailPluginEditorInitManagerInterface::parentWidget() const
 {
     return mParentWidget;
 }
 
-void KMailPluginEditorInitManagerInterface::setParentWidget(QWidget *parentWidget)
+void KMailPluginEditorInitManagerInterface::setParentWidget(QWidget* parentWidget)
 {
     mParentWidget = parentWidget;
 }
@@ -49,15 +46,18 @@ void KMailPluginEditorInitManagerInterface::initializePlugins()
         qCDebug(KMAIL_LOG) << "KMailPluginEditorInitManagerInterface : Parent is null. This is a bug";
     }
 
-    const QList<MessageComposer::PluginEditorInit *> lstPlugin = MessageComposer::PluginEditorInitManager::self()->pluginsList();
-    for (MessageComposer::PluginEditorInit *plugin : lstPlugin) {
+    const QList<MessageComposer::PluginEditorInit*> lstPlugin =
+        MessageComposer::PluginEditorInitManager::self()->pluginsList();
+    for (MessageComposer::PluginEditorInit* plugin : lstPlugin) {
         if (plugin->isEnabled()) {
-            MessageComposer::PluginEditorInitInterface *interface = plugin->createInterface(this);
+            MessageComposer::PluginEditorInitInterface* interface = plugin->createInterface(this);
             interface->setParentWidget(mParentWidget);
             interface->setRichTextEditor(mRichTextEditor);
             interface->reloadConfig();
             if (!interface->exec()) {
-                qCWarning(KMAIL_LOG) << "KMailPluginEditorInitManagerInterface::initializePlugins: error during execution of plugin:" << interface;
+                qCWarning(KMAIL_LOG)
+                    << "KMailPluginEditorInitManagerInterface::initializePlugins: error during execution of plugin:"
+                    << interface;
             }
         }
     }

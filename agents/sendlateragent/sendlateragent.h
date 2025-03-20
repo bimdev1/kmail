@@ -16,7 +16,7 @@ class SendLaterAgent : public Akonadi::AgentWidgetBase, public Akonadi::AgentBas
 {
     Q_OBJECT
 public:
-    explicit SendLaterAgent(const QString &id);
+    explicit SendLaterAgent(const QString& id);
     ~SendLaterAgent() override;
 
     [[nodiscard]] QString printDebugInfo() const;
@@ -30,17 +30,18 @@ Q_SIGNALS:
 public Q_SLOTS:
     void reload();
     void removeItem(qint64 item);
-    void
-    addItem(qint64 timestamp, bool recurrence, int recurrenceValue, int recurrenceUnit, Akonadi::Item::Id itemId, const QString &subject, const QString &to);
+    void addItem(qint64 timestamp, bool recurrence, int recurrenceValue, int recurrenceUnit, Akonadi::Item::Id itemId,
+                 const QString& subject, const QString& to);
 
 protected:
-    void itemsRemoved(const Akonadi::Item::List &item) override;
-    void itemsMoved(const Akonadi::Item::List &items, const Akonadi::Collection &sourceCollection, const Akonadi::Collection &destinationCollection) override;
+    void itemsRemoved(const Akonadi::Item::List& item) override;
+    void itemsMoved(const Akonadi::Item::List& items, const Akonadi::Collection& sourceCollection,
+                    const Akonadi::Collection& destinationCollection) override;
     void doSetOnline(bool online) override;
 
 private:
     void slotSendNow(Akonadi::Item::Id id);
     void slotStartAgent();
     bool mAgentInitialized = false;
-    SendLaterManager *const mManager;
+    SendLaterManager* const mManager;
 };

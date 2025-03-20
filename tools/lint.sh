@@ -36,30 +36,44 @@ else
     find build/lint-results -name "*.format.diff" -delete
 fi
 
-# Run clang-tidy check
+# Run manual clang-tidy check without compile_commands.json if it doesn't exist
 echo -e "\n${YELLOW}Running clang-tidy...${NC}"
 if [ -f build/compile_commands.json ]; then
+    # Run with compile_commands.json
     find $DIRECTORIES -name "*.cpp" | grep -v "autotests" | xargs -P $CORES -I{} bash -c \
         "clang-tidy -p build {} > build/lint-results/{}.tidy.log 2>&1 || true"
-
-    # Check if there are any non-empty log files
-    if [ -n "$(find build/lint-results -name "*.tidy.log" -not -empty)" ]; then
-        echo -e "${RED}❌ clang-tidy found issues:${NC}"
-        find build/lint-results -name "*.tidy.log" -not -empty -exec cat {} \;
-    else
-        echo -e "${GREEN}✓ clang-tidy check passed${NC}"
-        find build/lint-results -name "*.tidy.log" -delete
-    fi
 else
-    echo -e "${RED}❌ compile_commands.json not found. Run CMake with -DCMAKE_EXPORT_COMPILE_COMMANDS=ON${NC}"
+    echo -e "${YELLOW}Warning: compile_commands.json not found, performing basic syntax check only${NC}"
+    # Just check for basic syntax errors without compile database
+    find $DIRECTORIES -name "*.cpp" | grep -v "autotests" | xargs -P $CORES -I{} bash -c \
+        "clang-tidy {} --checks='-*,clang-diagnostic-*' > build/lint-results/{}.tidy.log 2>&1 || true"
 fi
 
-# Run cppcheck
+# Check if there are any non-empty log files
+if [ -n "$(find build/lint-results -name "*.tidy.log" -not -empty)" ]; then
+    echo -e "${RED}❌ clang-tidy found issues:${NC}"
+    find build/lint-results -name "*.tidy.log" -not -empty -exec cat {} \;
+else
+    echo -e "${GREEN}✓ clang-tidy check passed${NC}"
+    find build/lint-results -name "*.tidy.log" -delete
+fi
+
+# Run cppcheck with basic settings if compile_commands.json doesn't exist
 echo -e "\n${YELLOW}Running cppcheck...${NC}"
-cppcheck --project=build/compile_commands.json \
-    --file-filter="*/$DIRECTORIES/*" \
-    $(cat .cppcheck) \
-    --output-file=build/lint-results/cppcheck.log 2>&1 || true
+if [ -f build/compile_commands.json ]; then
+    cppcheck --project=build/compile_commands.json \
+        --file-filter="*/$DIRECTORIES/*" \
+        $(cat .cppcheck) \
+        --output-file=build/lint-results/cppcheck.log 2>&1 || true
+else
+    echo -e "${YELLOW}Warning: compile_commands.json not found, running cppcheck with basic settings${NC}"
+    find $DIRECTORIES -name "*.cpp" -o -name "*.h" | grep -v "autotests" | \
+    cppcheck --std=c++17 --language=c++ --enable=warning,performance \
+        --suppress=missingIncludeSystem \
+        --inline-suppr \
+        --file-list=- \
+        --output-file=build/lint-results/cppcheck.log 2>&1 || true
+fi
 
 if [ -s build/lint-results/cppcheck.log ]; then
     echo -e "${RED}❌ cppcheck found issues:${NC}"
@@ -70,7 +84,7 @@ else
 fi
 
 # Run flake8 on Python code
-if [ -n "$PYTHON_DIRECTORIES" ]; then
+if [ -n "$PYTHON_DIRECTORIES" ] && [ -d "$PYTHON_DIRECTORIES" ]; then
     echo -e "\n${YELLOW}Running flake8 on Python code...${NC}"
     flake8 $PYTHON_DIRECTORIES --config=.flake8 > build/lint-results/flake8.log 2>&1 || true
     
@@ -81,6 +95,8 @@ if [ -n "$PYTHON_DIRECTORIES" ]; then
         echo -e "${GREEN}✓ flake8 check passed${NC}"
         rm -f build/lint-results/flake8.log
     fi
+else
+    echo -e "${YELLOW}Warning: Python directories not found, skipping Python linting${NC}"
 fi
 
 # Check if there are any remaining issues

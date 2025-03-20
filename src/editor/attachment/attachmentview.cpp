@@ -35,13 +35,9 @@ using MessageCore::AttachmentPart;
 
 using namespace KMail;
 
-AttachmentView::AttachmentView(MessageComposer::AttachmentModel *model, QWidget *parent)
-    : QTreeView(parent)
-    , mModel(model)
-    , mToolButton(new QToolButton(this))
-    , mInfoAttachment(new QLabel(this))
-    , mWidget(new QWidget())
-    , grp(KMKernel::self()->config()->group(QStringLiteral("AttachmentView")))
+AttachmentView::AttachmentView(MessageComposer::AttachmentModel* model, QWidget* parent)
+    : QTreeView(parent), mModel(model), mToolButton(new QToolButton(this)), mInfoAttachment(new QLabel(this)),
+      mWidget(new QWidget()), grp(KMKernel::self()->config()->group(QStringLiteral("AttachmentView")))
 {
     auto lay = new QHBoxLayout(mWidget);
     lay->setContentsMargins({});
@@ -96,13 +92,13 @@ void AttachmentView::saveHeaderState()
     grp.sync();
 }
 
-void AttachmentView::contextMenuEvent(QContextMenuEvent *event)
+void AttachmentView::contextMenuEvent(QContextMenuEvent* event)
 {
     Q_UNUSED(event)
     Q_EMIT contextMenuRequested();
 }
 
-void AttachmentView::keyPressEvent(QKeyEvent *event)
+void AttachmentView::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Delete) {
         // Indexes are based on row numbers, and row numbers change when items are deleted.
@@ -110,11 +106,12 @@ void AttachmentView::keyPressEvent(QKeyEvent *event)
         AttachmentPart::List toRemove;
         const QModelIndexList selectedIndexes = selectionModel()->selectedRows();
         toRemove.reserve(selectedIndexes.count());
-        for (const QModelIndex &index : selectedIndexes) {
-            auto part = model()->data(index, MessageComposer::AttachmentModel::AttachmentPartRole).value<AttachmentPart::Ptr>();
+        for (const QModelIndex& index : selectedIndexes) {
+            auto part =
+                model()->data(index, MessageComposer::AttachmentModel::AttachmentPartRole).value<AttachmentPart::Ptr>();
             toRemove.append(part);
         }
-        for (const AttachmentPart::Ptr &part : std::as_const(toRemove)) {
+        for (const AttachmentPart::Ptr& part : std::as_const(toRemove)) {
             if (!mModel->removeAttachment(part)) {
                 qCWarning(KMAIL_LOG) << "Impossible to remove attachment";
             }
@@ -124,7 +121,7 @@ void AttachmentView::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void AttachmentView::dragEnterEvent(QDragEnterEvent *event)
+void AttachmentView::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->source() == this) {
         // Ignore drags from ourselves.
@@ -162,16 +159,18 @@ void AttachmentView::updateAttachmentLabel()
 {
     const MessageCore::AttachmentPart::List list = mModel->attachments();
     qint64 size = 0;
-    for (const MessageCore::AttachmentPart::Ptr &part : list) {
+    for (const MessageCore::AttachmentPart::Ptr& part : list) {
         size += part->size();
     }
-    mInfoAttachment->setText(i18np("1 attachment (%2)", "%1 attachments (%2)", model()->rowCount(), KIO::convertSize(qMax(0LL, size))));
+    mInfoAttachment->setText(
+        i18np("1 attachment (%2)", "%1 attachments (%2)", model()->rowCount(), KIO::convertSize(qMax(0LL, size))));
 }
 
 void AttachmentView::selectNewAttachment()
 {
     if (selectionModel()->selectedRows().isEmpty()) {
-        selectionModel()->select(selectionModel()->currentIndex(), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        selectionModel()->select(selectionModel()->currentIndex(),
+                                 QItemSelectionModel::Select | QItemSelectionModel::Rows);
     }
 }
 
@@ -181,14 +180,14 @@ void AttachmentView::startDrag(Qt::DropActions supportedActions)
 
     const QModelIndexList selection = selectionModel()->selectedRows();
     if (!selection.isEmpty()) {
-        QMimeData *mimeData = model()->mimeData(selection);
+        QMimeData* mimeData = model()->mimeData(selection);
         auto drag = new QDrag(this);
         drag->setMimeData(mimeData);
         drag->exec(Qt::CopyAction);
     }
 }
 
-QWidget *AttachmentView::widget() const
+QWidget* AttachmentView::widget() const
 {
     return mWidget;
 }

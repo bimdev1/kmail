@@ -6,18 +6,15 @@
 
 #include "fillcomposerjob.h"
 
-#include "kmkernel.h"
 #include <MessageComposer/ComposerJob>
 #include <MessageViewer/MessageViewerSettings>
+#include "kmkernel.h"
 
 #include <MessageComposer/MessageHelper>
 #include <TemplateParser/TemplateParserJob>
 
 using namespace Qt::Literals::StringLiterals;
-FillComposerJob::FillComposerJob(QObject *parent)
-    : QObject(parent)
-{
-}
+FillComposerJob::FillComposerJob(QObject* parent) : QObject(parent) {}
 
 FillComposerJob::~FillComposerJob() = default;
 
@@ -58,13 +55,13 @@ void FillComposerJob::start()
 void FillComposerJob::slotOpenComposer()
 {
     KMail::Composer::TemplateContext context = KMail::Composer::TemplateContext::New;
-    KMime::Content *msgPart = nullptr;
+    KMime::Content* msgPart = nullptr;
     bool iCalAutoSend = false;
     bool noWordWrap = false;
     bool isICalInvitation = false;
     if (!mSettings.mAttachData.isEmpty()) {
-        isICalInvitation = (mSettings.mAttachName == "cal.ics"_L1) && mSettings.mAttachType == "text" && mSettings.mAttachSubType == "calendar"
-            && mSettings.mAttachParamAttr == "method";
+        isICalInvitation = (mSettings.mAttachName == "cal.ics"_L1) && mSettings.mAttachType == "text" &&
+                           mSettings.mAttachSubType == "calendar" && mSettings.mAttachParamAttr == "method";
         // Remove BCC from identity on ical invitations (https://intevation.de/roundup/kolab/issue474)
         if (isICalInvitation && mSettings.mBcc.isEmpty()) {
             mMsg->removeHeader<KMime::Headers::Bcc>();
@@ -78,15 +75,17 @@ void FillComposerJob::slotOpenComposer()
                                                     .toLatin1());
 
             iCalAutoSend = true; // no point in editing raw ICAL
-            noWordWrap = true; // we shouldn't word wrap inline invitations
+            noWordWrap = true;   // we shouldn't word wrap inline invitations
         } else {
             // Just do what we're told to do
             msgPart = new KMime::Content;
             msgPart->contentTransferEncoding()->fromUnicodeString(QLatin1StringView(mSettings.mAttachCte));
             msgPart->setBody(mSettings.mAttachData); // TODO: check if was setBodyEncoded
-            auto ct = msgPart->contentType(); // Create
+            auto ct = msgPart->contentType();        // Create
             ct->setMimeType(mSettings.mAttachType + '/' + mSettings.mAttachSubType);
-            ct->setParameter(mSettings.mAttachParamAttr, mSettings.mAttachParamValue); // TODO: Check if the content disposition parameter needs to be set!
+            ct->setParameter(
+                mSettings.mAttachParamAttr,
+                mSettings.mAttachParamValue); // TODO: Check if the content disposition parameter needs to be set!
             if (!MessageViewer::MessageViewerSettings::self()->exchangeCompatibleInvitations()) {
                 msgPart->contentDisposition()->fromUnicodeString(QLatin1StringView(mSettings.mAttachContDisp));
             }
@@ -108,9 +107,10 @@ void FillComposerJob::slotOpenComposer()
         context = KMail::Composer::TemplateContext::NoTemplate;
     }
 
-    KMail::Composer *cWin = KMail::makeComposer(KMime::Message::Ptr(), false, false, context);
+    KMail::Composer* cWin = KMail::makeComposer(KMime::Message::Ptr(), false, false, context);
     cWin->setMessage(mMsg, false, false, !isICalInvitation /* mayAutoSign */);
-    cWin->setSigningAndEncryptionDisabled(isICalInvitation && MessageViewer::MessageViewerSettings::self()->legacyBodyInvites());
+    cWin->setSigningAndEncryptionDisabled(isICalInvitation &&
+                                          MessageViewer::MessageViewerSettings::self()->legacyBodyInvites());
     if (noWordWrap) {
         cWin->disableWordWrap();
     }
@@ -133,7 +133,7 @@ void FillComposerJob::slotOpenComposer()
     deleteLater();
 }
 
-void FillComposerJob::setSettings(const FillComposerJobSettings &settings)
+void FillComposerJob::setSettings(const FillComposerJobSettings& settings)
 {
     mSettings = settings;
 }

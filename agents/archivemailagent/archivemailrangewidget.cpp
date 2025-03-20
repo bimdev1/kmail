@@ -7,19 +7,17 @@
 #include "archivemailrangewidget.h"
 using namespace Qt::Literals::StringLiterals;
 
-#include "archivemailagent_debug.h"
-#include "widgets/hourcombobox.h"
 #include <KLocalizedString>
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTime>
+#include "archivemailagent_debug.h"
+#include "widgets/hourcombobox.h"
 
-ArchiveMailRangeWidget::ArchiveMailRangeWidget(QWidget *parent)
-    : QWidget{parent}
-    , mStartRange(new HourComboBox(this))
-    , mEndRange(new HourComboBox(this))
-    , mRangeEnabled(new QCheckBox(i18nc("@option:check", "Use Range"), this))
+ArchiveMailRangeWidget::ArchiveMailRangeWidget(QWidget* parent)
+    : QWidget{parent}, mStartRange(new HourComboBox(this)), mEndRange(new HourComboBox(this)),
+      mRangeEnabled(new QCheckBox(i18nc("@option:check", "Use Range"), this))
 {
     auto mainLayout = new QHBoxLayout(this);
     mainLayout->setObjectName("mainLayout"_L1);
@@ -92,7 +90,7 @@ QList<int> ArchiveMailRangeWidget::range() const
     return timeRange;
 }
 
-void ArchiveMailRangeWidget::setRange(const QList<int> &hours)
+void ArchiveMailRangeWidget::setRange(const QList<int>& hours)
 {
     if (hours.count() != 2) {
         qCWarning(ARCHIVEMAILAGENT_LOG) << "Ranges is invalid " << hours;

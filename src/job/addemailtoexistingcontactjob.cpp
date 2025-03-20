@@ -5,8 +5,8 @@
 */
 
 #include "addemailtoexistingcontactjob.h"
-#include "kmail_debug.h"
 #include <PimCommon/BroadcastStatus>
+#include "kmail_debug.h"
 
 #include <Akonadi/ItemModifyJob>
 
@@ -14,9 +14,9 @@
 
 #include <KLocalizedString>
 
-AddEmailToExistingContactJob::AddEmailToExistingContactJob(const Akonadi::Item &item, const QString &email, QObject *parent)
-    : KJob(parent)
-    , mItem(item)
+AddEmailToExistingContactJob::AddEmailToExistingContactJob(const Akonadi::Item& item, const QString& email,
+                                                           QObject* parent)
+    : KJob(parent), mItem(item)
 {
     QString name;
     KContacts::Addressee::parseEmailAddress(email, name, mEmail);
@@ -45,7 +45,7 @@ void AddEmailToExistingContactJob::start()
     }
 }
 
-void AddEmailToExistingContactJob::slotAddEmailDone(KJob *job)
+void AddEmailToExistingContactJob::slotAddEmailDone(KJob* job)
 {
     if (job->error()) {
         setError(job->error());

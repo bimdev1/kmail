@@ -5,24 +5,24 @@
 */
 
 #include "followupreminderutil.h"
-#include "followupreminderinfo.h"
 #include <Akonadi/ServerManager>
+#include "followupreminderinfo.h"
 
-#include "followupreminderagentsettings.h"
 #include <QDBusInterface>
+#include "followupreminderagentsettings.h"
 
-namespace
-{
+namespace {
 QString serviceName()
 {
-    return Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_followupreminder_agent"));
+    return Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Agent,
+                                                    QStringLiteral("akonadi_followupreminder_agent"));
 }
 
 QString dbusPath()
 {
     return QStringLiteral("/FollowUpReminder");
 }
-}
+} // namespace
 
 bool FollowUpReminder::FollowUpReminderUtil::followupReminderAgentWasRegistered()
 {
@@ -54,8 +54,8 @@ KSharedConfig::Ptr FollowUpReminder::FollowUpReminderUtil::defaultConfig()
     return KSharedConfig::openConfig(QStringLiteral("akonadi_followupreminder_agentrc"), KConfig::SimpleConfig);
 }
 
-void FollowUpReminder::FollowUpReminderUtil::writeFollowupReminderInfo(const KSharedConfig::Ptr &config,
-                                                                       FollowUpReminder::FollowUpReminderInfo *info,
+void FollowUpReminder::FollowUpReminderUtil::writeFollowupReminderInfo(const KSharedConfig::Ptr& config,
+                                                                       FollowUpReminder::FollowUpReminderInfo* info,
                                                                        bool forceReload)
 {
     if (!info || !info->isValid()) {
@@ -73,7 +73,7 @@ void FollowUpReminder::FollowUpReminderUtil::writeFollowupReminderInfo(const KSh
     const QString groupName = FollowUpReminder::FollowUpReminderUtil::followUpReminderPattern().arg(identifier);
     // first, delete all filter groups:
     const QStringList filterGroups = config->groupList();
-    for (const QString &group : filterGroups) {
+    for (const QString& group : filterGroups) {
         if (group == groupName) {
             config->deleteGroup(group);
         }
@@ -90,7 +90,9 @@ void FollowUpReminder::FollowUpReminderUtil::writeFollowupReminderInfo(const KSh
     }
 }
 
-bool FollowUpReminder::FollowUpReminderUtil::removeFollowupReminderInfo(const KSharedConfig::Ptr &config, const QList<qint32> &listRemove, bool forceReload)
+bool FollowUpReminder::FollowUpReminderUtil::removeFollowupReminderInfo(const KSharedConfig::Ptr& config,
+                                                                        const QList<qint32>& listRemove,
+                                                                        bool forceReload)
 {
     if (listRemove.isEmpty()) {
         return false;
@@ -103,7 +105,7 @@ bool FollowUpReminder::FollowUpReminderUtil::removeFollowupReminderInfo(const KS
     for (qint32 identifier : listRemove) {
         const QString groupName = FollowUpReminder::FollowUpReminderUtil::followUpReminderPattern().arg(identifier);
         const QStringList filterGroups = config->groupList();
-        for (const QString &group : filterGroups) {
+        for (const QString& group : filterGroups) {
             if (group == groupName) {
                 config->deleteGroup(group);
                 --value;

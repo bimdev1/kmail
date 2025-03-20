@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <QObject>
+#include "kmail_private_export.h"
 
 class KMAILTESTS_TESTS_EXPORT UndoSendManager : public QObject
 {
@@ -21,10 +21,10 @@ public:
         [[nodiscard]] QString generateMessageInfoText() const;
         [[nodiscard]] bool isValid() const;
     };
-    explicit UndoSendManager(QObject *parent = nullptr);
+    explicit UndoSendManager(QObject* parent = nullptr);
     ~UndoSendManager() override;
-    static UndoSendManager *self();
+    static UndoSendManager* self();
 
-    void addItem(const UndoSendManagerInfo &info);
+    void addItem(const UndoSendManagerInfo& info);
 };
 Q_DECLARE_TYPEINFO(UndoSendManager::UndoSendManagerInfo, Q_RELOCATABLE_TYPE);

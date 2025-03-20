@@ -10,16 +10,15 @@
 class QComboBox;
 class KNotifyConfigWidget;
 
-namespace KMail
-{
+namespace KMail {
 class KMKnotify : public QDialog
 {
     Q_OBJECT
 public:
-    explicit KMKnotify(QWidget *parent = nullptr);
+    explicit KMKnotify(QWidget* parent = nullptr);
     ~KMKnotify() override;
 
-    void setCurrentNotification(const QString &name);
+    void setCurrentNotification(const QString& name);
 
 private:
     void slotComboChanged(int);
@@ -29,8 +28,8 @@ private:
     void initCombobox();
     void writeConfig();
     void readConfig();
-    QComboBox *const m_comboNotify;
-    KNotifyConfigWidget *const m_notifyWidget;
+    QComboBox* const m_comboNotify;
+    KNotifyConfigWidget* const m_notifyWidget;
     bool m_changed = false;
 };
-}
+} // namespace KMail

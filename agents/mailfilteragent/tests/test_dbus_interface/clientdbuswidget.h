@@ -6,16 +6,16 @@
 
 #pragma once
 
-#include "dbusinterface.h"
 #include <QWidget>
+#include "dbusinterface.h"
 
 class ClientDbusWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ClientDbusWidget(QWidget *parent = nullptr);
+    explicit ClientDbusWidget(QWidget* parent = nullptr);
     ~ClientDbusWidget() override;
 
 private:
-    OrgFreedesktopTestDbusInterface *mDbusInterface = nullptr;
+    OrgFreedesktopTestDbusInterface* mDbusInterface = nullptr;
 };

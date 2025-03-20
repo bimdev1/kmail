@@ -14,12 +14,6 @@
 
 #include "incompleteindexdialog.h"
 
-#include "kmcommands.h"
-#include "kmkernel.h"
-#include "kmmainwidget.h"
-#include "kmsearchmessagemodel.h"
-#include "searchdescriptionattribute.h"
-#include "searchpatternwarning.h"
 #include <MailCommon/FolderRequester>
 #include <MailCommon/FolderTreeView>
 #include <MailCommon/MailKernel>
@@ -27,8 +21,13 @@
 #include <PimCommon/PimUtil>
 #include <PimCommonAkonadi/SelectMultiCollectionDialog>
 #include <TextUtils/ConvertText>
+#include "kmcommands.h"
+#include "kmkernel.h"
+#include "kmmainwidget.h"
+#include "kmsearchmessagemodel.h"
+#include "searchdescriptionattribute.h"
+#include "searchpatternwarning.h"
 
-#include "kmail_debug.h"
 #include <Akonadi/CachePolicy>
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/CollectionFetchJob>
@@ -45,12 +44,14 @@
 #include <KMime/Message>
 #include <KStandardAction>
 #include <KStandardGuiItem>
+#include "kmail_debug.h"
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
 #include <PIM/indexeditems.h>
 #endif
 #include <QIcon>
 #include <QSortFilterProxyModel>
 
+#include <chrono>
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QCursor>
@@ -60,7 +61,6 @@
 #include <QMenu>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <chrono>
 
 using namespace std::chrono_literals;
 
@@ -70,10 +70,8 @@ using namespace MailCommon;
 using namespace KMail;
 using namespace Qt::Literals::StringLiterals;
 
-SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Collection &collection)
-    : QDialog(nullptr)
-    , mSearchButton(new QPushButton(this))
-    , mKMMainWidget(widget)
+SearchWindowDialog::SearchWindowDialog(KMMainWidget* widget, const Akonadi::Collection& collection)
+    : QDialog(nullptr), mSearchButton(new QPushButton(this)), mKMMainWidget(widget)
 {
     setWindowTitle(i18nc("@title:window", "Find Messages"));
 
@@ -123,12 +121,16 @@ SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Coll
     */
     mUi.mLbxMatches->setSortingEnabled(true);
 
-    connect(mUi.mLbxMatches, &Akonadi::EntityTreeView::customContextMenuRequested, this, &SearchWindowDialog::slotContextMenuRequested);
-    connect(mUi.mLbxMatches, qOverload<const Akonadi::Item &>(&Akonadi::EntityTreeView::doubleClicked), this, &SearchWindowDialog::slotViewMsg);
-    connect(mUi.mLbxMatches, qOverload<const Akonadi::Item &>(&Akonadi::EntityTreeView::currentChanged), this, &SearchWindowDialog::slotCurrentChanged);
+    connect(mUi.mLbxMatches, &Akonadi::EntityTreeView::customContextMenuRequested, this,
+            &SearchWindowDialog::slotContextMenuRequested);
+    connect(mUi.mLbxMatches, qOverload<const Akonadi::Item&>(&Akonadi::EntityTreeView::doubleClicked), this,
+            &SearchWindowDialog::slotViewMsg);
+    connect(mUi.mLbxMatches, qOverload<const Akonadi::Item&>(&Akonadi::EntityTreeView::currentChanged), this,
+            &SearchWindowDialog::slotCurrentChanged);
     connect(mUi.selectMultipleFolders, &QPushButton::clicked, this, &SearchWindowDialog::slotSelectMultipleFolders);
 
-    connect(KMKernel::self()->folderCollectionMonitor(), &Akonadi::Monitor::collectionStatisticsChanged, this, &SearchWindowDialog::updateCollectionStatistic);
+    connect(KMKernel::self()->folderCollectionMonitor(), &Akonadi::Monitor::collectionStatisticsChanged, this,
+            &SearchWindowDialog::updateCollectionStatistic);
 
     connect(mUi.mSearchFolderEdt, &KLineEdit::textChanged, this, &SearchWindowDialog::scheduleRename);
     connect(&mRenameTimer, &QTimer::timeout, this, &SearchWindowDialog::renameSearchFolder);
@@ -145,10 +147,11 @@ SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Coll
 
     connect(mSearchButton, &QPushButton::clicked, this, &SearchWindowDialog::slotSearch);
     connect(this, &SearchWindowDialog::finished, this, &SearchWindowDialog::deleteLater);
-    connect(mUi.mButtonBox->button(QDialogButtonBox::Close), &QPushButton::clicked, this, &SearchWindowDialog::slotClose);
+    connect(mUi.mButtonBox->button(QDialogButtonBox::Close), &QPushButton::clicked, this,
+            &SearchWindowDialog::slotClose);
 
     // give focus to the value field of the first search rule
-    auto r = mUi.mPatternEdit->findChild<KLineEdit *>(QStringLiteral("regExpLineEdit"));
+    auto r = mUi.mPatternEdit->findChild<KLineEdit*>(QStringLiteral("regExpLineEdit"));
     if (r) {
         r->setFocus();
     } else {
@@ -156,7 +159,7 @@ SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Coll
     }
 
     // set up actions
-    KActionCollection *ac = actionCollection();
+    KActionCollection* ac = actionCollection();
     mReplyAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-reply-sender")), i18n("&Reply…"), this);
     actionCollection()->addAction(QStringLiteral("search_reply"), mReplyAction);
     connect(mReplyAction, &QAction::triggered, this, &SearchWindowDialog::slotReplyToMsg);
@@ -165,19 +168,23 @@ SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Coll
     actionCollection()->addAction(QStringLiteral("search_reply_all"), mReplyAllAction);
     connect(mReplyAllAction, &QAction::triggered, this, &SearchWindowDialog::slotReplyAllToMsg);
 
-    mReplyListAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-reply-list")), i18n("Reply to Mailing-&List…"), this);
+    mReplyListAction =
+        new QAction(QIcon::fromTheme(QStringLiteral("mail-reply-list")), i18n("Reply to Mailing-&List…"), this);
     actionCollection()->addAction(QStringLiteral("search_reply_list"), mReplyListAction);
     connect(mReplyListAction, &QAction::triggered, this, &SearchWindowDialog::slotReplyListToMsg);
 
-    mForwardActionMenu = new KActionMenu(QIcon::fromTheme(QStringLiteral("mail-forward")), i18nc("Message->", "&Forward"), this);
+    mForwardActionMenu =
+        new KActionMenu(QIcon::fromTheme(QStringLiteral("mail-forward")), i18nc("Message->", "&Forward"), this);
     actionCollection()->addAction(QStringLiteral("search_message_forward"), mForwardActionMenu);
     connect(mForwardActionMenu, &KActionMenu::triggered, this, &SearchWindowDialog::slotForwardMsg);
 
-    mForwardInlineAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-forward")), i18nc("@action:inmenu Forward message inline.", "&Inline…"), this);
+    mForwardInlineAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-forward")),
+                                       i18nc("@action:inmenu Forward message inline.", "&Inline…"), this);
     actionCollection()->addAction(QStringLiteral("search_message_forward_inline"), mForwardInlineAction);
     connect(mForwardInlineAction, &QAction::triggered, this, &SearchWindowDialog::slotForwardMsg);
 
-    mForwardAttachedAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-forward")), i18nc("Message->Forward->", "As &Attachment…"), this);
+    mForwardAttachedAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-forward")),
+                                         i18nc("Message->Forward->", "As &Attachment…"), this);
     actionCollection()->addAction(QStringLiteral("search_message_forward_as_attachment"), mForwardAttachedAction);
     connect(mForwardAttachedAction, &QAction::triggered, this, &SearchWindowDialog::slotForwardAttachedMsg);
 
@@ -189,13 +196,15 @@ SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Coll
         mForwardActionMenu->addAction(mForwardInlineAction);
     }
 
-    mSaveAsAction = actionCollection()->addAction(KStandardActions::SaveAs, QStringLiteral("search_file_save_as"), this, &SearchWindowDialog::slotSaveMsg);
+    mSaveAsAction = actionCollection()->addAction(KStandardActions::SaveAs, QStringLiteral("search_file_save_as"), this,
+                                                  &SearchWindowDialog::slotSaveMsg);
 
     mSaveAtchAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-attachment")), i18n("Save Attachments…"), this);
     actionCollection()->addAction(QStringLiteral("search_save_attachments"), mSaveAtchAction);
     connect(mSaveAtchAction, &QAction::triggered, this, &SearchWindowDialog::slotSaveAttachments);
 
-    mPrintAction = actionCollection()->addAction(KStandardActions::Print, QStringLiteral("search_print"), this, &SearchWindowDialog::slotPrintMsg);
+    mPrintAction = actionCollection()->addAction(KStandardActions::Print, QStringLiteral("search_print"), this,
+                                                 &SearchWindowDialog::slotPrintMsg);
 
     mClearAction = new QAction(i18nc("@action", "Clear Selection"), this);
     actionCollection()->addAction(QStringLiteral("search_clear_selection"), mClearAction);
@@ -205,11 +214,12 @@ SearchWindowDialog::SearchWindowDialog(KMMainWidget *widget, const Akonadi::Coll
     actionCollection()->addAction(QStringLiteral("search_jump_folder"), mJumpToFolderAction);
     connect(mJumpToFolderAction, &QAction::triggered, this, &SearchWindowDialog::slotJumpToFolder);
 
-    connect(mUi.mCbxFolders, &MailCommon::FolderRequester::folderChanged, this, &SearchWindowDialog::slotFolderActivated);
+    connect(mUi.mCbxFolders, &MailCommon::FolderRequester::folderChanged, this,
+            &SearchWindowDialog::slotFolderActivated);
 
     ac->addAssociatedWidget(this);
-    const QList<QAction *> actList = ac->actions();
-    for (QAction *action : actList) {
+    const QList<QAction*> actList = ac->actions();
+    for (QAction* action : actList) {
         action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     }
     mUi.mProgressIndicator->hide();
@@ -286,7 +296,8 @@ void SearchWindowDialog::setEnabledSearchButton(bool)
     mSearchButton->setEnabled(true);
 }
 
-void SearchWindowDialog::updateCollectionStatistic(Akonadi::Collection::Id id, const Akonadi::CollectionStatistics &statistic)
+void SearchWindowDialog::updateCollectionStatistic(Akonadi::Collection::Id id,
+                                                   const Akonadi::CollectionStatistics& statistic)
 {
     QString genMsg;
     if (id == mFolder.id()) {
@@ -295,7 +306,7 @@ void SearchWindowDialog::updateCollectionStatistic(Akonadi::Collection::Id id, c
     mUi.mStatusLbl->setText(genMsg);
 }
 
-void SearchWindowDialog::keyPressEvent(QKeyEvent *event)
+void SearchWindowDialog::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Escape && mSearchJob) {
         slotStop();
@@ -310,7 +321,7 @@ void SearchWindowDialog::slotFolderActivated()
     mUi.mChkbxSpecificFolders->setChecked(true);
 }
 
-void SearchWindowDialog::activateFolder(const Akonadi::Collection &collection)
+void SearchWindowDialog::activateFolder(const Akonadi::Collection& collection)
 {
     mUi.mChkbxSpecificFolders->setChecked(true);
     mSearchPattern.clear();
@@ -383,14 +394,14 @@ void SearchWindowDialog::slotSearch()
     connect(fetchJob, &Akonadi::CollectionFetchJob::result, this, &SearchWindowDialog::slotSearchCollectionsFetched);
 }
 
-void SearchWindowDialog::slotSearchCollectionsFetched(KJob *job)
+void SearchWindowDialog::slotSearchCollectionsFetched(KJob* job)
 {
     if (job->error()) {
         qCWarning(KMAIL_LOG) << job->errorString();
     }
-    auto fetchJob = static_cast<Akonadi::CollectionFetchJob *>(job);
+    auto fetchJob = static_cast<Akonadi::CollectionFetchJob*>(job);
     const Akonadi::Collection::List lstCol = fetchJob->collections();
-    for (const Akonadi::Collection &col : lstCol) {
+    for (const Akonadi::Collection& col : lstCol) {
         if (col.name() == mUi.mSearchFolderEdt->text()) {
             mFolder = col;
         }
@@ -465,7 +476,8 @@ void SearchWindowDialog::doSearch()
         return;
     case MailCommon::SearchPattern::FolderEmptyOrNotIndexed:
         mUi.mSearchFolderEdt->setEnabled(true);
-        mSearchPatternWidget->showWarningPattern(QStringList() << i18n("All folders selected are empty or were not indexed."));
+        mSearchPatternWidget->showWarningPattern(QStringList()
+                                                 << i18n("All folders selected are empty or were not indexed."));
         mQuery = Akonadi::SearchQuery();
         return;
     case MailCommon::SearchPattern::EmptyResult:
@@ -475,7 +487,8 @@ void SearchWindowDialog::doSearch()
         return;
     case MailCommon::SearchPattern::NotEnoughCharacters:
         mUi.mSearchFolderEdt->setEnabled(true);
-        mSearchPatternWidget->showWarningPattern(QStringList() << i18n("Contains condition cannot be used with a number of characters inferior to 4."));
+        mSearchPatternWidget->showWarningPattern(
+            QStringList() << i18n("Contains condition cannot be used with a number of characters inferior to 4."));
         mQuery = Akonadi::SearchQuery();
         return;
     }
@@ -504,8 +517,9 @@ void SearchWindowDialog::doSearch()
         mFolder.addAttribute(attribute);
         mSearchJob = new Akonadi::CollectionModifyJob(mFolder, this);
     } else {
-        const QString searchString =
-            respectDiacriticAndAccents ? mUi.mSearchFolderEdt->text() : TextUtils::ConvertText::normalize(mUi.mSearchFolderEdt->text());
+        const QString searchString = respectDiacriticAndAccents
+                                         ? mUi.mSearchFolderEdt->text()
+                                         : TextUtils::ConvertText::normalize(mUi.mSearchFolderEdt->text());
         qCDebug(KMAIL_LOG) << " create new folder " << searchString;
         auto searchJob = new Akonadi::SearchCreateJob(searchString, mQuery, this);
         searchJob->setSearchMimeTypes(QStringList() << QStringLiteral("message/rfc822"));
@@ -521,7 +535,7 @@ void SearchWindowDialog::doSearch()
     mUi.mStatusLbl->setText(i18n("Searching…"));
 }
 
-void SearchWindowDialog::searchDone(KJob *job)
+void SearchWindowDialog::searchDone(KJob* job)
 {
     // qDebug() << " void SearchWindow::searchDone(KJob *job)";
     Q_ASSERT(job == mSearchJob);
@@ -536,9 +550,9 @@ void SearchWindowDialog::searchDone(KJob *job)
         mUi.mSearchFolderEdt->setEnabled(true);
         mUi.mStatusLbl->setText(i18n("Search failed."));
     } else {
-        if (const auto searchJob = qobject_cast<Akonadi::SearchCreateJob *>(job)) {
+        if (const auto searchJob = qobject_cast<Akonadi::SearchCreateJob*>(job)) {
             mFolder = searchJob->createdCollection();
-        } else if (const auto modifyJob = qobject_cast<Akonadi::CollectionModifyJob *>(job)) {
+        } else if (const auto modifyJob = qobject_cast<Akonadi::CollectionModifyJob*>(job)) {
             mFolder = modifyJob->collection();
         }
         /// TODO: cope better with cases where this fails
@@ -553,13 +567,14 @@ void SearchWindowDialog::searchDone(KJob *job)
         // the server, for easy retrieval when editing it again
         const QByteArray search = mSearchPattern.serialize();
         Q_ASSERT(!search.isEmpty());
-        auto searchDescription = mFolder.attribute<Akonadi::SearchDescriptionAttribute>(Akonadi::Collection::AddIfMissing);
+        auto searchDescription =
+            mFolder.attribute<Akonadi::SearchDescriptionAttribute>(Akonadi::Collection::AddIfMissing);
         searchDescription->setDescription(search);
         if (mUi.mChkMultiFolders->isChecked()) {
             searchDescription->setBaseCollection(Akonadi::Collection());
             QList<Akonadi::Collection::Id> lst;
             lst.reserve(mCollectionId.count());
-            for (const Akonadi::Collection &col : std::as_const(mCollectionId)) {
+            for (const Akonadi::Collection& col : std::as_const(mCollectionId)) {
                 lst << col.id();
             }
             searchDescription->setListCollection(lst);
@@ -589,9 +604,9 @@ void SearchWindowDialog::searchDone(KJob *job)
     }
 }
 
-void SearchWindowDialog::slotCollectionStatisticsRetrieved(KJob *job)
+void SearchWindowDialog::slotCollectionStatisticsRetrieved(KJob* job)
 {
-    auto fetch = qobject_cast<Akonadi::CollectionFetchJob *>(job);
+    auto fetch = qobject_cast<Akonadi::CollectionFetchJob*>(job);
     if (!fetch || fetch->error()) {
         return;
     }
@@ -624,7 +639,7 @@ void SearchWindowDialog::slotClose()
     accept();
 }
 
-void SearchWindowDialog::closeEvent(QCloseEvent *event)
+void SearchWindowDialog::closeEvent(QCloseEvent* event)
 {
     if (mSearchJob) {
         mCloseRequested = true;
@@ -638,7 +653,7 @@ void SearchWindowDialog::closeEvent(QCloseEvent *event)
     }
 }
 
-void SearchWindowDialog::scheduleRename(const QString &text)
+void SearchWindowDialog::scheduleRename(const QString& text)
 {
     if (!text.isEmpty()) {
         mRenameTimer.setSingleShot(true);
@@ -665,16 +680,15 @@ void SearchWindowDialog::renameSearchFolder()
     }
 }
 
-void SearchWindowDialog::slotSearchFolderRenameDone(KJob *job)
+void SearchWindowDialog::slotSearchFolderRenameDone(KJob* job)
 {
     Q_ASSERT(job);
     if (job->error()) {
         qCWarning(KMAIL_LOG) << "Job failed:" << job->errorText();
-        KMessageBox::information(this,
-                                 i18n("There was a problem renaming your search folder. "
-                                      "A common reason for this is that another search folder "
-                                      "with the same name already exists. Error returned \"%1\".",
-                                      job->errorText()));
+        KMessageBox::information(this, i18n("There was a problem renaming your search folder. "
+                                            "A common reason for this is that another search folder "
+                                            "with the same name already exists. Error returned \"%1\".",
+                                            job->errorText()));
         mUi.mSearchFolderEdt->blockSignals(true);
         mUi.mSearchFolderEdt->setText(job->property("oldfoldername").toString());
         mUi.mSearchFolderEdt->blockSignals(false);
@@ -694,14 +708,14 @@ void SearchWindowDialog::slotViewSelectedMsg()
     mKMMainWidget->slotMessageActivated(selectedMessage());
 }
 
-void SearchWindowDialog::slotViewMsg(const Akonadi::Item &item)
+void SearchWindowDialog::slotViewMsg(const Akonadi::Item& item)
 {
     if (item.isValid()) {
         mKMMainWidget->slotMessageActivated(item);
     }
 }
 
-void SearchWindowDialog::slotCurrentChanged(const Akonadi::Item &item)
+void SearchWindowDialog::slotCurrentChanged(const Akonadi::Item& item)
 {
     mUi.mSearchResultOpenBtn->setEnabled(item.isValid());
 }
@@ -725,7 +739,7 @@ Akonadi::Item::List SearchWindowDialog::selectedMessages() const
     Akonadi::Item::List messages;
 
     const QModelIndexList lst = mUi.mLbxMatches->selectionModel()->selectedRows();
-    for (const QModelIndex &index : lst) {
+    for (const QModelIndex& index : lst) {
         const auto item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         if (item.isValid()) {
             messages.append(item);
@@ -757,7 +771,7 @@ void SearchWindowDialog::updateContextMenuActions()
     mClearAction->setEnabled(notEmpty);
 }
 
-void SearchWindowDialog::slotContextMenuRequested(const QPoint &)
+void SearchWindowDialog::slotContextMenuRequested(const QPoint&)
 {
     if (!selectedMessage().isValid() || selectedMessages().isEmpty()) {
         return;
@@ -774,11 +788,13 @@ void SearchWindowDialog::slotContextMenuRequested(const QPoint &)
     menu.addSeparator();
     menu.addAction(mJumpToFolderAction);
     menu.addSeparator();
-    QAction *act = mAkonadiStandardAction->createAction(Akonadi::StandardActionManager::CopyItems);
-    mAkonadiStandardAction->setActionText(Akonadi::StandardActionManager::CopyItems, ki18np("Copy Message", "Copy %1 Messages"));
+    QAction* act = mAkonadiStandardAction->createAction(Akonadi::StandardActionManager::CopyItems);
+    mAkonadiStandardAction->setActionText(Akonadi::StandardActionManager::CopyItems,
+                                          ki18np("Copy Message", "Copy %1 Messages"));
     menu.addAction(act);
     act = mAkonadiStandardAction->createAction(Akonadi::StandardActionManager::CutItems);
-    mAkonadiStandardAction->setActionText(Akonadi::StandardActionManager::CutItems, ki18np("Cut Message", "Cut %1 Messages"));
+    mAkonadiStandardAction->setActionText(Akonadi::StandardActionManager::CutItems,
+                                          ki18np("Cut Message", "Cut %1 Messages"));
     menu.addAction(act);
     menu.addAction(mAkonadiStandardAction->createAction(Akonadi::StandardActionManager::CopyItemToMenu));
     menu.addAction(mAkonadiStandardAction->createAction(Akonadi::StandardActionManager::MoveItemToMenu));
@@ -798,32 +814,32 @@ void SearchWindowDialog::slotClearSelection()
 
 void SearchWindowDialog::slotReplyToMsg()
 {
-    KMCommand *command = new KMReplyCommand(this, selectedMessage(), MessageComposer::ReplySmart);
+    KMCommand* command = new KMReplyCommand(this, selectedMessage(), MessageComposer::ReplySmart);
 
     command->start();
 }
 
 void SearchWindowDialog::slotReplyAllToMsg()
 {
-    KMCommand *command = new KMReplyCommand(this, selectedMessage(), MessageComposer::ReplyAll);
+    KMCommand* command = new KMReplyCommand(this, selectedMessage(), MessageComposer::ReplyAll);
     command->start();
 }
 
 void SearchWindowDialog::slotReplyListToMsg()
 {
-    KMCommand *command = new KMReplyCommand(this, selectedMessage(), MessageComposer::ReplyList);
+    KMCommand* command = new KMReplyCommand(this, selectedMessage(), MessageComposer::ReplyList);
     command->start();
 }
 
 void SearchWindowDialog::slotForwardMsg()
 {
-    KMCommand *command = new KMForwardCommand(this, selectedMessages());
+    KMCommand* command = new KMForwardCommand(this, selectedMessages());
     command->start();
 }
 
 void SearchWindowDialog::slotForwardAttachedMsg()
 {
-    KMCommand *command = new KMForwardAttachedCommand(this, selectedMessages());
+    KMCommand* command = new KMForwardAttachedCommand(this, selectedMessages());
     command->start();
 }
 
@@ -843,11 +859,11 @@ void SearchWindowDialog::slotPrintMsg()
 {
     KMPrintCommandInfo info;
     info.mMsg = selectedMessage();
-    KMCommand *command = new KMPrintCommand(this, info);
+    KMCommand* command = new KMPrintCommand(this, info);
     command->start();
 }
 
-void SearchWindowDialog::addRulesToSearchPattern(const SearchPattern &pattern)
+void SearchWindowDialog::addRulesToSearchPattern(const SearchPattern& pattern)
 {
     SearchPattern p(mSearchPattern);
     p.purify();
@@ -870,10 +886,11 @@ void SearchWindowDialog::slotSelectMultipleFolders()
     if (!mSelectMultiCollectionDialog) {
         QList<Akonadi::Collection::Id> lst;
         lst.reserve(mCollectionId.count());
-        for (const Akonadi::Collection &col : std::as_const(mCollectionId)) {
+        for (const Akonadi::Collection& col : std::as_const(mCollectionId)) {
             lst << col.id();
         }
-        mSelectMultiCollectionDialog = new PimCommon::SelectMultiCollectionDialog(KMime::Message::mimeType(), lst, this);
+        mSelectMultiCollectionDialog =
+            new PimCommon::SelectMultiCollectionDialog(KMime::Message::mimeType(), lst, this);
     }
     mSelectMultiCollectionDialog->show();
 }
@@ -885,19 +902,20 @@ void SearchWindowDialog::slotJumpToFolder()
     }
 }
 
-QList<qint64> SearchWindowDialog::checkIncompleteIndex(const Akonadi::Collection::List &searchCols, bool recursive)
+QList<qint64> SearchWindowDialog::checkIncompleteIndex(const Akonadi::Collection::List& searchCols, bool recursive)
 {
     QList<qint64> results;
     Akonadi::Collection::List cols;
     if (recursive) {
         cols = searchCollectionsRecursive(searchCols);
     } else {
-        for (const Akonadi::Collection &col : searchCols) {
-            QAbstractItemModel *etm = KMKernel::self()->collectionModel();
+        for (const Akonadi::Collection& col : searchCols) {
+            QAbstractItemModel* etm = KMKernel::self()->collectionModel();
             const QModelIndex idx = Akonadi::EntityTreeModel::modelIndexForCollection(etm, col);
             const auto modelCol = etm->data(idx, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
             // Only index offline IMAP collections
-            if (PimCommon::Util::isImapResource(modelCol.resource()) && !modelCol.cachePolicy().localParts().contains("RFC822"_L1)) {
+            if (PimCommon::Util::isImapResource(modelCol.resource()) &&
+                !modelCol.cachePolicy().localParts().contains("RFC822"_L1)) {
                 continue;
             } else {
                 cols.push_back(modelCol);
@@ -909,7 +927,7 @@ QList<qint64> SearchWindowDialog::checkIncompleteIndex(const Akonadi::Collection
     mUi.mProgressIndicator->hide();
     mUi.mStatusLbl->setText(i18n("Checking index status…"));
     // Fetch collection ?
-    for (const Akonadi::Collection &col : std::as_const(cols)) {
+    for (const Akonadi::Collection& col : std::as_const(cols)) {
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
         const qlonglong num = KMKernel::self()->indexedItems()->indexedItems((qlonglong)col.id());
         if (col.statistics().count() != num) {
@@ -920,20 +938,22 @@ QList<qint64> SearchWindowDialog::checkIncompleteIndex(const Akonadi::Collection
     return results;
 }
 
-Akonadi::Collection::List SearchWindowDialog::searchCollectionsRecursive(const Akonadi::Collection::List &cols) const
+Akonadi::Collection::List SearchWindowDialog::searchCollectionsRecursive(const Akonadi::Collection::List& cols) const
 {
-    QAbstractItemModel *etm = KMKernel::self()->collectionModel();
+    QAbstractItemModel* etm = KMKernel::self()->collectionModel();
     Akonadi::Collection::List result;
 
-    for (const Akonadi::Collection &col : cols) {
+    for (const Akonadi::Collection& col : cols) {
         const QModelIndex colIdx = Akonadi::EntityTreeModel::modelIndexForCollection(etm, col);
         if (col.statistics().count() > -1) {
             if (col.cachePolicy().localParts().contains("RFC822"_L1)) {
                 result.push_back(col);
             }
         } else {
-            const auto collection = etm->data(colIdx, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-            if (!collection.hasAttribute<Akonadi::EntityHiddenAttribute>() && collection.cachePolicy().localParts().contains("RFC822"_L1)) {
+            const auto collection =
+                etm->data(colIdx, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+            if (!collection.hasAttribute<Akonadi::EntityHiddenAttribute>() &&
+                collection.cachePolicy().localParts().contains("RFC822"_L1)) {
                 result.push_back(collection);
             }
         }
@@ -944,7 +964,8 @@ Akonadi::Collection::List SearchWindowDialog::searchCollectionsRecursive(const A
             subCols.reserve(childrenCount);
             for (int i = 0; i < childrenCount; ++i) {
                 const QModelIndex idx = etm->index(i, 0, colIdx);
-                const auto child = etm->data(idx, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+                const auto child =
+                    etm->data(idx, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
                 if (child.cachePolicy().localParts().contains("RFC822"_L1)) {
                     subCols.push_back(child);
                 }

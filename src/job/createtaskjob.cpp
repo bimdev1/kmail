@@ -6,8 +6,8 @@
 */
 
 #include "createtaskjob.h"
-#include "attributes/taskattribute.h"
 #include <Akonadi/MessageStatus>
+#include "attributes/taskattribute.h"
 
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
@@ -16,11 +16,7 @@
 
 #include "kmail_debug.h"
 
-CreateTaskJob::CreateTaskJob(const Akonadi::Item::List &items, QObject *parent)
-    : KJob(parent)
-    , mListItem(items)
-{
-}
+CreateTaskJob::CreateTaskJob(const Akonadi::Item::List& items, QObject* parent) : KJob(parent), mListItem(items) {}
 
 CreateTaskJob::~CreateTaskJob() = default;
 
@@ -42,7 +38,7 @@ void CreateTaskJob::fetchItems()
     connect(job, &Akonadi::ItemFetchJob::result, this, &CreateTaskJob::itemFetchJobDone);
 }
 
-void CreateTaskJob::itemFetchJobDone(KJob *job)
+void CreateTaskJob::itemFetchJobDone(KJob* job)
 {
     if (job->error()) {
         qCDebug(KMAIL_LOG) << job->errorString();
@@ -50,7 +46,7 @@ void CreateTaskJob::itemFetchJobDone(KJob *job)
         deleteLater();
         return;
     }
-    auto fetchjob = qobject_cast<Akonadi::ItemFetchJob *>(job);
+    auto fetchjob = qobject_cast<Akonadi::ItemFetchJob*>(job);
     const Akonadi::Item::List lst = fetchjob->items();
     if (lst.isEmpty()) {
         emitResult();
@@ -71,7 +67,7 @@ void CreateTaskJob::itemFetchJobDone(KJob *job)
     }
 
     Akonadi::Item::List itemsToModify;
-    for (const Akonadi::Item &it : lst) {
+    for (const Akonadi::Item& it : lst) {
         // qCDebug(KMAIL_LOG)<<" item ::"<<tmpItem;
         if (it.isValid()) {
             bool myStatus;
@@ -112,7 +108,7 @@ void CreateTaskJob::itemFetchJobDone(KJob *job)
     }
 }
 
-void CreateTaskJob::slotModifyItemDone(KJob *job)
+void CreateTaskJob::slotModifyItemDone(KJob* job)
 {
     if (job && job->error()) {
         qCDebug(KMAIL_LOG) << " error " << job->errorString();

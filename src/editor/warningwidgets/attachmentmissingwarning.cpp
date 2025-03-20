@@ -11,15 +11,14 @@
 #include <QIcon>
 
 using namespace Qt::Literals::StringLiterals;
-AttachmentMissingWarning::AttachmentMissingWarning(QWidget *parent)
-    : KMessageWidget(parent)
+AttachmentMissingWarning::AttachmentMissingWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setVisible(false);
     setCloseButtonVisible(false);
     setMessageType(Information);
     setPosition(KMessageWidget::Header);
-    setText(i18n(
-        "The message you have composed seems to refer to an attached file but you have not attached anything. Do you want to attach a file to your message?"));
+    setText(i18n("The message you have composed seems to refer to an attached file but you have not attached anything. "
+                 "Do you want to attach a file to your message?"));
     setWordWrap(true);
 
     auto action = new QAction(QIcon::fromTheme(QStringLiteral("mail-attachment")), i18n("&Attach file"), this);

@@ -6,21 +6,21 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <QObject>
+#include "kmail_private_export.h"
 class KNotification;
 class QTimer;
 class KMAILTESTS_TESTS_EXPORT UndoSendCreateJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit UndoSendCreateJob(QObject *parent = nullptr);
+    explicit UndoSendCreateJob(QObject* parent = nullptr);
     ~UndoSendCreateJob() override;
     [[nodiscard]] bool canStart() const;
     [[nodiscard]] bool start();
 
     [[nodiscard]] QString subject() const;
-    void setMessageInfoText(const QString &subject);
+    void setMessageInfoText(const QString& subject);
 
     [[nodiscard]] int delay() const;
     void setDelay(int delay);
@@ -33,8 +33,8 @@ private:
     KMAIL_NO_EXPORT void undoSendEmail();
     KMAIL_NO_EXPORT void slotTimeOut();
     QString mSubject;
-    KNotification *mNotification = nullptr;
-    QTimer *mTimer = nullptr;
+    KNotification* mNotification = nullptr;
+    QTimer* mTimer = nullptr;
     qint64 mAkonadiIndex = -1;
     int mDelay = -1;
 };

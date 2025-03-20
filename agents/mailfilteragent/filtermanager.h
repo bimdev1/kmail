@@ -12,11 +12,10 @@
 
 #include <MailCommon/SearchPattern>
 #include <memory>
-namespace MailCommon
-{
+namespace MailCommon {
 class MailFilter;
 class ItemContext;
-}
+} // namespace MailCommon
 
 class FilterManager : public QObject
 {
@@ -47,7 +46,7 @@ public:
      *
      * @param parent The parent object.
      */
-    explicit FilterManager(QObject *parent = nullptr);
+    explicit FilterManager(QObject* parent = nullptr);
 
     /**
      * Destroys the filter manager.
@@ -68,7 +67,7 @@ public:
      * Checks for existing filters with the @p name and extend the
      * "name" to "name (i)" until no match is found for i=1..n
      */
-    [[nodiscard]] QString createUniqueName(const QString &name) const;
+    [[nodiscard]] QString createUniqueName(const QString& name) const;
 
     /**
      * Process given message item by applying the filter rules one by
@@ -82,15 +81,12 @@ public:
      *
      *  @return true if the filtering was successful, false in case of any error
      */
-    [[nodiscard]] bool
-    process(const Akonadi::Item &item, bool needsFullPayload, FilterSet set = Inbound, bool account = false, const QString &accountId = QString());
+    [[nodiscard]] bool process(const Akonadi::Item& item, bool needsFullPayload, FilterSet set = Inbound,
+                               bool account = false, const QString& accountId = QString());
 
-    [[nodiscard]] bool process(const QList<MailCommon::MailFilter *> &mailFilters,
-                               const Akonadi::Item &item,
-                               bool needsFullPayload,
-                               FilterSet set = Inbound,
-                               bool account = false,
-                               const QString &accountId = QString());
+    [[nodiscard]] bool process(const QList<MailCommon::MailFilter*>& mailFilters, const Akonadi::Item& item,
+                               bool needsFullPayload, FilterSet set = Inbound, bool account = false,
+                               const QString& accountId = QString());
 
     /**
      * For ad-hoc filters.
@@ -98,28 +94,27 @@ public:
      * Applies @p filter to message @p item.
      * Return codes are as with the above method.
      */
-    [[nodiscard]] bool process(const Akonadi::Item &item, bool needsFullPayload, const MailCommon::MailFilter *filter);
+    [[nodiscard]] bool process(const Akonadi::Item& item, bool needsFullPayload, const MailCommon::MailFilter* filter);
 
-    void filter(const Akonadi::Item &item, FilterManager::FilterSet set, const QString &resourceId);
-    void filter(const Akonadi::Item &item, const QString &filterId, const QString &resourceId);
+    void filter(const Akonadi::Item& item, FilterManager::FilterSet set, const QString& resourceId);
+    void filter(const Akonadi::Item& item, const QString& filterId, const QString& resourceId);
 
-    void applySpecificFilters(const Akonadi::Item::List &selectedMessages,
-                              MailCommon::SearchRule::RequiredPart requiredPart,
-                              const QStringList &listFilters,
+    void applySpecificFilters(const Akonadi::Item::List& selectedMessages,
+                              MailCommon::SearchRule::RequiredPart requiredPart, const QStringList& listFilters,
                               FilterSet set = Explicit);
 
     /**
      * Applies the filters on the given @p messages.
      */
-    void applyFilters(const Akonadi::Item::List &messages, FilterSet set = Explicit);
+    void applyFilters(const Akonadi::Item::List& messages, FilterSet set = Explicit);
 
     /**
      * Returns whether the configured filters need the full mail content.
      */
-    [[nodiscard]] MailCommon::SearchRule::RequiredPart requiredPart(const QString &id) const;
+    [[nodiscard]] MailCommon::SearchRule::RequiredPart requiredPart(const QString& id) const;
 
-    void mailCollectionRemoved(const Akonadi::Collection &collection);
-    void agentRemoved(const QString &identifier);
+    void mailCollectionRemoved(const Akonadi::Collection& collection);
+    void agentRemoved(const QString& identifier);
 
     [[nodiscard]] bool hasAllFoldersFilter() const;
 
@@ -140,10 +135,10 @@ Q_SIGNALS:
     /**
      * This signal is emitted to notify that @p item has not been moved.
      */
-    void filteringFailed(const Akonadi::Item &item);
+    void filteringFailed(const Akonadi::Item& item);
 
     void percent(int progress);
-    void progressMessage(const QString &message);
+    void progressMessage(const QString& message);
 
 private:
     //@cond PRIVATE

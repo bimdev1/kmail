@@ -11,7 +11,7 @@ class KMLaunchExternalComponent : public QObject
 {
     Q_OBJECT
 public:
-    explicit KMLaunchExternalComponent(QWidget *parentWidget, QObject *parent = nullptr);
+    explicit KMLaunchExternalComponent(QWidget* parentWidget, QObject* parent = nullptr);
     ~KMLaunchExternalComponent() override;
 
     void slotConfigureMailMerge();
@@ -29,5 +29,5 @@ public:
     void slotShowNotificationHistory();
 
 private:
-    QWidget *const mParentWidget;
+    QWidget* const mParentWidget;
 };

@@ -6,30 +6,30 @@
 
 #pragma once
 
+#include <QTreeWidgetItem>
 #include "archivemailinfo.h"
 #include "ui_archivemailwidget.h"
-#include <QTreeWidgetItem>
 
 #include <Akonadi/AgentConfigurationBase>
 
 class ArchiveMailItem : public QTreeWidgetItem
 {
 public:
-    explicit ArchiveMailItem(QTreeWidget *parent = nullptr);
+    explicit ArchiveMailItem(QTreeWidget* parent = nullptr);
     ~ArchiveMailItem() override;
 
-    void setInfo(ArchiveMailInfo *info);
-    ArchiveMailInfo *info() const;
+    void setInfo(ArchiveMailInfo* info);
+    ArchiveMailInfo* info() const;
 
 private:
-    ArchiveMailInfo *mInfo = nullptr;
+    ArchiveMailInfo* mInfo = nullptr;
 };
 
 class ArchiveMailWidget : public Akonadi::AgentConfigurationBase
 {
     Q_OBJECT
 public:
-    explicit ArchiveMailWidget(const KSharedConfigPtr &config, QWidget *parentWidget, const QVariantList &args);
+    explicit ArchiveMailWidget(const KSharedConfigPtr& config, QWidget* parentWidget, const QVariantList& args);
     ~ArchiveMailWidget() override;
 
     enum ArchiveMailColumn {
@@ -45,20 +45,20 @@ public:
     void needReloadConfig();
 
     QSize restoreDialogSize() const override;
-    void saveDialogSize(const QSize &size) override;
+    void saveDialogSize(const QSize& size) override;
 
 private:
-    void createOrUpdateItem(ArchiveMailInfo *info, ArchiveMailItem *item = nullptr);
-    [[nodiscard]] bool verifyExistingArchive(ArchiveMailInfo *info) const;
-    void updateDiffDate(ArchiveMailItem *item, ArchiveMailInfo *info);
+    void createOrUpdateItem(ArchiveMailInfo* info, ArchiveMailItem* item = nullptr);
+    [[nodiscard]] bool verifyExistingArchive(ArchiveMailInfo* info) const;
+    void updateDiffDate(ArchiveMailItem* item, ArchiveMailInfo* info);
 
     void slotDeleteItem();
     void slotModifyItem();
     void slotAddItem();
     void updateButtons();
     void slotOpenFolder();
-    void slotCustomContextMenuRequested(const QPoint &);
-    void slotItemChanged(QTreeWidgetItem *item, int);
+    void slotCustomContextMenuRequested(const QPoint&);
+    void slotItemChanged(QTreeWidgetItem* item, int);
 
     bool mChanged = false;
     Ui::ArchiveMailWidget mWidget;

@@ -5,13 +5,10 @@
 */
 
 #include "formatcomboboxtest.h"
-#include "../widgets/formatcombobox.h"
 #include <QTest>
+#include "../widgets/formatcombobox.h"
 
-FormatComboBoxTest::FormatComboBoxTest(QObject *parent)
-    : QObject(parent)
-{
-}
+FormatComboBoxTest::FormatComboBoxTest(QObject* parent) : QObject(parent) {}
 
 FormatComboBoxTest::~FormatComboBoxTest() = default;
 

@@ -12,7 +12,7 @@ class IncorrectIdentityFolderWarningTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit IncorrectIdentityFolderWarningTest(QObject *parent = nullptr);
+    explicit IncorrectIdentityFolderWarningTest(QObject* parent = nullptr);
     ~IncorrectIdentityFolderWarningTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValues();

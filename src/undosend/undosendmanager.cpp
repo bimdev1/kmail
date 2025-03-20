@@ -7,23 +7,20 @@
 #include "undosendmanager.h"
 #include "kmail_undo_send_debug.h"
 
-#include "undosendcreatejob.h"
 #include <KLocalizedString>
+#include "undosendcreatejob.h"
 
-UndoSendManager::UndoSendManager(QObject *parent)
-    : QObject(parent)
-{
-}
+UndoSendManager::UndoSendManager(QObject* parent) : QObject(parent) {}
 
 UndoSendManager::~UndoSendManager() = default;
 
-UndoSendManager *UndoSendManager::self()
+UndoSendManager* UndoSendManager::self()
 {
     static UndoSendManager s_self;
     return &s_self;
 }
 
-void UndoSendManager::addItem(const UndoSendManagerInfo &info)
+void UndoSendManager::addItem(const UndoSendManagerInfo& info)
 {
     if (info.isValid()) {
         auto job = new UndoSendCreateJob(this);

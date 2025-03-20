@@ -5,15 +5,12 @@
 */
 
 #include "incorrectidentityfolderwarningtest.h"
-#include "../incorrectidentityfolderwarning.h"
 #include <QHBoxLayout>
 #include <QTest>
+#include "../incorrectidentityfolderwarning.h"
 QTEST_MAIN(IncorrectIdentityFolderWarningTest)
 
-IncorrectIdentityFolderWarningTest::IncorrectIdentityFolderWarningTest(QObject *parent)
-    : QObject(parent)
-{
-}
+IncorrectIdentityFolderWarningTest::IncorrectIdentityFolderWarningTest(QObject* parent) : QObject(parent) {}
 
 void IncorrectIdentityFolderWarningTest::shouldHaveDefaultValues()
 {

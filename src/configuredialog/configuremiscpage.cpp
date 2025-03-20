@@ -7,12 +7,12 @@
 #include "configuremiscpage.h"
 #include <PimCommon/ConfigureImmutableWidgetUtils>
 using namespace PimCommon::ConfigureImmutableWidgetUtils;
-#include "kmkernel.h"
-#include "settings/kmailsettings.h"
 #include <MailCommon/FolderRequester>
 #include <MessageViewer/InvitationSettings>
 #include <MessageViewer/MessageViewerSettings>
 #include <MessageViewer/PrintingSettings>
+#include "kmkernel.h"
+#include "settings/kmailsettings.h"
 
 #include <KLocalizedString>
 #include <QHBoxLayout>
@@ -27,8 +27,7 @@ QString MiscPage::helpAnchor() const
     return QStringLiteral("configure-misc");
 }
 
-MiscPage::MiscPage(QObject *parent, const KPluginMetaData &data)
-    : ConfigModuleWithTabs(parent, data)
+MiscPage::MiscPage(QObject* parent, const KPluginMetaData& data) : ConfigModuleWithTabs(parent, data)
 {
     auto folderTab = new MiscPageFolderTab();
     addTab(folderTab, i18n("Folders"));
@@ -49,8 +48,7 @@ QString MiscPageFolderTab::helpAnchor() const
     return QStringLiteral("configure-misc-folders");
 }
 
-MiscPageFolderTab::MiscPageFolderTab(QWidget *parent)
-    : ConfigModuleTab(parent)
+MiscPageFolderTab::MiscPageFolderTab(QWidget* parent) : ConfigModuleTab(parent)
 {
     mMMTab.setupUi(this);
     // replace QWidget with FolderRequester. Promote to doesn't work due to the custom constructor
@@ -63,8 +61,10 @@ MiscPageFolderTab::MiscPageFolderTab(QWidget *parent)
     connect(mMMTab.mDelayedMarkTime, &QSpinBox::valueChanged, this, &MiscPageFolderTab::slotEmitChanged);
     connect(mMMTab.mDelayedMarkAsRead, &QAbstractButton::toggled, mMMTab.mDelayedMarkTime, &QWidget::setEnabled);
     connect(mMMTab.mDelayedMarkAsRead, &QAbstractButton::toggled, this, &ConfigModuleTab::slotEmitChanged);
-    connect(mOnStartupOpenFolder, &MailCommon::FolderRequester::folderChanged, this, &MiscPageFolderTab::slotEmitChanged);
-    connect(mMMTab.kcfg_StartSpecificFolderAtStartup, &QCheckBox::toggled, mOnStartupOpenFolder, &MailCommon::FolderRequester::setEnabled);
+    connect(mOnStartupOpenFolder, &MailCommon::FolderRequester::folderChanged, this,
+            &MiscPageFolderTab::slotEmitChanged);
+    connect(mMMTab.kcfg_StartSpecificFolderAtStartup, &QCheckBox::toggled, mOnStartupOpenFolder,
+            &MailCommon::FolderRequester::setEnabled);
 }
 
 void MiscPageFolderTab::doLoadFromGlobalSettings()
@@ -98,9 +98,8 @@ void MiscPageFolderTab::save()
     saveSpinBox(mMMTab.mDelayedMarkTime, MessageViewer::MessageViewerSettings::self()->delayedMarkTimeItem());
 }
 
-MiscPageInviteTab::MiscPageInviteTab(QWidget *parent)
-    : ConfigModuleTab(parent)
-    , mInvitationUi(new MessageViewer::InvitationSettings(this))
+MiscPageInviteTab::MiscPageInviteTab(QWidget* parent)
+    : ConfigModuleTab(parent), mInvitationUi(new MessageViewer::InvitationSettings(this))
 {
     auto l = new QHBoxLayout(this);
     l->setContentsMargins({});
@@ -123,9 +122,8 @@ void MiscPageInviteTab::doResetToDefaultsOther()
     mInvitationUi->doResetToDefaultsOther();
 }
 
-MiscPagePrintingTab::MiscPagePrintingTab(QWidget *parent)
-    : ConfigModuleTab(parent)
-    , mPrintingUi(new MessageViewer::PrintingSettings(this))
+MiscPagePrintingTab::MiscPagePrintingTab(QWidget* parent)
+    : ConfigModuleTab(parent), mPrintingUi(new MessageViewer::PrintingSettings(this))
 {
     auto l = new QHBoxLayout(this);
     l->setContentsMargins({});
@@ -149,14 +147,14 @@ void MiscPagePrintingTab::save()
 }
 
 #if KMAIL_WITH_KUSERFEEDBACK
-KuserFeedBackPageTab::KuserFeedBackPageTab(QWidget *parent)
-    : ConfigModuleTab(parent)
-    , mUserFeedbackWidget(new KUserFeedback::FeedbackConfigWidget(this))
+KuserFeedBackPageTab::KuserFeedBackPageTab(QWidget* parent)
+    : ConfigModuleTab(parent), mUserFeedbackWidget(new KUserFeedback::FeedbackConfigWidget(this))
 {
     auto l = new QHBoxLayout(this);
     l->setContentsMargins({});
     l->addWidget(mUserFeedbackWidget);
-    connect(mUserFeedbackWidget, &KUserFeedback::FeedbackConfigWidget::configurationChanged, this, &KuserFeedBackPageTab::slotEmitChanged);
+    connect(mUserFeedbackWidget, &KUserFeedback::FeedbackConfigWidget::configurationChanged, this,
+            &KuserFeedBackPageTab::slotEmitChanged);
 
     if (KMKernel::self()) {
         mUserFeedbackWidget->setFeedbackProvider(KMKernel::self()->userFeedbackProvider());

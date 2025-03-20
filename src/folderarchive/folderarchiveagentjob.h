@@ -15,23 +15,21 @@ class FolderArchiveAgentJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit FolderArchiveAgentJob(FolderArchiveManager *manager,
-                                   FolderArchiveAccountInfo *info,
-                                   const Akonadi::Item::List &lstItem,
-                                   QObject *parent = nullptr);
+    explicit FolderArchiveAgentJob(FolderArchiveManager* manager, FolderArchiveAccountInfo* info,
+                                   const Akonadi::Item::List& lstItem, QObject* parent = nullptr);
     ~FolderArchiveAgentJob() override;
 
     void start();
 
 private:
-    void slotFetchCollection(KJob *job);
-    void sloMoveMailsToCollection(const Akonadi::Collection &col);
-    void slotCheckFailed(const QString &message);
-    void slotCollectionIdFound(const Akonadi::Collection &col);
-    void slotMoveMessages(KMMoveCommand *);
+    void slotFetchCollection(KJob* job);
+    void sloMoveMailsToCollection(const Akonadi::Collection& col);
+    void slotCheckFailed(const QString& message);
+    void slotCollectionIdFound(const Akonadi::Collection& col);
+    void slotMoveMessages(KMMoveCommand*);
 
-    void sendError(const QString &error);
+    void sendError(const QString& error);
     const Akonadi::Item::List mListItem;
-    FolderArchiveManager *const mManager;
-    FolderArchiveAccountInfo *const mInfo;
+    FolderArchiveManager* const mManager;
+    FolderArchiveAccountInfo* const mInfo;
 };

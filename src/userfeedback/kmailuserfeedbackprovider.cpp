@@ -15,8 +15,7 @@
 #include <KUserFeedback/StartCountSource>
 #include <KUserFeedback/UsageTimeSource>
 
-KMailUserFeedbackProvider::KMailUserFeedbackProvider(QObject *parent)
-    : KUserFeedback::Provider(parent)
+KMailUserFeedbackProvider::KMailUserFeedbackProvider(QObject* parent) : KUserFeedback::Provider(parent)
 {
     setProductIdentifier(QStringLiteral("org.kde.kmail"));
     setFeedbackServer(QUrl(QStringLiteral("https://telemetry.kde.org/")));

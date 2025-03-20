@@ -14,21 +14,16 @@
 #include <KMime/Message>
 #include <QUrl>
 
-namespace KMime
-{
+namespace KMime {
 class Content;
 }
 
-namespace KMail
-{
+namespace KMail {
 class KMAIL_EXPORT Composer : public KMail::SecondaryWindow
 {
     Q_OBJECT
 protected:
-    Composer(const QString &name = QString())
-        : KMail::SecondaryWindow(name)
-    {
-    }
+    Composer(const QString& name = QString()) : KMail::SecondaryWindow(name) {}
 
 public:
     enum class TemplateContext : int8_t {
@@ -60,10 +55,10 @@ public: // mailserviceimpl
      * From MailComposerIface
      */
     virtual void send(int how) = 0;
-    virtual void addAttachmentsAndSend(const QList<QUrl> &urls, const QString &comment, int how) = 0;
-    virtual void addAttachment(const QList<AttachmentInfo> &url, bool showWarning) = 0;
-    virtual void
-    addAttachment(const QString &name, KMime::Headers::contentEncoding cte, const QString &charset, const QByteArray &data, const QByteArray &mimeType) = 0;
+    virtual void addAttachmentsAndSend(const QList<QUrl>& urls, const QString& comment, int how) = 0;
+    virtual void addAttachment(const QList<AttachmentInfo>& url, bool showWarning) = 0;
+    virtual void addAttachment(const QString& name, KMime::Headers::contentEncoding cte, const QString& charset,
+                               const QByteArray& data, const QByteArray& mimeType) = 0;
 
 public: // kmcommand
     [[nodiscard]] virtual QString dbusObjectPath() const = 0;
@@ -73,24 +68,21 @@ public: // kmkernel, kmcommands, callback
      * Set the message the composer shall work with. This discards
      * previous messages without calling applyChanges() on them before.
      */
-    virtual void setMessage(const KMime::Message::Ptr &newMsg,
-                            bool lastSignState = false,
-                            bool lastEncryptState = false,
-                            bool mayAutoSign = true,
-                            bool allowDecryption = false,
+    virtual void setMessage(const KMime::Message::Ptr& newMsg, bool lastSignState = false,
+                            bool lastEncryptState = false, bool mayAutoSign = true, bool allowDecryption = false,
                             bool isModified = false) = 0;
     virtual void setCurrentTransport(int transportId) = 0;
 
-    virtual void setFcc(const QString &idString) = 0;
+    virtual void setFcc(const QString& idString) = 0;
     /**
      * Returns @c true while the message composing is in progress.
      */
     virtual bool isComposing() const = 0;
 
-    virtual void setAutoSaveFileName(const QString &fileName) = 0;
-    virtual void setCollectionForNewMessage(const Akonadi::Collection &folder) = 0;
+    virtual void setAutoSaveFileName(const QString& fileName) = 0;
+    virtual void setCollectionForNewMessage(const Akonadi::Collection& folder) = 0;
 
-    virtual void addExtraCustomHeaders(const QMap<QByteArray, QString> &header) = 0;
+    virtual void addExtraCustomHeaders(const QMap<QByteArray, QString>& header) = 0;
 
     virtual void showAndActivateComposer() = 0;
 
@@ -99,7 +91,7 @@ public: // kmcommand
      * If this folder is set, the original message is inserted back after
      * canceling
      */
-    virtual void setFolder(const Akonadi::Collection &) = 0;
+    virtual void setFolder(const Akonadi::Collection&) = 0;
 
     /**
      * Sets the focus to the edit-widget and the cursor below the
@@ -137,15 +129,13 @@ public: // kmcommand
     /**
      * Add an attachment to the list.
      */
-    virtual void addAttach(KMime::Content *msgPart) = 0;
+    virtual void addAttach(KMime::Content* msgPart) = 0;
 };
 
-KMAIL_EXPORT Composer *makeComposer(const KMime::Message::Ptr &msg = KMime::Message::Ptr(),
-                                    bool lastSignState = false,
+KMAIL_EXPORT Composer* makeComposer(const KMime::Message::Ptr& msg = KMime::Message::Ptr(), bool lastSignState = false,
                                     bool lastEncryptState = false,
                                     Composer::TemplateContext context = Composer::TemplateContext::NoTemplate,
-                                    uint identity = 0,
-                                    const QString &textSelection = QString(),
-                                    const QString &customTemplate = QString());
-}
+                                    uint identity = 0, const QString& textSelection = QString(),
+                                    const QString& customTemplate = QString());
+} // namespace KMail
 Q_DECLARE_TYPEINFO(KMail::Composer::AttachmentInfo, Q_RELOCATABLE_TYPE);

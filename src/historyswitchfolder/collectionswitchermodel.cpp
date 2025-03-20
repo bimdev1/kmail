@@ -7,14 +7,11 @@ SPDX-License-Identifier: GPL-2.0-only
 
 #include "collectionswitchermodel.h"
 
-CollectionSwitcherModel::CollectionSwitcherModel(QObject *parent)
-    : QAbstractListModel(parent)
-{
-}
+CollectionSwitcherModel::CollectionSwitcherModel(QObject* parent) : QAbstractListModel(parent) {}
 
 CollectionSwitcherModel::~CollectionSwitcherModel() = default;
 
-int CollectionSwitcherModel::rowCount(const QModelIndex &parent) const
+int CollectionSwitcherModel::rowCount(const QModelIndex& parent) const
 {
     if (parent.isValid()) {
         return 0; // flat model
@@ -22,7 +19,7 @@ int CollectionSwitcherModel::rowCount(const QModelIndex &parent) const
     return mCollectionsInfo.count();
 }
 
-QVariant CollectionSwitcherModel::data(const QModelIndex &index, int role) const
+QVariant CollectionSwitcherModel::data(const QModelIndex& index, int role) const
 {
     if (index.row() < 0 || index.row() >= mCollectionsInfo.count()) {
         return {};
@@ -38,7 +35,7 @@ QVariant CollectionSwitcherModel::data(const QModelIndex &index, int role) const
     return {};
 }
 
-void CollectionSwitcherModel::addHistory(const Akonadi::Collection &currentCol, const QString &fullPath)
+void CollectionSwitcherModel::addHistory(const Akonadi::Collection& currentCol, const QString& fullPath)
 {
     const CollectionInfo info{currentCol, fullPath};
     if (!mCollectionsInfo.isEmpty()) {
@@ -62,7 +59,7 @@ const Akonadi::Collection CollectionSwitcherModel::collection(int index)
     return mCollectionsInfo.at(index).mNewCollection;
 }
 
-bool CollectionSwitcherModel::CollectionInfo::operator==(const CollectionInfo &other) const
+bool CollectionSwitcherModel::CollectionInfo::operator==(const CollectionInfo& other) const
 {
     return other.mNewCollection == mNewCollection && other.mFullPath == mFullPath;
 }

@@ -7,9 +7,8 @@
 #pragma once
 #include <QString>
 /** Send later utilities. */
-namespace MailMergeUtil
-{
+namespace MailMergeUtil {
 [[nodiscard]] QString mailMergePattern();
 [[nodiscard]] bool mailMergeAgentEnabled();
 void forceReparseConfiguration();
-}
+} // namespace MailMergeUtil

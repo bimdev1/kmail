@@ -5,14 +5,11 @@
 */
 
 #include "undosendcreatejobtest.h"
-#include "undosend/undosendcreatejob.h"
 #include <QTest>
+#include "undosend/undosendcreatejob.h"
 QTEST_MAIN(UndoSendCreateJobTest)
 
-UndoSendCreateJobTest::UndoSendCreateJobTest(QObject *parent)
-    : QObject(parent)
-{
-}
+UndoSendCreateJobTest::UndoSendCreateJobTest(QObject* parent) : QObject(parent) {}
 
 void UndoSendCreateJobTest::shouldHaveDefaultValues()
 {

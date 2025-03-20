@@ -6,16 +6,14 @@
 */
 
 #include "savedraftjob.h"
-#include "kmail_debug.h"
 #include <Akonadi/Item>
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/MessageFlags>
 #include <Akonadi/MessageStatus>
+#include "kmail_debug.h"
 
-SaveDraftJob::SaveDraftJob(const KMime::Message::Ptr &msg, const Akonadi::Collection &col, QObject *parent)
-    : KJob(parent)
-    , mMsg(msg)
-    , mCollection(col)
+SaveDraftJob::SaveDraftJob(const KMime::Message::Ptr& msg, const Akonadi::Collection& col, QObject* parent)
+    : KJob(parent), mMsg(msg), mCollection(col)
 {
 }
 
@@ -33,7 +31,7 @@ void SaveDraftJob::start()
     connect(createJob, &Akonadi::ItemCreateJob::result, this, &SaveDraftJob::slotStoreDone);
 }
 
-void SaveDraftJob::slotStoreDone(KJob *job)
+void SaveDraftJob::slotStoreDone(KJob* job)
 {
     if (job->error()) {
         qCDebug(KMAIL_LOG) << " job->errorString() : " << job->errorString();

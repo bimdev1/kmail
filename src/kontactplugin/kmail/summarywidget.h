@@ -13,16 +13,14 @@
 
 #include <KViewStateMaintainer>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class ChangeRecorder;
 class Collection;
 class EntityTreeModel;
 class ETMViewStateSaver;
-}
+} // namespace Akonadi
 
-namespace KontactInterface
-{
+namespace KontactInterface {
 class Plugin;
 }
 
@@ -38,28 +36,28 @@ class SummaryWidget : public KontactInterface::Summary
     Q_OBJECT
 
 public:
-    SummaryWidget(KontactInterface::Plugin *plugin, QWidget *parent);
+    SummaryWidget(KontactInterface::Plugin* plugin, QWidget* parent);
 
     [[nodiscard]] int summaryHeight() const override;
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *e) override;
+    bool eventFilter(QObject* obj, QEvent* e) override;
 
 public Q_SLOTS:
     void updateSummary(bool force) override;
 
 private:
-    void selectFolder(const QString &);
+    void selectFolder(const QString&);
     void slotCollectionChanged();
     void slotUpdateFolderList();
-    void displayModel(const QModelIndex &, int &, const bool, QStringList);
+    void displayModel(const QModelIndex&, int&, const bool, QStringList);
 
-    QList<QLabel *> mLabels;
-    QGridLayout *mLayout = nullptr;
-    KontactInterface::Plugin *const mPlugin;
-    Akonadi::ChangeRecorder *const mChangeRecorder;
-    Akonadi::EntityTreeModel *mModel = nullptr;
-    KViewStateMaintainer<Akonadi::ETMViewStateSaver> *mModelState = nullptr;
-    KCheckableProxyModel *mModelProxy = nullptr;
-    QItemSelectionModel *mSelectionModel = nullptr;
+    QList<QLabel*> mLabels;
+    QGridLayout* mLayout = nullptr;
+    KontactInterface::Plugin* const mPlugin;
+    Akonadi::ChangeRecorder* const mChangeRecorder;
+    Akonadi::EntityTreeModel* mModel = nullptr;
+    KViewStateMaintainer<Akonadi::ETMViewStateSaver>* mModelState = nullptr;
+    KCheckableProxyModel* mModelProxy = nullptr;
+    QItemSelectionModel* mSelectionModel = nullptr;
 };

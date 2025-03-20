@@ -5,9 +5,6 @@
 */
 
 #include "kmlaunchexternalcomponent.h"
-#include "kmail_debug.h"
-#include "newmailnotifierinterface.h"
-#include "util.h"
 #include <Akonadi/AgentConfigurationDialog>
 #include <Akonadi/AgentManager>
 #include <KDialogJobUiDelegate>
@@ -18,13 +15,15 @@
 #include <MailCommon/FilterManager>
 #include <PimCommon/PimUtil>
 #include <QPointer>
+#include "kmail_debug.h"
+#include "newmailnotifierinterface.h"
+#include "util.h"
 
 #include <QProcess>
 #include <QStandardPaths>
 
-KMLaunchExternalComponent::KMLaunchExternalComponent(QWidget *parentWidget, QObject *parent)
-    : QObject(parent)
-    , mParentWidget(parentWidget)
+KMLaunchExternalComponent::KMLaunchExternalComponent(QWidget* parentWidget, QObject* parent)
+    : QObject(parent), mParentWidget(parentWidget)
 {
 }
 
@@ -193,11 +192,13 @@ void KMLaunchExternalComponent::slotFilterLogViewer()
 
 void KMLaunchExternalComponent::slotShowNotificationHistory()
 {
-    const auto service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_newmailnotifier_agent"));
-    auto newMailNotifierInterface =
-        new OrgFreedesktopAkonadiNewMailNotifierInterface(service, QStringLiteral("/NewMailNotifierAgent"), QDBusConnection::sessionBus(), this);
+    const auto service = Akonadi::ServerManager::self()->agentServiceName(
+        Akonadi::ServerManager::Agent, QStringLiteral("akonadi_newmailnotifier_agent"));
+    auto newMailNotifierInterface = new OrgFreedesktopAkonadiNewMailNotifierInterface(
+        service, QStringLiteral("/NewMailNotifierAgent"), QDBusConnection::sessionBus(), this);
     if (!newMailNotifierInterface->isValid()) {
-        qCDebug(KMAIL_LOG) << " org.freedesktop.Akonadi.NewMailNotifierAgent not found. Please verify your installation";
+        qCDebug(KMAIL_LOG)
+            << " org.freedesktop.Akonadi.NewMailNotifierAgent not found. Please verify your installation";
     } else {
         newMailNotifierInterface->showNotNotificationHistoryDialog(0); // TODO fix me windid
     }

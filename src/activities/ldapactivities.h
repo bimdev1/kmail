@@ -12,13 +12,13 @@ class LdapActivities : public KLDAPCore::LdapActivitiesAbstract
 {
     Q_OBJECT
 public:
-    explicit LdapActivities(ActivitiesManager *manager);
+    explicit LdapActivities(ActivitiesManager* manager);
     ~LdapActivities() override;
 
-    [[nodiscard]] bool filterAcceptsRow(const QStringList &activities) const override;
+    [[nodiscard]] bool filterAcceptsRow(const QStringList& activities) const override;
     [[nodiscard]] bool hasActivitySupport() const override;
     [[nodiscard]] QString currentActivity() const override;
 
 private:
-    ActivitiesManager *const mActivitiesManager;
+    ActivitiesManager* const mActivitiesManager;
 };

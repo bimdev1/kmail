@@ -28,20 +28,19 @@
 
 using namespace MailCommon;
 
-using namespace Qt::Literals::StringLiterals;
-CollectionViewPage::CollectionViewPage(QWidget *parent)
-    : CollectionPropertiesPage(parent)
+CollectionViewPage::CollectionViewPage(QWidget* parent) : CollectionPropertiesPage(parent)
 {
-    setObjectName("KMail::CollectionViewPage"_L1);
+    setObjectName(QLatin1String("KMail::CollectionViewPage"));
     setPageTitle(i18nc("@title:tab View settings for a folder.", "View"));
 }
 
 CollectionViewPage::~CollectionViewPage() = default;
 
-void CollectionViewPage::init(const Akonadi::Collection &col)
+void CollectionViewPage::init(const Akonadi::Collection& col)
 {
     mFolderCollection = FolderSettings::forCollection(col);
-    mIsLocalSystemFolder = CommonKernel->isSystemFolderCollection(col) || mFolderCollection->isStructural() || Kernel::folderIsInbox(col);
+    mIsLocalSystemFolder =
+        CommonKernel->isSystemFolderCollection(col) || mFolderCollection->isStructural() || Kernel::folderIsInbox(col);
 
     auto topLayout = new QVBoxLayout(this);
 
@@ -50,7 +49,7 @@ void CollectionViewPage::init(const Akonadi::Collection &col)
 
     // Mustn't be able to edit details for non-resource, system folder.
     if (!mIsLocalSystemFolder) {
-        auto innerLayout = qobject_cast<QFormLayout *>(mCollectionViewWidget->layout());
+        auto innerLayout = qobject_cast<QFormLayout*>(mCollectionViewWidget->layout());
         Q_ASSERT(innerLayout != nullptr);
 
         // icons
@@ -101,12 +100,12 @@ void CollectionViewPage::init(const Akonadi::Collection &col)
     topLayout->addStretch(100);
 }
 
-void CollectionViewPage::slotChangeIcon(const QString &icon)
+void CollectionViewPage::slotChangeIcon(const QString& icon)
 {
     mUnreadIconButton->setIcon(icon);
 }
 
-void CollectionViewPage::load(const Akonadi::Collection &col)
+void CollectionViewPage::load(const Akonadi::Collection& col)
 {
     init(col);
     if (!mIsLocalSystemFolder) {
@@ -135,12 +134,14 @@ void CollectionViewPage::load(const Akonadi::Collection &col)
     mCollectionViewWidget->load(col);
 }
 
-void CollectionViewPage::save(Akonadi::Collection &col)
+void CollectionViewPage::save(Akonadi::Collection& col)
 {
     if (!mIsLocalSystemFolder) {
         if (mIconsCheckBox->isChecked()) {
-            col.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)->setIconName(mNormalIconButton->icon());
-            col.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)->setActiveIconName(mUnreadIconButton->icon());
+            col.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)
+                ->setIconName(mNormalIconButton->icon());
+            col.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)
+                ->setActiveIconName(mUnreadIconButton->icon());
         } else if (col.hasAttribute<Akonadi::EntityDisplayAttribute>()) {
             col.attribute<Akonadi::EntityDisplayAttribute>()->setIconName(QString());
             col.attribute<Akonadi::EntityDisplayAttribute>()->setActiveIconName(QString());

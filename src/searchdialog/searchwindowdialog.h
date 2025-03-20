@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "ui_searchwindow.h"
 #include <MailCommon/SearchPattern>
+#include "ui_searchwindow.h"
 
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
@@ -26,23 +26,19 @@ class KJob;
 class KMMainWidget;
 class KMSearchMessageModel;
 
-namespace PimCommon
-{
+namespace PimCommon {
 class SelectMultiCollectionDialog;
 }
 
-namespace Akonadi
-{
+namespace Akonadi {
 class StandardMailActionManager;
 }
 
-namespace KMime
-{
+namespace KMime {
 class Message;
 }
 
-namespace KMail
-{
+namespace KMail {
 /**
  * The SearchWindow class provides a dialog for triggering a search on
  * folders and storing that search as a search folder. It shows the search
@@ -62,7 +58,7 @@ public:
      * @param collection The folder which will be pre-selected as the base folder
      *                   of search operations.
      */
-    explicit SearchWindowDialog(KMMainWidget *parent, const Akonadi::Collection &collection = Akonadi::Collection());
+    explicit SearchWindowDialog(KMMainWidget* parent, const Akonadi::Collection& collection = Akonadi::Collection());
 
     /**
      * Destroys the search window.
@@ -74,7 +70,7 @@ public:
      *
      * @param folder The folder to use as the new base for searches.
      */
-    void activateFolder(const Akonadi::Collection &folder);
+    void activateFolder(const Akonadi::Collection& folder);
 
     /**
      * Provides access to the list of currently selected message in the listview.
@@ -93,29 +89,29 @@ public:
     /**
      * Loads a search pattern into the search window, appending its rules to the current one.
      */
-    void addRulesToSearchPattern(const MailCommon::SearchPattern &pattern);
+    void addRulesToSearchPattern(const MailCommon::SearchPattern& pattern);
 
 protected:
     /** Reimplemented to react to Escape. */
-    void keyPressEvent(QKeyEvent *) override;
+    void keyPressEvent(QKeyEvent*) override;
 
     /** Reimplemented to stop searching when the window is closed */
-    void closeEvent(QCloseEvent *) override;
+    void closeEvent(QCloseEvent*) override;
 
     void createSearchModel();
 
 private:
-    void updateCollectionStatistic(Akonadi::Collection::Id, const Akonadi::CollectionStatistics &);
+    void updateCollectionStatistic(Akonadi::Collection::Id, const Akonadi::CollectionStatistics&);
 
     void slotClose();
     void slotSearch();
     void slotStop();
-    void scheduleRename(const QString &);
+    void scheduleRename(const QString&);
     void renameSearchFolder();
     void openSearchFolder();
     void slotViewSelectedMsg();
-    void slotViewMsg(const Akonadi::Item &);
-    void slotCurrentChanged(const Akonadi::Item &);
+    void slotViewMsg(const Akonadi::Item&);
+    void slotCurrentChanged(const Akonadi::Item&);
     void updateContextMenuActions();
     void slotFolderActivated();
     void slotClearSelection();
@@ -129,24 +125,24 @@ private:
     void slotPrintMsg();
 
     /** GUI cleanup after search */
-    void slotCollectionStatisticsRetrieved(KJob *job);
-    void searchDone(KJob *);
+    void slotCollectionStatisticsRetrieved(KJob* job);
+    void searchDone(KJob*);
     void enableGUI();
 
     void setEnabledSearchButton(bool);
-    void slotSearchFolderRenameDone(KJob *);
+    void slotSearchFolderRenameDone(KJob*);
 
-    void slotContextMenuRequested(const QPoint &);
+    void slotContextMenuRequested(const QPoint&);
     void slotSelectMultipleFolders();
 
-    void slotSearchCollectionsFetched(KJob *job);
+    void slotSearchCollectionsFetched(KJob* job);
 
     void slotJumpToFolder();
 
 private:
     void doSearch();
-    QList<qint64> checkIncompleteIndex(const Akonadi::Collection::List &searchCols, bool recursive);
-    Akonadi::Collection::List searchCollectionsRecursive(const Akonadi::Collection::List &cols) const;
+    QList<qint64> checkIncompleteIndex(const Akonadi::Collection::List& searchCols, bool recursive);
+    Akonadi::Collection::List searchCollectionsRecursive(const Akonadi::Collection::List& cols) const;
     QPointer<PimCommon::SelectMultiCollectionDialog> mSelectMultiCollectionDialog;
     QList<Akonadi::Collection> mCollectionId;
     Akonadi::SearchQuery mQuery;
@@ -161,27 +157,27 @@ private:
     bool mCloseRequested = false;
     int mSortColumn = 0;
 
-    KJob *mSearchJob = nullptr;
-    KMSearchMessageModel *mResultModel = nullptr;
-    QPushButton *const mSearchButton;
+    KJob* mSearchJob = nullptr;
+    KMSearchMessageModel* mResultModel = nullptr;
+    QPushButton* const mSearchButton;
 
-    QAction *mReplyAction = nullptr;
-    QAction *mReplyAllAction = nullptr;
-    QAction *mReplyListAction = nullptr;
-    QAction *mSaveAsAction = nullptr;
-    QAction *mForwardInlineAction = nullptr;
-    QAction *mForwardAttachedAction = nullptr;
-    QAction *mPrintAction = nullptr;
-    QAction *mClearAction = nullptr;
-    QAction *mSaveAtchAction = nullptr;
-    QAction *mJumpToFolderAction = nullptr;
-    KActionMenu *mForwardActionMenu = nullptr;
+    QAction* mReplyAction = nullptr;
+    QAction* mReplyAllAction = nullptr;
+    QAction* mReplyListAction = nullptr;
+    QAction* mSaveAsAction = nullptr;
+    QAction* mForwardInlineAction = nullptr;
+    QAction* mForwardAttachedAction = nullptr;
+    QAction* mPrintAction = nullptr;
+    QAction* mClearAction = nullptr;
+    QAction* mSaveAtchAction = nullptr;
+    QAction* mJumpToFolderAction = nullptr;
+    KActionMenu* mForwardActionMenu = nullptr;
     QTimer mRenameTimer;
     QByteArray mHeaderState;
     // not owned by us
-    KMMainWidget *const mKMMainWidget;
-    SearchPatternWarning *mSearchPatternWidget = nullptr;
+    KMMainWidget* const mKMMainWidget;
+    SearchPatternWarning* mSearchPatternWidget = nullptr;
 
-    Akonadi::StandardMailActionManager *mAkonadiStandardAction = nullptr;
+    Akonadi::StandardMailActionManager* mAkonadiStandardAction = nullptr;
 };
-}
+} // namespace KMail

@@ -18,7 +18,7 @@
 class QCheckBox;
 class QPushButton;
 
-template<typename T>
+template <typename T>
 class QSharedPointer;
 
 class QComboBox;
@@ -31,17 +31,17 @@ class CollectionMailingListPage : public Akonadi::CollectionPropertiesPage
 {
     Q_OBJECT
 public:
-    explicit CollectionMailingListPage(QWidget *parent = nullptr);
+    explicit CollectionMailingListPage(QWidget* parent = nullptr);
     ~CollectionMailingListPage() override;
 
-    void load(const Akonadi::Collection &col) override;
-    void save(Akonadi::Collection &col) override;
+    void load(const Akonadi::Collection& col) override;
+    void save(Akonadi::Collection& col) override;
 
-    [[nodiscard]] bool canHandle(const Akonadi::Collection &col) const override;
+    [[nodiscard]] bool canHandle(const Akonadi::Collection& col) const override;
 
 private:
-    void slotFetchDone(KJob *job);
-    void init(const Akonadi::Collection &);
+    void slotFetchDone(KJob* job);
+    void init(const Akonadi::Collection&);
     /*
      * Detects mailing-list related stuff
      */
@@ -58,13 +58,13 @@ private:
     QSharedPointer<MailCommon::FolderSettings> mFolder;
 
     MailingList mMailingList;
-    QCheckBox *mHoldsMailingList = nullptr;
-    QComboBox *mMLHandlerCombo = nullptr;
-    QPushButton *mDetectButton = nullptr;
-    QComboBox *mAddressCombo = nullptr;
-    KEditListWidget *mEditList = nullptr;
-    KSqueezedTextLabel *mMLId = nullptr;
-    QPushButton *mHandleButton = nullptr;
+    QCheckBox* mHoldsMailingList = nullptr;
+    QComboBox* mMLHandlerCombo = nullptr;
+    QPushButton* mDetectButton = nullptr;
+    QComboBox* mAddressCombo = nullptr;
+    KEditListWidget* mEditList = nullptr;
+    KSqueezedTextLabel* mMLId = nullptr;
+    QPushButton* mHandleButton = nullptr;
     int mLastItem = 0;
     bool changed = false;
 };

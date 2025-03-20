@@ -53,6 +53,8 @@ sudo dnf install -y akonadi-devel
 - Modified CMakeLists.txt to use KF5 exclusively
 - Removed KF6 dependencies
 - Updated version requirements
+- Created helper scripts in the tools directory for converting KF6 references to KF5
+- Replaced Qt::Literals::StringLiterals with QLatin1String throughout the codebase
 
 ### 2. Akonadi Search Dependency
 **Problem**: Required Akonadi Search package not available
@@ -68,6 +70,21 @@ option(FORCE_DISABLE_AKONADI_SEARCH "Disable features and API that require akona
 **Solution**:
 - Made it an optional dependency
 - Added graceful fallback when not available
+
+### 4. Missing Configuration Headers
+**Problem**: Missing configuration headers like config-kmail.h and kmail-version.h
+**Solution**:
+- Added proper CMake configuration for header generation
+- Created standard templates for these headers
+- Made sure headers are properly included in the build system
+
+### 5. Qt5/Qt6 String Compatibility
+**Problem**: Qt6 string literals (_L1) not compatible with Qt5
+**Solution**:
+- Replaced all occurrences of _L1 with QLatin1String
+- Removed usage of Qt::Literals::StringLiterals namespace
+- Updated signal/slot connections to use Qt5 syntax
+- Converted DBus adaptor generation to use qt5_add_dbus_adaptor
 
 ## Architecture Design
 
@@ -163,16 +180,29 @@ Email → AIMainWidgetExtension → LocalAIService → DeepSeek API
 ## Contributing
 
 ### Development Workflow
-1. Create feature branch
-2. Implement changes
-3. Add unit tests
-4. Update documentation
-5. Submit pull request
+1. Create feature branch from the main branch
+2. Implement changes following KDE coding style
+3. Format your code using the provided formatting tools:
+   ```bash
+   # Run from project root
+   cmake --build build --target format-fix
+   ```
+4. Add unit tests for new functionality
+5. Update documentation for API changes
+6. Submit pull request with a clear description of changes
 
 ### Code Style
 - Follow KDE coding style
-- Use consistent naming
-- Add comprehensive comments
+- Use consistent naming conventions
+- Format code with clang-format using the project's style file
+- Add comprehensive comments for complex logic
+- Respect existing architectural patterns
+
+### Commit Messages
+- Use clear, descriptive commit messages
+- Follow the format: `[component]: Brief description`
+- Include detailed explanation in the commit body when needed
+- Reference issues/tickets when applicable
 
 ## Troubleshooting
 
@@ -182,16 +212,19 @@ Email → AIMainWidgetExtension → LocalAIService → DeepSeek API
    - Check KDE Framework versions
    - Verify Qt dependencies
    - Review CMake output
+   - Ensure all symlinks to generated header files are correct
 
 2. **Runtime Errors**
    - Check API connectivity
    - Verify cache permissions
    - Review log files
+   - Check for Qt5/Qt6 compatibility issues in plugins
 
 ### Debug Tips
 1. Enable debug logging
 2. Use Qt Creator for debugging
 3. Monitor API responses
+4. Use the compile_commands.json file with clangd for better IDE integration
 
 ## Resources
 
@@ -205,6 +238,7 @@ Email → AIMainWidgetExtension → LocalAIService → DeepSeek API
 - Qt Creator
 - KDevelop
 - Git
+- clang-format 19+
 
 ## Version Control
 

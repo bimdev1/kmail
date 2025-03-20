@@ -20,25 +20,21 @@ public:
 
     struct CollectionInfo {
         CollectionInfo() = default;
-        CollectionInfo(const Akonadi::Collection &col, const QString &path)
-            : mNewCollection(col)
-            , mFullPath(path)
-        {
-        }
+        CollectionInfo(const Akonadi::Collection& col, const QString& path) : mNewCollection(col), mFullPath(path) {}
 
-        [[nodiscard]] bool operator==(const CollectionInfo &other) const;
+        [[nodiscard]] bool operator==(const CollectionInfo& other) const;
 
         Akonadi::Collection mNewCollection;
         QString mFullPath;
     };
 
-    explicit CollectionSwitcherModel(QObject *parent = nullptr);
+    explicit CollectionSwitcherModel(QObject* parent = nullptr);
     ~CollectionSwitcherModel() override;
 
-    [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
+    [[nodiscard]] int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
-    void addHistory(const Akonadi::Collection &currentCol, const QString &fullPath = {});
+    void addHistory(const Akonadi::Collection& currentCol, const QString& fullPath = {});
 
     [[nodiscard]] const Akonadi::Collection collection(int index);
 

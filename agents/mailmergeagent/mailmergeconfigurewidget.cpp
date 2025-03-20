@@ -7,9 +7,8 @@
 #include "mailmergeconfigurewidget.h"
 #include "ui_mailmergeconfigurewidget.h"
 
-MailMergeConfigureWidget::MailMergeConfigureWidget(QWidget *parent)
-    : QWidget(parent)
-    , mWidget(new Ui::MailMergeConfigureWidget)
+MailMergeConfigureWidget::MailMergeConfigureWidget(QWidget* parent)
+    : QWidget(parent), mWidget(new Ui::MailMergeConfigureWidget)
 {
     mWidget->setupUi(this);
 }

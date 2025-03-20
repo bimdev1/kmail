@@ -13,7 +13,7 @@ class ConfigurePluginsListWidget : public PimCommon::ConfigurePluginsListWidget
 {
     Q_OBJECT
 public:
-    explicit ConfigurePluginsListWidget(QWidget *parent = nullptr);
+    explicit ConfigurePluginsListWidget(QWidget* parent = nullptr);
     ~ConfigurePluginsListWidget() override;
 
     void save() override;
@@ -23,23 +23,23 @@ public:
     void defaults() override;
 
 private:
-    void slotConfigureClicked(const QString &configureGroupName, const QString &identifier);
+    void slotConfigureClicked(const QString& configureGroupName, const QString& identifier);
     void initializeAgentPlugins();
-    [[nodiscard]] PimCommon::PluginUtilData createAgentPluginData(const QString &agentIdentifier, const QString &path);
-    [[nodiscard]] bool agentActivateState(const QString &agentIdentifier, const QString &pathName);
-    void changeAgentActiveState(const QString &agentIdentifier, const QString &path, bool enable);
+    [[nodiscard]] PimCommon::PluginUtilData createAgentPluginData(const QString& agentIdentifier, const QString& path);
+    [[nodiscard]] bool agentActivateState(const QString& agentIdentifier, const QString& pathName);
+    void changeAgentActiveState(const QString& agentIdentifier, const QString& path, bool enable);
     void saveAkonadiAgent();
-    QList<PluginItem *> mPluginEditorItems;
-    QList<PluginItem *> mPluginMessageViewerItems;
-    QList<PluginItem *> mPluginCheckBeforeSendItems;
-    QList<PluginItem *> mPluginEditorInitItems;
-    QList<PluginItem *> mPluginEditorGrammarItems;
-    QList<PluginItem *> mPluginGenericItems;
-    QList<PluginItem *> mPluginWebEngineItems;
-    QList<PluginItem *> mPluginHeaderStyleItems;
-    QList<PluginItem *> mAgentPluginsItems;
-    QList<PluginItem *> mPluginConvertTextItems;
-    QList<PluginItem *> mPluginConfigureItems;
-    QList<PluginItem *> mPluginCheckBeforeDeletingItems;
+    QList<PluginItem*> mPluginEditorItems;
+    QList<PluginItem*> mPluginMessageViewerItems;
+    QList<PluginItem*> mPluginCheckBeforeSendItems;
+    QList<PluginItem*> mPluginEditorInitItems;
+    QList<PluginItem*> mPluginEditorGrammarItems;
+    QList<PluginItem*> mPluginGenericItems;
+    QList<PluginItem*> mPluginWebEngineItems;
+    QList<PluginItem*> mPluginHeaderStyleItems;
+    QList<PluginItem*> mAgentPluginsItems;
+    QList<PluginItem*> mPluginConvertTextItems;
+    QList<PluginItem*> mPluginConfigureItems;
+    QList<PluginItem*> mPluginCheckBeforeDeletingItems;
     QList<PimCommon::PluginUtilData> mPluginUtilDataList;
 };

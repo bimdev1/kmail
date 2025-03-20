@@ -7,25 +7,24 @@
 
 #include <Akonadi/Collection>
 #include <QDialog>
-namespace MailCommon
-{
+namespace MailCommon {
 class CollectionExpiryWidget;
 }
 class IdentityExpireSpamFolderDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit IdentityExpireSpamFolderDialog(QWidget *parent = nullptr);
+    explicit IdentityExpireSpamFolderDialog(QWidget* parent = nullptr);
     ~IdentityExpireSpamFolderDialog() override;
 
-    void load(const Akonadi::Collection &collection);
+    void load(const Akonadi::Collection& collection);
 
 private:
     void slotSaveAndExpire();
     void slotChanged();
     void slotConfigChanged(bool changed);
-    void saveAndExpire(Akonadi::Collection &collection, bool saveSettings, bool expireNow);
-    MailCommon::CollectionExpiryWidget *const mCollectionExpiryWidget;
+    void saveAndExpire(Akonadi::Collection& collection, bool saveSettings, bool expireNow);
+    MailCommon::CollectionExpiryWidget* const mCollectionExpiryWidget;
     Akonadi::Collection mCollection;
     bool mChanged = false;
 };

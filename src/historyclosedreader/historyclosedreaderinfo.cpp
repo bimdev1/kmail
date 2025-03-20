@@ -14,7 +14,7 @@ QString HistoryClosedReaderInfo::subject() const
     return mSubject;
 }
 
-void HistoryClosedReaderInfo::setSubject(const QString &newSubject)
+void HistoryClosedReaderInfo::setSubject(const QString& newSubject)
 {
     mSubject = newSubject;
 }
@@ -34,12 +34,12 @@ bool HistoryClosedReaderInfo::isValid() const
     return mItem != -1;
 }
 
-bool HistoryClosedReaderInfo::operator==(const HistoryClosedReaderInfo &other) const
+bool HistoryClosedReaderInfo::operator==(const HistoryClosedReaderInfo& other) const
 {
     return other.item() == mItem && other.subject() == mSubject;
 }
 
-QDebug operator<<(QDebug d, const HistoryClosedReaderInfo &t)
+QDebug operator<<(QDebug d, const HistoryClosedReaderInfo& t)
 {
     d << " mSubject " << t.subject();
     d << " mItem " << t.item();

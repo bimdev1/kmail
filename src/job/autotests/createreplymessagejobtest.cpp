@@ -5,14 +5,11 @@
 */
 
 #include "createreplymessagejobtest.h"
-#include "job/createreplymessagejob.h"
 #include <QTest>
+#include "job/createreplymessagejob.h"
 QTEST_MAIN(CreateReplyMessageJobTest)
 
-CreateReplyMessageJobTest::CreateReplyMessageJobTest(QObject *parent)
-    : QObject(parent)
-{
-}
+CreateReplyMessageJobTest::CreateReplyMessageJobTest(QObject* parent) : QObject(parent) {}
 
 void CreateReplyMessageJobTest::shouldHaveDefaultValue()
 {

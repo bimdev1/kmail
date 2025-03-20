@@ -8,7 +8,7 @@
 
 FolderArchiveAccountInfo::FolderArchiveAccountInfo() = default;
 
-FolderArchiveAccountInfo::FolderArchiveAccountInfo(const KConfigGroup &config)
+FolderArchiveAccountInfo::FolderArchiveAccountInfo(const KConfigGroup& config)
 {
     readConfig(config);
 }
@@ -45,7 +45,7 @@ QString FolderArchiveAccountInfo::instanceName() const
     return mInstanceName;
 }
 
-void FolderArchiveAccountInfo::setInstanceName(const QString &instance)
+void FolderArchiveAccountInfo::setInstanceName(const QString& instance)
 {
     mInstanceName = instance;
 }
@@ -70,17 +70,18 @@ bool FolderArchiveAccountInfo::keepExistingStructure() const
     return mKeepExistingStructure;
 }
 
-void FolderArchiveAccountInfo::readConfig(const KConfigGroup &config)
+void FolderArchiveAccountInfo::readConfig(const KConfigGroup& config)
 {
     mInstanceName = config.readEntry(QStringLiteral("instanceName"));
     mArchiveTopLevelCollectionId = config.readEntry(QStringLiteral("topLevelCollectionId"), -1);
-    mArchiveType = static_cast<FolderArchiveType>(config.readEntry("folderArchiveType", (int)FolderArchiveAccountInfo::FolderArchiveType::UniqueFolder));
+    mArchiveType = static_cast<FolderArchiveType>(
+        config.readEntry("folderArchiveType", (int)FolderArchiveAccountInfo::FolderArchiveType::UniqueFolder));
     mEnabled = config.readEntry("enabled", false);
     mKeepExistingStructure = config.readEntry("keepExistingStructure", false);
     mUseDateFromMessage = config.readEntry("useDateFromMessage", false);
 }
 
-void FolderArchiveAccountInfo::writeConfig(KConfigGroup &config)
+void FolderArchiveAccountInfo::writeConfig(KConfigGroup& config)
 {
     config.writeEntry(QStringLiteral("instanceName"), mInstanceName);
     if (mArchiveTopLevelCollectionId > -1) {
@@ -95,10 +96,12 @@ void FolderArchiveAccountInfo::writeConfig(KConfigGroup &config)
     config.writeEntry("useDateFromMessage", mUseDateFromMessage);
 }
 
-bool FolderArchiveAccountInfo::operator==(const FolderArchiveAccountInfo &other) const
+bool FolderArchiveAccountInfo::operator==(const FolderArchiveAccountInfo& other) const
 {
-    return (mInstanceName == other.instanceName()) && (mArchiveTopLevelCollectionId == other.archiveTopLevel()) && (mArchiveType == other.folderArchiveType())
-        && (mEnabled == other.enabled()) && (mKeepExistingStructure == other.keepExistingStructure()) && (mUseDateFromMessage == other.useDateFromMessage());
+    return (mInstanceName == other.instanceName()) && (mArchiveTopLevelCollectionId == other.archiveTopLevel()) &&
+           (mArchiveType == other.folderArchiveType()) && (mEnabled == other.enabled()) &&
+           (mKeepExistingStructure == other.keepExistingStructure()) &&
+           (mUseDateFromMessage == other.useDateFromMessage());
 }
 
 bool FolderArchiveAccountInfo::useDateFromMessage() const

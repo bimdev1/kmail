@@ -6,16 +6,16 @@
 
 #pragma once
 
-#include "mailfilteragentinterface.h"
 #include <QWidget>
+#include "mailfilteragentinterface.h"
 
 class MailAgentDbusWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MailAgentDbusWidget(QWidget *parent = nullptr);
+    explicit MailAgentDbusWidget(QWidget* parent = nullptr);
     ~MailAgentDbusWidget() override;
 
 private:
-    OrgFreedesktopAkonadiMailFilterAgentInterface *mMailFilterAgentInterface = nullptr;
+    OrgFreedesktopAkonadiMailFilterAgentInterface* mMailFilterAgentInterface = nullptr;
 };

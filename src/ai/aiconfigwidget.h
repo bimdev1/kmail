@@ -19,7 +19,7 @@ class AIConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit AIConfigWidget(QWidget *parent = nullptr);
+    explicit AIConfigWidget(QWidget* parent = nullptr);
     ~AIConfigWidget() override = default;
 
     void loadSettings();
@@ -27,7 +27,7 @@ public:
 
 Q_SIGNALS:
     void configChanged();
-    void testConnectionFinished(bool success, const QString &message);
+    void testConnectionFinished(bool success, const QString& message);
 
 private Q_SLOTS:
     void slotTestConnection();
@@ -38,9 +38,9 @@ private:
     void setupUi();
     void createConnections();
 
-    QLineEdit *m_apiKeyEdit;
-    QPushButton *m_testButton;
-    QLabel *m_statusLabel;
+    QLineEdit* m_apiKeyEdit;
+    QPushButton* m_testButton;
+    QLabel* m_statusLabel;
     bool m_isValidating;
 };
 

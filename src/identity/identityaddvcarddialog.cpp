@@ -19,16 +19,14 @@
 #include <QVBoxLayout>
 using namespace Qt::Literals::StringLiterals;
 
-IdentityAddVcardDialog::IdentityAddVcardDialog(const QStringList &shadowIdentities, QWidget *parent)
-    : QDialog(parent)
-    , mButtonGroup(new QButtonGroup(this))
-    , mComboBox(new QComboBox(this))
-    , mVCardPath(new KUrlRequester(this))
+IdentityAddVcardDialog::IdentityAddVcardDialog(const QStringList& shadowIdentities, QWidget* parent)
+    : QDialog(parent), mButtonGroup(new QButtonGroup(this)), mComboBox(new QComboBox(this)),
+      mVCardPath(new KUrlRequester(this))
 {
     setWindowTitle(i18nc("@title:window", "Create own vCard"));
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     auto mainLayout = new QVBoxLayout(this);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &IdentityAddVcardDialog::accept);

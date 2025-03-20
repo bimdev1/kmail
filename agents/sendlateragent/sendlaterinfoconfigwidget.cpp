@@ -19,22 +19,19 @@
 #include <QIcon>
 #include <QWindow>
 using namespace Qt::Literals::StringLiterals;
-namespace
-{
+namespace {
 static const char myConfigureSendLaterConfigureDialogGroupName[] = "SendLaterConfigureDialog";
 }
 
-SendLaterInfoConfigWidget::SendLaterInfoConfigWidget(const KSharedConfigPtr &config, QWidget *parent, const QVariantList &args)
-    : Akonadi::AgentConfigurationBase(config, parent, args)
-    , mWidget(new SendLaterWidget(parent))
+SendLaterInfoConfigWidget::SendLaterInfoConfigWidget(const KSharedConfigPtr& config, QWidget* parent,
+                                                     const QVariantList& args)
+    : Akonadi::AgentConfigurationBase(config, parent, args), mWidget(new SendLaterWidget(parent))
 {
     parent->layout()->addWidget(mWidget);
-    KAboutData aboutData = KAboutData(QStringLiteral("sendlateragent"),
-                                      i18n("Send Later Agent"),
-                                      QStringLiteral(KDEPIM_VERSION),
-                                      i18n("Send emails later agent."),
-                                      KAboutLicense::GPL_V2,
-                                      i18n("Copyright (C) 2013-%1 Laurent Montel", QStringLiteral("2025")));
+    KAboutData aboutData =
+        KAboutData(QStringLiteral("sendlateragent"), i18n("Send Later Agent"), QStringLiteral(KDEPIM_VERSION),
+                   i18n("Send emails later agent."), KAboutLicense::GPL_V2,
+                   i18n("Copyright (C) 2013-%1 Laurent Montel", QStringLiteral("2025")));
 
     aboutData.addAuthor(i18nc("@info:credit", "Laurent Montel"), i18n("Maintainer"), QStringLiteral("montel@kde.org"));
 
@@ -81,7 +78,7 @@ QSize SendLaterInfoConfigWidget::restoreDialogSize() const
     return size;
 }
 
-void SendLaterInfoConfigWidget::saveDialogSize(const QSize &size)
+void SendLaterInfoConfigWidget::saveDialogSize(const QSize& size)
 {
     auto group = config()->group(QLatin1StringView(myConfigureSendLaterConfigureDialogGroupName));
     group.writeEntry("Size", size);

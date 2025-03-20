@@ -24,7 +24,7 @@ public:
      * @param parentWidget The widget that will be used as parent for dialog.
      * @param parent The parent object
      */
-    explicit CreateNewContactJob(QWidget *parentWidget, QObject *parent = nullptr);
+    explicit CreateNewContactJob(QWidget* parentWidget, QObject* parent = nullptr);
 
     /**
      * Destroys the new contact job
@@ -37,12 +37,12 @@ public:
     void start() override;
 
 private:
-    void slotCollectionsFetched(KJob *);
-    void slotResourceCreationDone(KJob *job);
-    void slotContactEditorError(const QString &error);
-    void contactStored(const Akonadi::Item &item);
+    void slotCollectionsFetched(KJob*);
+    void slotResourceCreationDone(KJob* job);
+    void slotContactEditorError(const QString& error);
+    void contactStored(const Akonadi::Item& item);
 
     void createContact();
 
-    QWidget *const mParentWidget;
+    QWidget* const mParentWidget;
 };

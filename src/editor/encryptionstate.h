@@ -4,8 +4,8 @@
 */
 
 #pragma once
-#include "kmail_private_export.h"
 #include <QObject>
+#include "kmail_private_export.h"
 
 /**
  * @todo write docs

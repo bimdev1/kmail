@@ -4,13 +4,13 @@
    SPDX-License-Identifier: GPL-2.0-or-later
 */
 #pragma once
-#include "kmail_private_export.h"
 #include <KMessageWidget>
+#include "kmail_private_export.h"
 
 class KMAILTESTS_TESTS_EXPORT TooManyRecipientsWarning : public KMessageWidget
 {
     Q_OBJECT
 public:
-    explicit TooManyRecipientsWarning(QWidget *parent = nullptr);
+    explicit TooManyRecipientsWarning(QWidget* parent = nullptr);
     ~TooManyRecipientsWarning() override;
 };

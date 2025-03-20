@@ -8,23 +8,22 @@
 
 #include "collectionquotapage.h"
 
-#include "collectionquotawidget.h"
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionQuotaAttribute>
+#include "collectionquotawidget.h"
 
 #include <KLocalizedString>
 #include <QVBoxLayout>
-using namespace Qt::Literals::StringLiterals;
-CollectionQuotaPage::CollectionQuotaPage(QWidget *parent)
-    : CollectionPropertiesPage(parent)
-    , mQuotaWidget(new CollectionQuotaWidget(this))
+
+CollectionQuotaPage::CollectionQuotaPage(QWidget* parent)
+    : CollectionPropertiesPage(parent), mQuotaWidget(new CollectionQuotaWidget(this))
 {
-    setObjectName("KMail::CollectionQuotaPage"_L1);
+    setObjectName(QLatin1String("KMail::CollectionQuotaPage"));
     setPageTitle(i18nc("@title:tab Quota page.", "Quota"));
     init();
 }
 
-bool CollectionQuotaPage::canHandle(const Akonadi::Collection &collection) const
+bool CollectionQuotaPage::canHandle(const Akonadi::Collection& collection) const
 {
     const bool hasQuotaAttribute = collection.hasAttribute<Akonadi::CollectionQuotaAttribute>();
     if (hasQuotaAttribute) {
@@ -41,7 +40,7 @@ void CollectionQuotaPage::init()
     topLayout->addWidget(mQuotaWidget);
 }
 
-void CollectionQuotaPage::load(const Akonadi::Collection &col)
+void CollectionQuotaPage::load(const Akonadi::Collection& col)
 {
     if (col.hasAttribute<Akonadi::CollectionQuotaAttribute>()) {
         const qint64 currentValue = col.attribute<Akonadi::CollectionQuotaAttribute>()->currentValue();
@@ -52,7 +51,7 @@ void CollectionQuotaPage::load(const Akonadi::Collection &col)
     }
 }
 
-void CollectionQuotaPage::save(Akonadi::Collection &)
+void CollectionQuotaPage::save(Akonadi::Collection&)
 {
     // nothing to do, we are read-only
 }

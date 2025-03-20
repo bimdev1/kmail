@@ -16,22 +16,26 @@
 
 #include <KLocalizedString>
 
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QVBoxLayout>
+
 using namespace Akonadi;
 using namespace MailCommon;
 
-using namespace Qt::Literals::StringLiterals;
-CollectionTemplatesPage::CollectionTemplatesPage(QWidget *parent)
-    : CollectionPropertiesPage(parent)
-    , mCollectionTemplateWidget(new MailCommon::CollectionTemplatesWidget(this))
+CollectionTemplatesPage::CollectionTemplatesPage(QWidget* parent)
+    : CollectionPropertiesPage(parent), mCollectionTemplateWidget(new MailCommon::CollectionTemplatesWidget(this))
 {
-    setObjectName("KMail::CollectionTemplatesPage"_L1);
+    setObjectName(QLatin1String("KMail::CollectionTemplatesPage"));
     setPageTitle(i18nc("@title:tab Templates settings page.", "Templates"));
     init();
 }
 
 CollectionTemplatesPage::~CollectionTemplatesPage() = default;
 
-bool CollectionTemplatesPage::canHandle(const Collection &collection) const
+bool CollectionTemplatesPage::canHandle(const Collection& collection) const
 {
     return !CommonKernel->isSystemFolderCollection(collection) || CommonKernel->isMainFolderCollection(collection);
 }
@@ -43,12 +47,12 @@ void CollectionTemplatesPage::init()
     topLayout->addWidget(mCollectionTemplateWidget);
 }
 
-void CollectionTemplatesPage::load(const Collection &col)
+void CollectionTemplatesPage::load(const Collection& col)
 {
     mCollectionTemplateWidget->load(col);
 }
 
-void CollectionTemplatesPage::save(Collection &col)
+void CollectionTemplatesPage::save(Collection& col)
 {
     mCollectionTemplateWidget->save(col);
 }

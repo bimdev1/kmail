@@ -8,8 +8,7 @@
 
 #include <QDialog>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class AkonadiContactEditor;
 }
 
@@ -17,13 +16,13 @@ class IdentityEditVcardDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit IdentityEditVcardDialog(const QString &fileName, QWidget *parent = nullptr);
+    explicit IdentityEditVcardDialog(const QString& fileName, QWidget* parent = nullptr);
     ~IdentityEditVcardDialog() override;
     /**
      * @brief loadVcard load vcard in a contact editor
      * @param vcardFileName
      */
-    void loadVcard(const QString &vcardFileName);
+    void loadVcard(const QString& vcardFileName);
     /**
      * @brief saveVcard
      * @return The file path for current vcard.
@@ -38,5 +37,5 @@ private:
     void slotDeleteCurrentVCard();
     void deleteCurrentVcard(bool deleteOnDisk);
     QString mVcardFileName;
-    Akonadi::AkonadiContactEditor *const mContactEditor;
+    Akonadi::AkonadiContactEditor* const mContactEditor;
 };

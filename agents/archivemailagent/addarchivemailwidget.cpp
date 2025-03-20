@@ -6,9 +6,6 @@
 
 #include "addarchivemailwidget.h"
 
-#include "archivemailrangewidget.h"
-#include "widgets/formatcombobox.h"
-#include "widgets/unitcombobox.h"
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KSeparator>
@@ -18,19 +15,17 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QSpinBox>
+#include "archivemailrangewidget.h"
+#include "widgets/formatcombobox.h"
+#include "widgets/unitcombobox.h"
 
 using namespace Qt::Literals::StringLiterals;
-AddArchiveMailWidget::AddArchiveMailWidget(ArchiveMailInfo *info, QWidget *parent)
-    : QWidget{parent}
-    , mFolderRequester(new MailCommon::FolderRequester(this))
-    , mFormatComboBox(new FormatComboBox(this))
-    , mUnits(new UnitComboBox(this))
-    , mRecursiveCheckBox(new QCheckBox(i18nc("@option:check", "Archive all subfolders"), this))
-    , mPath(new KUrlRequester(this))
-    , mDays(new QSpinBox(this))
-    , mMaximumArchive(new QSpinBox(this))
-    , mArchiveMailRangeWidget(new ArchiveMailRangeWidget(this))
-    , mInfo(info)
+AddArchiveMailWidget::AddArchiveMailWidget(ArchiveMailInfo* info, QWidget* parent)
+    : QWidget{parent}, mFolderRequester(new MailCommon::FolderRequester(this)),
+      mFormatComboBox(new FormatComboBox(this)), mUnits(new UnitComboBox(this)),
+      mRecursiveCheckBox(new QCheckBox(i18nc("@option:check", "Archive all subfolders"), this)),
+      mPath(new KUrlRequester(this)), mDays(new QSpinBox(this)), mMaximumArchive(new QSpinBox(this)),
+      mArchiveMailRangeWidget(new ArchiveMailRangeWidget(this)), mInfo(info)
 {
     auto mainLayout = new QFormLayout(this);
     mainLayout->setContentsMargins({});
@@ -40,7 +35,8 @@ AddArchiveMailWidget::AddArchiveMailWidget(ArchiveMailInfo *info, QWidget *paren
     mFolderRequester->setMustBeReadWrite(false);
     mFolderRequester->setNotAllowToCreateNewFolder(true);
     mainLayout->addRow(folderLabel, mFolderRequester);
-    connect(mFolderRequester, &MailCommon::FolderRequester::folderChanged, this, &AddArchiveMailWidget::slotFolderChanged);
+    connect(mFolderRequester, &MailCommon::FolderRequester::folderChanged, this,
+            &AddArchiveMailWidget::slotFolderChanged);
     if (info) { // Don't authorize to modify folder when we just modify item.
         mFolderRequester->setEnabled(false);
     }
@@ -89,7 +85,7 @@ AddArchiveMailWidget::AddArchiveMailWidget(ArchiveMailInfo *info, QWidget *paren
 
 AddArchiveMailWidget::~AddArchiveMailWidget() = default;
 
-void AddArchiveMailWidget::load(ArchiveMailInfo *info)
+void AddArchiveMailWidget::load(ArchiveMailInfo* info)
 {
     mPath->setUrl(info->url());
     mRecursiveCheckBox->setChecked(info->saveSubCollection());
@@ -105,7 +101,7 @@ void AddArchiveMailWidget::load(ArchiveMailInfo *info)
     }
 }
 
-ArchiveMailInfo *AddArchiveMailWidget::info()
+ArchiveMailInfo* AddArchiveMailWidget::info()
 {
     if (!mInfo) {
         mInfo = new ArchiveMailInfo();
@@ -127,11 +123,12 @@ ArchiveMailInfo *AddArchiveMailWidget::info()
 
 void AddArchiveMailWidget::slotUpdateOkButton()
 {
-    const bool valid = (!mPath->lineEdit()->text().trimmed().isEmpty() && !mPath->url().isEmpty() && mFolderRequester->collection().isValid());
+    const bool valid = (!mPath->lineEdit()->text().trimmed().isEmpty() && !mPath->url().isEmpty() &&
+                        mFolderRequester->collection().isValid());
     Q_EMIT enableOkButton(valid);
 }
 
-void AddArchiveMailWidget::slotFolderChanged(const Akonadi::Collection &collection)
+void AddArchiveMailWidget::slotFolderChanged(const Akonadi::Collection& collection)
 {
     Q_UNUSED(collection)
     slotUpdateOkButton();

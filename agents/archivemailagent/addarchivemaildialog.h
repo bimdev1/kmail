@@ -6,21 +6,21 @@
 
 #pragma once
 
-#include "archivemailinfo.h"
 #include <Akonadi/Collection>
 #include <QDialog>
+#include "archivemailinfo.h"
 
 class AddArchiveMailWidget;
 class AddArchiveMailDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AddArchiveMailDialog(ArchiveMailInfo *info, QWidget *parent = nullptr);
+    explicit AddArchiveMailDialog(ArchiveMailInfo* info, QWidget* parent = nullptr);
     ~AddArchiveMailDialog() override;
 
-    [[nodiscard]] ArchiveMailInfo *info();
+    [[nodiscard]] ArchiveMailInfo* info();
 
 private:
-    QPushButton *mOkButton = nullptr;
-    AddArchiveMailWidget *const mAddArchiveMailWidget;
+    QPushButton* mOkButton = nullptr;
+    AddArchiveMailWidget* const mAddArchiveMailWidget;
 };

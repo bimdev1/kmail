@@ -9,12 +9,11 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <kxmlguiwindow.h>
+#include "kmail_private_export.h"
 class QCloseEvent;
 
-namespace KMail
-{
+namespace KMail {
 /**
  *  Window class for secondary KMail window like the composer window and
  *  the separate message window.
@@ -24,7 +23,7 @@ class KMAILTESTS_TESTS_EXPORT SecondaryWindow : public KXmlGuiWindow
     Q_OBJECT
 
 public:
-    explicit SecondaryWindow(const QString &name = QString());
+    explicit SecondaryWindow(const QString& name = QString());
     ~SecondaryWindow() override;
     using KMainWindow::setCaption;
 public Q_SLOTS:
@@ -33,7 +32,7 @@ public Q_SLOTS:
      * @brief setCaption
      * @param caption
      */
-    void setCaption(const QString &caption) override;
+    void setCaption(const QString& caption) override;
 
 protected:
     /**
@@ -41,6 +40,6 @@ protected:
      *  last _visible_ secondary window is closed in case a system tray applet
      *  exists.
      */
-    void closeEvent(QCloseEvent *) override;
+    void closeEvent(QCloseEvent*) override;
 };
 } // namespace KMail

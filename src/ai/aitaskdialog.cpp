@@ -1,36 +1,31 @@
 #include "aitaskdialog.h"
-#include "localaiservice.h"
 #include "../kmmessage.h"
+#include "localaiservice.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
 
-#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QTreeWidget>
-#include <QPushButton>
-#include <QProgressBar>
-#include <QLabel>
 #include <QHeaderView>
+#include <QLabel>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
 
 namespace KMail {
 
-AITaskDialog::AITaskDialog(KMMessage *message, QWidget *parent)
-    : QDialog(parent)
-    , m_message(message)
-    , m_aiService(new LocalAIService(this))
-    , m_isExtracting(false)
+AITaskDialog::AITaskDialog(KMMessage* message, QWidget* parent)
+    : QDialog(parent), m_message(message), m_aiService(new LocalAIService(this)), m_isExtracting(false)
 {
     setupUi();
     createConnections();
-    
+
     // Extract tasks automatically
     slotExtractTasks();
 }
 
-AITaskDialog::~AITaskDialog()
-{
-}
+AITaskDialog::~AITaskDialog() {}
 
 void AITaskDialog::setupUi()
 {
@@ -73,18 +68,18 @@ void AITaskDialog::setupUi()
 
     // Add bottom buttons
     auto buttonLayout = new QHBoxLayout;
-    
+
     m_extractButton = new QPushButton(i18n("Extract Again"), this);
     m_acceptButton = new QPushButton(i18n("Add to KOrganizer"), this);
     m_cancelButton = new QPushButton(i18n("Cancel"), this);
-    
+
     m_acceptButton->setDefault(true);
-    
+
     buttonLayout->addWidget(m_extractButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(m_acceptButton);
     buttonLayout->addWidget(m_cancelButton);
-    
+
     mainLayout->addLayout(buttonLayout);
 
     // Initially disable buttons until we extract tasks
@@ -95,21 +90,14 @@ void AITaskDialog::setupUi()
 
 void AITaskDialog::createConnections()
 {
-    connect(m_extractButton, &QPushButton::clicked,
-            this, &AITaskDialog::slotExtractTasks);
-    connect(m_selectAllButton, &QPushButton::clicked,
-            this, &AITaskDialog::slotSelectAll);
-    connect(m_selectNoneButton, &QPushButton::clicked,
-            this, &AITaskDialog::slotSelectNone);
-    connect(m_acceptButton, &QPushButton::clicked,
-            this, &AITaskDialog::slotAccept);
-    connect(m_cancelButton, &QPushButton::clicked,
-            this, &QDialog::reject);
-            
-    connect(m_aiService, &LocalAIService::tasksExtracted,
-            this, &AITaskDialog::slotTasksExtracted);
-    connect(m_aiService, &LocalAIService::error,
-            this, &AITaskDialog::slotError);
+    connect(m_extractButton, &QPushButton::clicked, this, &AITaskDialog::slotExtractTasks);
+    connect(m_selectAllButton, &QPushButton::clicked, this, &AITaskDialog::slotSelectAll);
+    connect(m_selectNoneButton, &QPushButton::clicked, this, &AITaskDialog::slotSelectNone);
+    connect(m_acceptButton, &QPushButton::clicked, this, &AITaskDialog::slotAccept);
+    connect(m_cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+
+    connect(m_aiService, &LocalAIService::tasksExtracted, this, &AITaskDialog::slotTasksExtracted);
+    connect(m_aiService, &LocalAIService::error, this, &AITaskDialog::slotError);
 }
 
 void AITaskDialog::slotExtractTasks()
@@ -131,7 +119,7 @@ void AITaskDialog::slotExtractTasks()
     m_aiService->extractTasks(content);
 }
 
-void AITaskDialog::slotTasksExtracted(const QList<ExtractedTask> &tasks)
+void AITaskDialog::slotTasksExtracted(const QList<ExtractedTask>& tasks)
 {
     m_isExtracting = false;
     m_extractButton->setEnabled(true);
@@ -147,18 +135,18 @@ void AITaskDialog::slotTasksExtracted(const QList<ExtractedTask> &tasks)
 
     m_tasks = tasks;
     updateTaskList(tasks);
-    
+
     m_statusLabel->setText(i18n("%1 tasks found. Select the tasks you want to add to KOrganizer:", tasks.size()));
     m_acceptButton->setEnabled(true);
     m_selectAllButton->setEnabled(true);
     m_selectNoneButton->setEnabled(true);
 }
 
-void AITaskDialog::updateTaskList(const QList<ExtractedTask> &tasks)
+void AITaskDialog::updateTaskList(const QList<ExtractedTask>& tasks)
 {
     m_taskList->clear();
-    
-    for (const ExtractedTask &task : tasks) {
+
+    for (const ExtractedTask& task : tasks) {
         auto item = new QTreeWidgetItem(m_taskList);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(0, task.selected ? Qt::Checked : Qt::Unchecked);
@@ -172,7 +160,7 @@ void AITaskDialog::updateTaskList(const QList<ExtractedTask> &tasks)
     m_taskList->resizeColumnToContents(2);
 }
 
-void AITaskDialog::slotError(const QString &error)
+void AITaskDialog::slotError(const QString& error)
 {
     m_isExtracting = false;
     m_extractButton->setEnabled(true);
@@ -188,9 +176,9 @@ void AITaskDialog::slotError(const QString &error)
 void AITaskDialog::slotAccept()
 {
     QList<ExtractedTask> selectedTasks;
-    
+
     for (int i = 0; i < m_taskList->topLevelItemCount(); ++i) {
-        QTreeWidgetItem *item = m_taskList->topLevelItem(i);
+        QTreeWidgetItem* item = m_taskList->topLevelItem(i);
         if (item->checkState(0) == Qt::Checked) {
             selectedTasks.append(m_tasks[i]);
         }
@@ -221,9 +209,9 @@ void AITaskDialog::slotSelectNone()
 QList<ExtractedTask> AITaskDialog::selectedTasks() const
 {
     QList<ExtractedTask> selectedTasks;
-    
+
     for (int i = 0; i < m_taskList->topLevelItemCount(); ++i) {
-        QTreeWidgetItem *item = m_taskList->topLevelItem(i);
+        QTreeWidgetItem* item = m_taskList->topLevelItem(i);
         if (item->checkState(0) == Qt::Checked) {
             selectedTasks.append(m_tasks[i]);
         }

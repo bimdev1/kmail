@@ -12,10 +12,10 @@ class HistoryClosedReaderMenu : public KActionMenu
 {
     Q_OBJECT
 public:
-    explicit HistoryClosedReaderMenu(QObject *parent = nullptr);
+    explicit HistoryClosedReaderMenu(QObject* parent = nullptr);
     ~HistoryClosedReaderMenu() override;
 
-    [[nodiscard]] QAction *reopenAction() const;
+    [[nodiscard]] QAction* reopenAction() const;
 
     void createReOpenClosedAction();
 Q_SIGNALS:
@@ -26,6 +26,6 @@ private:
     void updateMenu();
     void addReOpenClosedAction();
     void slotReopenLastClosedViewer();
-    QAction *mReopenAction = nullptr;
-    QAction *mSeparatorAction = nullptr;
+    QAction* mReopenAction = nullptr;
+    QAction* mSeparatorAction = nullptr;
 };

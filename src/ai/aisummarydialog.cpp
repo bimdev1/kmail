@@ -1,36 +1,31 @@
 #include "aisummarydialog.h"
-#include "localaiservice.h"
 #include "../kmmessage.h"
+#include "localaiservice.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QProgressBar>
-#include <QClipboard>
 #include <QApplication>
+#include <QClipboard>
+#include <QHBoxLayout>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 namespace KMail {
 
-AISummaryDialog::AISummaryDialog(KMMessage *message, QWidget *parent)
-    : QDialog(parent)
-    , m_message(message)
-    , m_aiService(new LocalAIService(this))
-    , m_isGenerating(false)
+AISummaryDialog::AISummaryDialog(KMMessage* message, QWidget* parent)
+    : QDialog(parent), m_message(message), m_aiService(new LocalAIService(this)), m_isGenerating(false)
 {
     setupUi();
     createConnections();
-    
+
     // Generate summary automatically
     slotGenerateSummary();
 }
 
-AISummaryDialog::~AISummaryDialog()
-{
-}
+AISummaryDialog::~AISummaryDialog() {}
 
 void AISummaryDialog::setupUi()
 {
@@ -55,18 +50,18 @@ void AISummaryDialog::setupUi()
 
     // Add buttons
     auto buttonLayout = new QHBoxLayout;
-    
+
     m_generateButton = new QPushButton(i18n("Regenerate"), this);
     m_copyButton = new QPushButton(i18n("Copy to Clipboard"), this);
     m_closeButton = new QPushButton(i18n("Close"), this);
-    
+
     m_closeButton->setDefault(true);
-    
+
     buttonLayout->addWidget(m_generateButton);
     buttonLayout->addWidget(m_copyButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(m_closeButton);
-    
+
     mainLayout->addLayout(buttonLayout);
 
     // Initially disable buttons until we generate the summary
@@ -76,17 +71,12 @@ void AISummaryDialog::setupUi()
 
 void AISummaryDialog::createConnections()
 {
-    connect(m_generateButton, &QPushButton::clicked,
-            this, &AISummaryDialog::slotGenerateSummary);
-    connect(m_copyButton, &QPushButton::clicked,
-            this, &AISummaryDialog::slotCopyToClipboard);
-    connect(m_closeButton, &QPushButton::clicked,
-            this, &QDialog::accept);
-            
-    connect(m_aiService, &LocalAIService::summaryGenerated,
-            this, &AISummaryDialog::slotSummaryGenerated);
-    connect(m_aiService, &LocalAIService::error,
-            this, &AISummaryDialog::slotError);
+    connect(m_generateButton, &QPushButton::clicked, this, &AISummaryDialog::slotGenerateSummary);
+    connect(m_copyButton, &QPushButton::clicked, this, &AISummaryDialog::slotCopyToClipboard);
+    connect(m_closeButton, &QPushButton::clicked, this, &QDialog::accept);
+
+    connect(m_aiService, &LocalAIService::summaryGenerated, this, &AISummaryDialog::slotSummaryGenerated);
+    connect(m_aiService, &LocalAIService::error, this, &AISummaryDialog::slotError);
 }
 
 void AISummaryDialog::slotGenerateSummary()
@@ -106,7 +96,7 @@ void AISummaryDialog::slotGenerateSummary()
     m_aiService->summarizeEmail(content);
 }
 
-void AISummaryDialog::slotSummaryGenerated(const QString &summary)
+void AISummaryDialog::slotSummaryGenerated(const QString& summary)
 {
     m_isGenerating = false;
     m_generateButton->setEnabled(true);
@@ -116,7 +106,7 @@ void AISummaryDialog::slotSummaryGenerated(const QString &summary)
     m_summaryEdit->setPlainText(summary);
 }
 
-void AISummaryDialog::slotError(const QString &error)
+void AISummaryDialog::slotError(const QString& error)
 {
     m_isGenerating = false;
     m_generateButton->setEnabled(true);
@@ -130,7 +120,7 @@ void AISummaryDialog::slotError(const QString &error)
 
 void AISummaryDialog::slotCopyToClipboard()
 {
-    QClipboard *clipboard = QApplication::clipboard();
+    QClipboard* clipboard = QApplication::clipboard();
     clipboard->setText(m_summaryEdit->toPlainText());
     m_mainWidget->showStatusMessage(i18n("Summary copied to clipboard"));
 }

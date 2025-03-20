@@ -14,9 +14,8 @@
 #include <QVBoxLayout>
 
 using namespace Qt::Literals::StringLiterals;
-PotentialPhishingDetailWidget::PotentialPhishingDetailWidget(QWidget *parent)
-    : QWidget(parent)
-    , mListWidget(new QListWidget(this))
+PotentialPhishingDetailWidget::PotentialPhishingDetailWidget(QWidget* parent)
+    : QWidget(parent), mListWidget(new QListWidget(this))
 {
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins({});
@@ -30,11 +29,11 @@ PotentialPhishingDetailWidget::PotentialPhishingDetailWidget(QWidget *parent)
 
 PotentialPhishingDetailWidget::~PotentialPhishingDetailWidget() = default;
 
-void PotentialPhishingDetailWidget::fillList(const QStringList &lst)
+void PotentialPhishingDetailWidget::fillList(const QStringList& lst)
 {
     mListWidget->clear();
     QStringList emailsAdded;
-    for (const QString &mail : lst) {
+    for (const QString& mail : lst) {
         if (!emailsAdded.contains(mail)) {
             auto item = new QListWidgetItem(mListWidget);
             item->setCheckState(Qt::Unchecked);
@@ -51,7 +50,7 @@ void PotentialPhishingDetailWidget::save()
     bool emailsAdded = false;
     const int numberOfItem(mListWidget->count());
     for (int i = 0; i < numberOfItem; ++i) {
-        QListWidgetItem *item = mListWidget->item(i);
+        QListWidgetItem* item = mListWidget->item(i);
         if (item->checkState() == Qt::Checked) {
             const QString email = item->text();
             if (!potentialPhishing.contains(email)) {

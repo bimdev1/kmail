@@ -11,35 +11,34 @@
 #include <QTreeWidgetItem>
 #include <QWidget>
 class QTreeWidget;
-namespace FollowUpReminder
-{
+namespace FollowUpReminder {
 class FollowUpReminderInfo;
 }
 
 class FollowUpReminderInfoItem : public QTreeWidgetItem
 {
 public:
-    explicit FollowUpReminderInfoItem(QTreeWidget *parent = nullptr);
+    explicit FollowUpReminderInfoItem(QTreeWidget* parent = nullptr);
     ~FollowUpReminderInfoItem() override;
 
-    void setInfo(FollowUpReminder::FollowUpReminderInfo *info);
-    FollowUpReminder::FollowUpReminderInfo *info() const;
+    void setInfo(FollowUpReminder::FollowUpReminderInfo* info);
+    FollowUpReminder::FollowUpReminderInfo* info() const;
 
 private:
-    FollowUpReminder::FollowUpReminderInfo *mInfo = nullptr;
+    FollowUpReminder::FollowUpReminderInfo* mInfo = nullptr;
 };
 
 class FollowUpReminderInfoWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FollowUpReminderInfoWidget(QWidget *parent = nullptr);
+    explicit FollowUpReminderInfoWidget(QWidget* parent = nullptr);
     ~FollowUpReminderInfoWidget() override;
 
-    void restoreTreeWidgetHeader(const QByteArray &data);
-    void saveTreeWidgetHeader(KConfigGroup &group);
+    void restoreTreeWidgetHeader(const QByteArray& data);
+    void saveTreeWidgetHeader(KConfigGroup& group);
 
-    void setInfo(const QList<FollowUpReminder::FollowUpReminderInfo *> &infoList);
+    void setInfo(const QList<FollowUpReminder::FollowUpReminderInfo*>& infoList);
 
     [[nodiscard]] bool save() const;
     void load();
@@ -47,13 +46,13 @@ public:
     [[nodiscard]] QList<qint32> listRemoveId() const;
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event) override;
+    bool eventFilter(QObject* object, QEvent* event) override;
 
 private:
-    void slotItemDoubleClicked(QTreeWidgetItem *item);
+    void slotItemDoubleClicked(QTreeWidgetItem* item);
     void slotCustomContextMenuRequested(QPoint pos);
-    void createOrUpdateItem(FollowUpReminder::FollowUpReminderInfo *info, FollowUpReminderInfoItem *item = nullptr);
-    void deleteItems(const QList<QTreeWidgetItem *> &mailItemLst);
+    void createOrUpdateItem(FollowUpReminder::FollowUpReminderInfo* info, FollowUpReminderInfoItem* item = nullptr);
+    void deleteItems(const QList<QTreeWidgetItem*>& mailItemLst);
     void openShowMessage(Akonadi::Item::Id id);
     enum ItemData {
         AnswerItemId = Qt::UserRole + 1,
@@ -69,6 +68,6 @@ private:
         AnswerMessageId,
     };
     QList<qint32> mListRemoveId;
-    QTreeWidget *const mTreeWidget;
+    QTreeWidget* const mTreeWidget;
     bool mChanged = false;
 };

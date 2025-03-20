@@ -28,22 +28,19 @@
 #include <QWindow>
 using namespace Qt::Literals::StringLiterals;
 
-namespace
-{
+namespace {
 static const char myTagSelectDialogGroupName[] = "TagSelectDialog";
 }
 
-TagSelectDialog::TagSelectDialog(QWidget *parent, int numberOfSelectedMessages, const Akonadi::Item &selectedItem)
-    : QDialog(parent)
-    , mNumberOfSelectedMessages(numberOfSelectedMessages)
-    , mSelectedItem(selectedItem)
-    , mListTag(new QListWidget(this))
+TagSelectDialog::TagSelectDialog(QWidget* parent, int numberOfSelectedMessages, const Akonadi::Item& selectedItem)
+    : QDialog(parent), mNumberOfSelectedMessages(numberOfSelectedMessages), mSelectedItem(selectedItem),
+      mListTag(new QListWidget(this))
 {
     setWindowTitle(i18nc("@title:window", "Select Tags"));
     auto mainLayout = new QVBoxLayout(this);
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     auto user1Button = new QPushButton;
@@ -117,28 +114,28 @@ void TagSelectDialog::createTagList(bool updateList)
     connect(fetchJob, &Akonadi::TagFetchJob::result, this, &TagSelectDialog::slotTagsFetched);
 }
 
-void TagSelectDialog::setActionCollection(const QList<KActionCollection *> &actionCollectionList)
+void TagSelectDialog::setActionCollection(const QList<KActionCollection*>& actionCollectionList)
 {
     mActionCollectionList = actionCollectionList;
 }
 
-void TagSelectDialog::slotTagsFetched(KJob *job)
+void TagSelectDialog::slotTagsFetched(KJob* job)
 {
     if (job->error()) {
         qCWarning(KMAIL_LOG) << "Failed to load tags " << job->errorString();
         return;
     }
-    auto fetchJob = static_cast<Akonadi::TagFetchJob *>(job);
+    auto fetchJob = static_cast<Akonadi::TagFetchJob*>(job);
     bool updatelist = fetchJob->property("updatelist").toBool();
 
     const Akonadi::Tag::List lstTags = fetchJob->tags();
-    for (const Akonadi::Tag &akonadiTag : lstTags) {
+    for (const Akonadi::Tag& akonadiTag : lstTags) {
         mTagList.append(MailCommon::Tag::fromAkonadi(akonadiTag));
     }
 
     std::sort(mTagList.begin(), mTagList.end(), MailCommon::Tag::compare);
 
-    for (const MailCommon::Tag::Ptr &tag : std::as_const(mTagList)) {
+    for (const MailCommon::Tag::Ptr& tag : std::as_const(mTagList)) {
         auto item = new QListWidgetItem(QIcon::fromTheme(tag->iconName), tag->tagName, mListTag);
         item->setData(UrlTag, tag->tag().url().url());
         item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -164,7 +161,7 @@ Akonadi::Tag::List TagSelectDialog::selectedTag() const
     Akonadi::Tag::List lst;
     const int numberOfItems(mListTag->count());
     for (int i = 0; i < numberOfItems; ++i) {
-        QListWidgetItem *item = mListTag->item(i);
+        QListWidgetItem* item = mListTag->item(i);
         if (item->checkState() == Qt::Checked) {
             lst.append(Akonadi::Tag::fromUrl(QUrl(item->data(UrlTag).toString())));
         }

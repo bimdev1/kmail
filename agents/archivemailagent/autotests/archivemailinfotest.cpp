@@ -5,15 +5,14 @@
 */
 
 #include "archivemailinfotest.h"
-#include "../archivemailinfo.h"
 #include <Akonadi/Collection>
 #include <KConfigGroup>
 #include <KSharedConfig>
 #include <QStandardPaths>
 #include <QTest>
+#include "../archivemailinfo.h"
 
-ArchiveMailInfoTest::ArchiveMailInfoTest(QObject *parent)
-    : QObject(parent)
+ArchiveMailInfoTest::ArchiveMailInfoTest(QObject* parent) : QObject(parent)
 {
     QStandardPaths::setTestModeEnabled(true);
 }

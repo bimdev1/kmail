@@ -13,7 +13,7 @@ class PotentialPhishingEmailWarningTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit PotentialPhishingEmailWarningTest(QObject *parent = nullptr);
+    explicit PotentialPhishingEmailWarningTest(QObject* parent = nullptr);
     ~PotentialPhishingEmailWarningTest() override;
 private Q_SLOTS:
     void shouldHaveDefaultValue();

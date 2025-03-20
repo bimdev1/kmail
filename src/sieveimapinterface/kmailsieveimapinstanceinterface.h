@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <KSieveCore/SieveImapInstanceInterface>
+#include "kmail_private_export.h"
 class KMAILTESTS_TESTS_EXPORT KMailSieveImapInstanceInterface : public KSieveCore::SieveImapInstanceInterface
 {
 public:

@@ -15,13 +15,13 @@
 class ArchiveMailInfo
 {
 public:
-    explicit ArchiveMailInfo(const KConfigGroup &config);
-    ArchiveMailInfo(const ArchiveMailInfo &info);
+    explicit ArchiveMailInfo(const KConfigGroup& config);
+    ArchiveMailInfo(const ArchiveMailInfo& info);
     ArchiveMailInfo();
 
     ~ArchiveMailInfo();
 
-    ArchiveMailInfo &operator=(const ArchiveMailInfo &old);
+    ArchiveMailInfo& operator=(const ArchiveMailInfo& old);
 
     enum ArchiveUnit {
         ArchiveDays = 0,
@@ -30,7 +30,7 @@ public:
         ArchiveYears,
     };
 
-    [[nodiscard]] QUrl realUrl(const QString &folderName, bool &dirExist) const;
+    [[nodiscard]] QUrl realUrl(const QString& folderName, bool& dirExist) const;
 
     [[nodiscard]] bool isValid() const;
 
@@ -40,11 +40,11 @@ public:
     void setSaveSubCollection(bool b);
     [[nodiscard]] bool saveSubCollection() const;
 
-    void setUrl(const QUrl &url);
+    void setUrl(const QUrl& url);
     [[nodiscard]] QUrl url() const;
 
-    void readConfig(const KConfigGroup &config);
-    void writeConfig(KConfigGroup &config);
+    void readConfig(const KConfigGroup& config);
+    void writeConfig(KConfigGroup& config);
 
     void setArchiveType(MailCommon::BackupJob::ArchiveType type);
     [[nodiscard]] MailCommon::BackupJob::ArchiveType archiveType() const;
@@ -61,21 +61,21 @@ public:
     [[nodiscard]] int maximumArchiveCount() const;
     void setMaximumArchiveCount(int max);
 
-    [[nodiscard]] QStringList listOfArchive(const QString &foldername, bool &dirExist) const;
+    [[nodiscard]] QStringList listOfArchive(const QString& foldername, bool& dirExist) const;
 
     [[nodiscard]] bool isEnabled() const;
     void setEnabled(bool b);
 
-    [[nodiscard]] bool operator==(const ArchiveMailInfo &other) const;
+    [[nodiscard]] bool operator==(const ArchiveMailInfo& other) const;
 
     [[nodiscard]] bool useRange() const;
     void setUseRange(bool newUseRange);
 
     [[nodiscard]] QList<int> range() const;
-    void setRange(const QList<int> &newRanges);
+    void setRange(const QList<int>& newRanges);
 
 private:
-    [[nodiscard]] QString dirArchive(bool &dirExit) const;
+    [[nodiscard]] QString dirArchive(bool& dirExit) const;
     QDate mLastDateSaved;
     int mArchiveAge = 1;
     MailCommon::BackupJob::ArchiveType mArchiveType = MailCommon::BackupJob::Zip;
@@ -88,4 +88,4 @@ private:
     bool mIsEnabled = true;
     bool mUseRange = false;
 };
-QDebug operator<<(QDebug d, const ArchiveMailInfo &t);
+QDebug operator<<(QDebug d, const ArchiveMailInfo& t);

@@ -28,48 +28,45 @@
 #include <QMenu>
 
 using namespace Qt::Literals::StringLiterals;
-namespace
-{
+namespace {
 inline QString archiveMailCollectionPattern()
 {
     return QStringLiteral("ArchiveMailCollection \\d+");
 }
 
 static const char myConfigGroupName[] = "ArchiveMailDialog";
-}
+} // namespace
 
-ArchiveMailItem::ArchiveMailItem(QTreeWidget *parent)
-    : QTreeWidgetItem(parent)
-{
-}
+ArchiveMailItem::ArchiveMailItem(QTreeWidget* parent) : QTreeWidgetItem(parent) {}
 
 ArchiveMailItem::~ArchiveMailItem()
 {
     delete mInfo;
 }
 
-void ArchiveMailItem::setInfo(ArchiveMailInfo *info)
+void ArchiveMailItem::setInfo(ArchiveMailInfo* info)
 {
     mInfo = info;
 }
 
-ArchiveMailInfo *ArchiveMailItem::info() const
+ArchiveMailInfo* ArchiveMailItem::info() const
 {
     return mInfo;
 }
 
-ArchiveMailWidget::ArchiveMailWidget(const KSharedConfigPtr &config, QWidget *parent, const QVariantList &args)
+ArchiveMailWidget::ArchiveMailWidget(const KSharedConfigPtr& config, QWidget* parent, const QVariantList& args)
     : Akonadi::AgentConfigurationBase(config, parent, args)
 {
-    ArchiveMailKernel *archiveMailKernel = ArchiveMailKernel::self();
-    CommonKernel->registerKernelIf(archiveMailKernel); // register KernelIf early, it is used by the Filter classes
+    ArchiveMailKernel* archiveMailKernel = ArchiveMailKernel::self();
+    CommonKernel->registerKernelIf(archiveMailKernel);   // register KernelIf early, it is used by the Filter classes
     CommonKernel->registerSettingsIf(archiveMailKernel); // SettingsIf is used in FolderTreeWidget
 
     auto w = new QWidget(parent);
     mWidget.setupUi(w);
     parent->layout()->addWidget(w);
 
-    const QStringList headers = QStringList{i18n("Name"), i18n("Last archive"), i18n("Next archive in"), i18n("Storage directory")};
+    const QStringList headers =
+        QStringList{i18n("Name"), i18n("Last archive"), i18n("Next archive in"), i18n("Storage directory")};
     mWidget.treeWidget->setHeaderLabels(headers);
     mWidget.treeWidget->setObjectName("treewidget"_L1);
     mWidget.treeWidget->setSortingEnabled(true);
@@ -77,7 +74,8 @@ ArchiveMailWidget::ArchiveMailWidget(const KSharedConfigPtr &config, QWidget *pa
     mWidget.treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     mWidget.treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(mWidget.treeWidget, &QWidget::customContextMenuRequested, this, &ArchiveMailWidget::slotCustomContextMenuRequested);
+    connect(mWidget.treeWidget, &QWidget::customContextMenuRequested, this,
+            &ArchiveMailWidget::slotCustomContextMenuRequested);
 
     connect(mWidget.deleteItem, &QAbstractButton::clicked, this, &ArchiveMailWidget::slotDeleteItem);
     connect(mWidget.modifyItem, &QAbstractButton::clicked, this, &ArchiveMailWidget::slotModifyItem);
@@ -87,11 +85,8 @@ ArchiveMailWidget::ArchiveMailWidget(const KSharedConfigPtr &config, QWidget *pa
     connect(mWidget.treeWidget, &QTreeWidget::itemDoubleClicked, this, &ArchiveMailWidget::slotModifyItem);
     updateButtons();
 
-    KAboutData aboutData(QStringLiteral("archivemailagent"),
-                         i18n("Archive Mail Agent"),
-                         QStringLiteral(KDEPIM_VERSION),
-                         i18n("Archive emails automatically."),
-                         KAboutLicense::GPL_V2,
+    KAboutData aboutData(QStringLiteral("archivemailagent"), i18n("Archive Mail Agent"), QStringLiteral(KDEPIM_VERSION),
+                         i18n("Archive emails automatically."), KAboutLicense::GPL_V2,
                          i18n("Copyright (C) 2014-%1 Laurent Montel", QStringLiteral("2025")));
     aboutData.addAuthor(i18nc("@info:credit", "Laurent Montel"), i18n("Maintainer"), QStringLiteral("montel@kde.org"));
 
@@ -102,11 +97,12 @@ ArchiveMailWidget::ArchiveMailWidget(const KSharedConfigPtr &config, QWidget *pa
 
 ArchiveMailWidget::~ArchiveMailWidget() = default;
 
-void ArchiveMailWidget::slotCustomContextMenuRequested(const QPoint &)
+void ArchiveMailWidget::slotCustomContextMenuRequested(const QPoint&)
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget.treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget.treeWidget->selectedItems();
     QMenu menu(parentWidget());
-    menu.addAction(QIcon::fromTheme(QStringLiteral("list-add")), i18nc("@action", "Add…"), this, &ArchiveMailWidget::slotAddItem);
+    menu.addAction(QIcon::fromTheme(QStringLiteral("list-add")), i18nc("@action", "Add…"), this,
+                   &ArchiveMailWidget::slotAddItem);
     if (!listItems.isEmpty()) {
         if (listItems.count() == 1) {
             menu.addSeparator();
@@ -115,14 +111,15 @@ void ArchiveMailWidget::slotCustomContextMenuRequested(const QPoint &)
             menu.addAction(i18nc("@action", "Open Containing Folder…"), this, &ArchiveMailWidget::slotOpenFolder);
         }
         menu.addSeparator();
-        menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18nc("@action", "Delete"), this, &ArchiveMailWidget::slotDeleteItem);
+        menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18nc("@action", "Delete"), this,
+                       &ArchiveMailWidget::slotDeleteItem);
     }
     menu.exec(QCursor::pos());
 }
 
 void ArchiveMailWidget::updateButtons()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget.treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget.treeWidget->selectedItems();
     if (listItems.isEmpty()) {
         mWidget.deleteItem->setEnabled(false);
         mWidget.modifyItem->setEnabled(false);
@@ -161,12 +158,13 @@ void ArchiveMailWidget::load()
     }
 }
 
-void ArchiveMailWidget::createOrUpdateItem(ArchiveMailInfo *info, ArchiveMailItem *item)
+void ArchiveMailWidget::createOrUpdateItem(ArchiveMailInfo* info, ArchiveMailItem* item)
 {
     if (!item) {
         item = new ArchiveMailItem(mWidget.treeWidget);
     }
-    const QString folderName = i18n("Folder: %1", MailCommon::Util::fullCollectionPath(Akonadi::Collection(info->saveCollectionId())));
+    const QString folderName =
+        i18n("Folder: %1", MailCommon::Util::fullCollectionPath(Akonadi::Collection(info->saveCollectionId())));
     item->setText(ArchiveMailWidget::Name, folderName);
     item->setToolTip(ArchiveMailWidget::Name, folderName);
     item->setCheckState(ArchiveMailWidget::Name, info->isEnabled() ? Qt::Checked : Qt::Unchecked);
@@ -184,7 +182,7 @@ void ArchiveMailWidget::createOrUpdateItem(ArchiveMailInfo *info, ArchiveMailIte
     item->setInfo(info);
 }
 
-void ArchiveMailWidget::updateDiffDate(ArchiveMailItem *item, ArchiveMailInfo *info)
+void ArchiveMailWidget::updateDiffDate(ArchiveMailItem* item, ArchiveMailInfo* info)
 {
     const QDate diffDate = ArchiveMailAgentUtil::diffDate(info);
     const qint64 diff = QDate::currentDate().daysTo(diffDate);
@@ -197,7 +195,8 @@ void ArchiveMailWidget::updateDiffDate(ArchiveMailItem *item, ArchiveMailInfo *i
             item->setBackground(ArchiveMailWidget::NextArchive, Qt::lightGray);
         }
     } else {
-        item->setToolTip(ArchiveMailWidget::NextArchive, i18n("Archive will be done %1", QLocale().toString(diffDate, QLocale::ShortFormat)));
+        item->setToolTip(ArchiveMailWidget::NextArchive,
+                         i18n("Archive will be done %1", QLocale().toString(diffDate, QLocale::ShortFormat)));
     }
 }
 
@@ -210,15 +209,16 @@ bool ArchiveMailWidget::save() const
     // first, delete all filter groups:
     const QStringList filterGroups = config()->groupList().filter(QRegularExpression(archiveMailCollectionPattern()));
 
-    for (const QString &group : filterGroups) {
+    for (const QString& group : filterGroups) {
         config()->deleteGroup(group);
     }
 
     const int numberOfItem(mWidget.treeWidget->topLevelItemCount());
     for (int i = 0; i < numberOfItem; ++i) {
-        auto mailItem = static_cast<ArchiveMailItem *>(mWidget.treeWidget->topLevelItem(i));
+        auto mailItem = static_cast<ArchiveMailItem*>(mWidget.treeWidget->topLevelItem(i));
         if (mailItem->info()) {
-            KConfigGroup group = config()->group(ArchiveMailAgentUtil::archivePattern.arg(mailItem->info()->saveCollectionId()));
+            KConfigGroup group =
+                config()->group(ArchiveMailAgentUtil::archivePattern.arg(mailItem->info()->saveCollectionId()));
             mailItem->info()->writeConfig(group);
         }
     }
@@ -231,17 +231,15 @@ bool ArchiveMailWidget::save() const
 
 void ArchiveMailWidget::slotDeleteItem()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget.treeWidget->selectedItems();
-    const int answer = KMessageBox::warningTwoActions(parentWidget(),
-                                                      i18n("Do you want to delete the selected items?"),
-                                                      i18nc("@title:window", "Delete Items"),
-                                                      KStandardGuiItem::del(),
+    const QList<QTreeWidgetItem*> listItems = mWidget.treeWidget->selectedItems();
+    const int answer = KMessageBox::warningTwoActions(parentWidget(), i18n("Do you want to delete the selected items?"),
+                                                      i18nc("@title:window", "Delete Items"), KStandardGuiItem::del(),
                                                       KStandardGuiItem::cancel());
     if (answer == KMessageBox::ButtonCode::SecondaryAction) {
         return;
     }
 
-    for (QTreeWidgetItem *item : listItems) {
+    for (QTreeWidgetItem* item : listItems) {
         delete item;
     }
     mChanged = true;
@@ -250,17 +248,17 @@ void ArchiveMailWidget::slotDeleteItem()
 
 void ArchiveMailWidget::slotModifyItem()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget.treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget.treeWidget->selectedItems();
     if (listItems.count() == 1) {
-        QTreeWidgetItem *item = listItems.at(0);
+        QTreeWidgetItem* item = listItems.at(0);
         if (!item) {
             return;
         }
-        auto archiveItem = static_cast<ArchiveMailItem *>(item);
+        auto archiveItem = static_cast<ArchiveMailItem*>(item);
         QPointer<AddArchiveMailDialog> dialog = new AddArchiveMailDialog(archiveItem->info(), parentWidget());
         qCDebug(ARCHIVEMAILAGENT_LOG) << " archiveItem->info() " << *archiveItem->info();
         if (dialog->exec()) {
-            ArchiveMailInfo *info = dialog->info();
+            ArchiveMailInfo* info = dialog->info();
             createOrUpdateItem(info, archiveItem);
             mChanged = true;
         }
@@ -272,7 +270,7 @@ void ArchiveMailWidget::slotAddItem()
 {
     QPointer<AddArchiveMailDialog> dialog = new AddArchiveMailDialog(nullptr, parentWidget());
     if (dialog->exec()) {
-        ArchiveMailInfo *info = dialog->info();
+        ArchiveMailInfo* info = dialog->info();
         if (verifyExistingArchive(info)) {
             KMessageBox::error(parentWidget(),
                                i18n("Cannot add a second archive for this folder. Modify the existing one instead."),
@@ -287,12 +285,12 @@ void ArchiveMailWidget::slotAddItem()
     delete dialog;
 }
 
-bool ArchiveMailWidget::verifyExistingArchive(ArchiveMailInfo *info) const
+bool ArchiveMailWidget::verifyExistingArchive(ArchiveMailInfo* info) const
 {
     const int numberOfItem(mWidget.treeWidget->topLevelItemCount());
     for (int i = 0; i < numberOfItem; ++i) {
-        auto mailItem = static_cast<ArchiveMailItem *>(mWidget.treeWidget->topLevelItem(i));
-        ArchiveMailInfo *archiveItemInfo = mailItem->info();
+        auto mailItem = static_cast<ArchiveMailItem*>(mWidget.treeWidget->topLevelItem(i));
+        ArchiveMailInfo* archiveItemInfo = mailItem->info();
         if (archiveItemInfo) {
             if (info->saveCollectionId() == archiveItemInfo->saveCollectionId()) {
                 return true;
@@ -304,14 +302,14 @@ bool ArchiveMailWidget::verifyExistingArchive(ArchiveMailInfo *info) const
 
 void ArchiveMailWidget::slotOpenFolder()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget.treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget.treeWidget->selectedItems();
     if (listItems.count() == 1) {
-        QTreeWidgetItem *item = listItems.first();
+        QTreeWidgetItem* item = listItems.first();
         if (!item) {
             return;
         }
-        auto archiveItem = static_cast<ArchiveMailItem *>(item);
-        ArchiveMailInfo *archiveItemInfo = archiveItem->info();
+        auto archiveItem = static_cast<ArchiveMailItem*>(item);
+        ArchiveMailInfo* archiveItemInfo = archiveItem->info();
         if (archiveItemInfo) {
             const QUrl url = archiveItemInfo->url();
             auto job = new KIO::OpenUrlJob(url);
@@ -322,10 +320,10 @@ void ArchiveMailWidget::slotOpenFolder()
     }
 }
 
-void ArchiveMailWidget::slotItemChanged(QTreeWidgetItem *item, int col)
+void ArchiveMailWidget::slotItemChanged(QTreeWidgetItem* item, int col)
 {
     if (item) {
-        auto archiveItem = static_cast<ArchiveMailItem *>(item);
+        auto archiveItem = static_cast<ArchiveMailItem*>(item);
         if (archiveItem->info()) {
             if (col == ArchiveMailWidget::Name) {
                 archiveItem->info()->setEnabled(archiveItem->checkState(ArchiveMailWidget::Name) == Qt::Checked);
@@ -344,7 +342,7 @@ QSize ArchiveMailWidget::restoreDialogSize() const
     return size;
 }
 
-void ArchiveMailWidget::saveDialogSize(const QSize &size)
+void ArchiveMailWidget::saveDialogSize(const QSize& size)
 {
     auto group = config()->group(QLatin1StringView(myConfigGroupName));
     group.writeEntry("Size", size);

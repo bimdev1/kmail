@@ -6,14 +6,11 @@ SPDX-License-Identifier: GPL-2.0-only
 */
 
 #include "collectionswitchertreeviewmanagertest.h"
+#include <QTest>
 #include "historyswitchfolder/collectionswitchertreeview.h"
 #include "historyswitchfolder/collectionswitchertreeviewmanager.h"
-#include <QTest>
 QTEST_MAIN(CollectionSwitcherTreeViewManagerTest)
-CollectionSwitcherTreeViewManagerTest::CollectionSwitcherTreeViewManagerTest(QObject *parent)
-    : QObject{parent}
-{
-}
+CollectionSwitcherTreeViewManagerTest::CollectionSwitcherTreeViewManagerTest(QObject* parent) : QObject{parent} {}
 
 void CollectionSwitcherTreeViewManagerTest::shouldHaveDefaultValues()
 {

@@ -5,13 +5,10 @@
 */
 
 #include "createforwardmessagejobtest.h"
-#include "job/createforwardmessagejob.h"
 #include <QTest>
+#include "job/createforwardmessagejob.h"
 QTEST_MAIN(CreateForwardMessageJobTest)
-CreateForwardMessageJobTest::CreateForwardMessageJobTest(QObject *parent)
-    : QObject(parent)
-{
-}
+CreateForwardMessageJobTest::CreateForwardMessageJobTest(QObject* parent) : QObject(parent) {}
 
 void CreateForwardMessageJobTest::shouldHaveDefaultValues()
 {

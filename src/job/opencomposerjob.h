@@ -6,39 +6,20 @@
 
 #pragma once
 
-#include "editor/composer.h"
-#include "kmail_private_export.h"
 #include <KMime/Message>
 #include <QObject>
+#include "editor/composer.h"
+#include "kmail_private_export.h"
 struct KMAILTESTS_TESTS_EXPORT OpenComposerSettings {
     OpenComposerSettings() = default;
 
-    OpenComposerSettings(const QString &to,
-                         const QString &cc,
-                         const QString &bcc,
-                         const QString &subject,
-                         const QString &body,
-                         bool hidden,
-                         const QString &messageFile,
-                         const QStringList &attachmentPaths,
-                         const QStringList &customHeaders,
-                         const QString &replyTo,
-                         const QString &inReplyTo,
-                         const QString &identity,
-                         bool htmlBody)
-        : mAttachmentPaths(attachmentPaths)
-        , mCustomHeaders(customHeaders)
-        , mTo(to)
-        , mCc(cc)
-        , mBcc(bcc)
-        , mSubject(subject)
-        , mBody(body)
-        , mMessageFile(messageFile)
-        , mReplyTo(replyTo)
-        , mInReplyTo(inReplyTo)
-        , mIdentity(identity)
-        , mHidden(hidden)
-        , mHtmlBody(htmlBody)
+    OpenComposerSettings(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                         const QString& body, bool hidden, const QString& messageFile,
+                         const QStringList& attachmentPaths, const QStringList& customHeaders, const QString& replyTo,
+                         const QString& inReplyTo, const QString& identity, bool htmlBody)
+        : mAttachmentPaths(attachmentPaths), mCustomHeaders(customHeaders), mTo(to), mCc(cc), mBcc(bcc),
+          mSubject(subject), mBody(body), mMessageFile(messageFile), mReplyTo(replyTo), mInReplyTo(inReplyTo),
+          mIdentity(identity), mHidden(hidden), mHtmlBody(htmlBody)
     {
     }
 
@@ -61,11 +42,11 @@ class KMAILTESTS_TESTS_EXPORT OpenComposerJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit OpenComposerJob(QObject *parent = nullptr);
+    explicit OpenComposerJob(QObject* parent = nullptr);
     ~OpenComposerJob() override;
     void start();
 
-    void setOpenComposerSettings(const OpenComposerSettings &openComposerSettings);
+    void setOpenComposerSettings(const OpenComposerSettings& openComposerSettings);
 
 private:
     KMAIL_NO_EXPORT void slotOpenComposer();

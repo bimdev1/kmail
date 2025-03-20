@@ -11,7 +11,7 @@ class HistoryClosedReaderManagerTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit HistoryClosedReaderManagerTest(QObject *parent = nullptr);
+    explicit HistoryClosedReaderManagerTest(QObject* parent = nullptr);
     ~HistoryClosedReaderManagerTest() override = default;
 
 private Q_SLOTS:

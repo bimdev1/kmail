@@ -13,23 +13,23 @@
 #include <KMime/Message>
 #include <PimCommonAkonadi/CheckedCollectionWidget>
 
-#include "kmailplugin_debug.h"
 #include <KAboutData>
 #include <KAcceleratorManager>
 #include <KConfig>
 #include <KLocalizedString>
 #include <KPluginFactory>
 #include <KSharedConfig>
+#include "kmailplugin_debug.h"
 
 #include <QCheckBox>
 #include <QTreeView>
 #include <QVBoxLayout>
 
 K_PLUGIN_CLASS_WITH_JSON(KCMKMailSummary, "kcmkmailsummary.json")
-KCMKMailSummary::KCMKMailSummary(QObject *parent, const KPluginMetaData &data)
-    : KCModule(parent, data)
-    , mCheckedCollectionWidget(new PimCommon::CheckedCollectionWidget(KMime::Message::mimeType()))
-    , mFullPath(new QCheckBox(i18nc("@option:check", "Show full path for folders"), widget()))
+KCMKMailSummary::KCMKMailSummary(QObject* parent, const KPluginMetaData& data)
+    : KCModule(parent, data),
+      mCheckedCollectionWidget(new PimCommon::CheckedCollectionWidget(KMime::Message::mimeType())),
+      mFullPath(new QCheckBox(i18nc("@option:check", "Show full path for folders"), widget()))
 {
     initGUI();
 
@@ -51,10 +51,9 @@ void KCMKMailSummary::initGUI()
     layout->setContentsMargins({});
 
     mFullPath->setToolTip(i18nc("@info:tooltip", "Show full path for each folder"));
-    mFullPath->setWhatsThis(i18nc("@info:whatsthis",
-                                  "Enable this option if you want to see the full path "
-                                  "for each folder listed in the summary. If this option is "
-                                  "not enabled, then only the base folder path will be shown."));
+    mFullPath->setWhatsThis(i18nc("@info:whatsthis", "Enable this option if you want to see the full path "
+                                                     "for each folder listed in the summary. If this option is "
+                                                     "not enabled, then only the base folder path will be shown."));
     layout->addWidget(mCheckedCollectionWidget);
     layout->addWidget(mFullPath);
 }
@@ -63,7 +62,8 @@ void KCMKMailSummary::initFolders()
 {
     KSharedConfigPtr _config = KSharedConfig::openConfig(QStringLiteral("kcmkmailsummaryrc"));
 
-    mModelState = new KViewStateMaintainer<Akonadi::ETMViewStateSaver>(_config->group(QStringLiteral("CheckState")), this);
+    mModelState =
+        new KViewStateMaintainer<Akonadi::ETMViewStateSaver>(_config->group(QStringLiteral("CheckState")), this);
     mModelState->setSelectionModel(mCheckedCollectionWidget->selectionModel());
 }
 

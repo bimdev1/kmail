@@ -17,21 +17,20 @@ namespace KMail {
 // main file size manageable and to separate AI functionality.
 
 // Initialize the AI extension in KMMainWidget constructor
-void initializeAIExtension(KMMainWidget *mainWidget, KActionCollection *actionCollection)
+void initializeAIExtension(KMMainWidget* mainWidget, KActionCollection* actionCollection)
 {
     // Create the AI extension
     mainWidget->m_aiExtension = new AIMainWidgetExtension(mainWidget, actionCollection);
-    
+
     // Initialize the extension
     mainWidget->m_aiExtension->initialize();
-    
+
     // Connect signals/slots
-    QObject::connect(mainWidget, &KMMainWidget::selectionChanged, 
-                    mainWidget, &KMMainWidget::slotUpdateAIActions);
+    QObject::connect(mainWidget, &KMMainWidget::selectionChanged, mainWidget, &KMMainWidget::slotUpdateAIActions);
 }
 
 // Clean up AI extension in KMMainWidget destructor
-void cleanupAIExtension(KMMainWidget *mainWidget)
+void cleanupAIExtension(KMMainWidget* mainWidget)
 {
     // The extension will be deleted automatically as a child of KMMainWidget
     mainWidget->m_aiExtension = nullptr;

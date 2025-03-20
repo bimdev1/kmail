@@ -14,8 +14,7 @@ class QCheckBox;
 class QComboBox;
 class UndoSendCombobox;
 class OrgFreedesktopAkonadiNewMailNotifierInterface;
-namespace KLDAPWidgets
-{
+namespace KLDAPWidgets {
 class LdapConfigureWidgetNg;
 }
 // subclasses: one class per tab:
@@ -23,7 +22,7 @@ class AccountsPageSendingTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit AccountsPageSendingTab(QWidget *parent = nullptr);
+    explicit AccountsPageSendingTab(QWidget* parent = nullptr);
     ~AccountsPageSendingTab() override;
     [[nodiscard]] QString helpAnchor() const;
     void save() override;
@@ -33,12 +32,12 @@ private:
     void doLoadOther() override;
 
 private:
-    QCheckBox *mConfirmSendCheck = nullptr;
-    QCheckBox *mCheckSpellingBeforeSending = nullptr;
-    QComboBox *mSendOnCheckCombo = nullptr;
-    QComboBox *mSendMethodCombo = nullptr;
-    UndoSendCombobox *mUndoSendComboBox = nullptr;
-    QCheckBox *mUndoSend = nullptr;
+    QCheckBox* mConfirmSendCheck = nullptr;
+    QCheckBox* mCheckSpellingBeforeSending = nullptr;
+    QComboBox* mSendOnCheckCombo = nullptr;
+    QComboBox* mSendMethodCombo = nullptr;
+    UndoSendCombobox* mUndoSendComboBox = nullptr;
+    QCheckBox* mUndoSend = nullptr;
 };
 
 // subclasses: one class per tab:
@@ -46,7 +45,7 @@ class LdapCompetionTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit LdapCompetionTab(QWidget *parent = nullptr);
+    explicit LdapCompetionTab(QWidget* parent = nullptr);
     ~LdapCompetionTab() override;
     QString helpAnchor() const;
     void save() override;
@@ -55,24 +54,24 @@ private:
     void doLoadOther() override;
 
 private:
-    KLDAPWidgets::LdapConfigureWidgetNg *const mLdapConfigureWidget;
+    KLDAPWidgets::LdapConfigureWidgetNg* const mLdapConfigureWidget;
 };
 
 class AccountsPageReceivingTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit AccountsPageReceivingTab(QWidget *parent = nullptr);
+    explicit AccountsPageReceivingTab(QWidget* parent = nullptr);
     ~AccountsPageReceivingTab() override;
     [[nodiscard]] QString helpAnchor() const;
     void save() override;
 
 Q_SIGNALS:
-    void accountListChanged(const QStringList &);
+    void accountListChanged(const QStringList&);
 
 private:
     void slotEditNotifications();
-    void slotShowMailCheckMenu(const QString &, const QPoint &);
+    void slotShowMailCheckMenu(const QString&, const QPoint&);
     void slotCustomizeAccountOrder();
     void slotIncludeInCheckChanged(bool checked);
     void slotOfflineOnShutdownChanged(bool checked);
@@ -81,9 +80,7 @@ private:
 
     struct RetrievalOptions {
         RetrievalOptions(bool manualCheck, bool offline, bool checkOnStartup)
-            : IncludeInManualChecks(manualCheck)
-            , OfflineOnShutdown(offline)
-            , CheckOnStartup(checkOnStartup)
+            : IncludeInManualChecks(manualCheck), OfflineOnShutdown(offline), CheckOnStartup(checkOnStartup)
         {
         }
 
@@ -98,16 +95,16 @@ private:
     void slotAddCustomAccount();
     void slotAddMailAccount();
     Ui_AccountsPageReceivingTab mAccountsReceiving;
-    OrgFreedesktopAkonadiNewMailNotifierInterface *mNewMailNotifierInterface = nullptr;
+    OrgFreedesktopAkonadiNewMailNotifierInterface* mNewMailNotifierInterface = nullptr;
 };
 
 class KMAIL_EXPORT AccountsPage : public ConfigModuleWithTabs
 {
     Q_OBJECT
 public:
-    explicit AccountsPage(QObject *parent, const KPluginMetaData &data);
+    explicit AccountsPage(QObject* parent, const KPluginMetaData& data);
     [[nodiscard]] QString helpAnchor() const override;
 
 Q_SIGNALS:
-    void accountListChanged(const QStringList &);
+    void accountListChanged(const QStringList&);
 };

@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 add_definitions(-DTRANSLATION_DOMAIN=\"kmail\")
 
-qt_generate_dbus_interface(kmkernel.h org.kde.kmail.kmail.xml OPTIONS -a)
-qt_generate_dbus_interface(editor/kmcomposerwin.h org.kde.kmail.mailcomposer.xml OPTIONS -a)
+qt5_generate_dbus_interface(kmkernel.h org.kde.kmail.kmail.xml OPTIONS -a)
+qt5_generate_dbus_interface(editor/kmcomposerwin.h org.kde.kmail.mailcomposer.xml OPTIONS -a)
 
 add_custom_target(kmail_xml ALL
     DEPENDS ${kmail_BINARY_DIR}/src/org.kde.kmail.kmail.xml
@@ -41,7 +41,7 @@ ecm_qt_declare_logging_category(kmail_debugcategory_SRCS HEADER kmail_activities
 
 
 add_library(kmailprivate)
-if(TARGET KF6::UserFeedbackWidgets)
+if(TARGET KF5::UserFeedbackWidgets)
     target_sources(kmailprivate PRIVATE
         userfeedback/accountinfosource.cpp
         userfeedback/accountinfosource.h
@@ -372,7 +372,7 @@ if(KMAIL_HAVE_ACTIVITY_SUPPORT)
     endif()
 endif()
 
-if(KPim6AkonadiSearch_FOUND)
+if(KPim5AkonadiSearch_FOUND)
     target_sources(kmailprivate PRIVATE
         search/checkindexingmanager.cpp
         search/checkindexingjob.cpp
@@ -382,41 +382,33 @@ if(KPim6AkonadiSearch_FOUND)
 endif()
 
 
-qt_add_dbus_adaptor(kmailprivate_LIB_SRCS
-    ${kmail_BINARY_DIR}/src/org.kde.kmail.mailcomposer.xml editor/kmcomposerwin.h KMComposerWin
-)
+# Note: These DBus adaptor functions are temporarily commented out due to compatibility issues
+# qt5_add_dbus_adaptor(kmailprivate_LIB_SRCS ${kmail_BINARY_DIR}/src/org.kde.kmail.kmail.xml kmkernel.h KMKernel)
+# qt5_add_dbus_adaptor(kmailprivate_LIB_SRCS ${MAILTRANSPORT_DBUS_SERVICE} mailserviceimpl.h KMail::MailServiceImpl)
 
-qt_add_dbus_adaptor(kmailprivate_LIB_SRCS
-    ${kmail_BINARY_DIR}/src/org.kde.kmail.kmail.xml kmkernel.h KMKernel
-)
-qt_add_dbus_adaptor(kmailprivate_LIB_SRCS
-    ${MAILTRANSPORT_DBUS_SERVICE} mailserviceimpl.h
-    KMail::MailServiceImpl
-)
-
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     ${kmail_BINARY_DIR}/src/org.kde.kmail.kmail.xml
 )
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     ../agents/archivemailagent/org.freedesktop.Akonadi.ArchiveMailAgent.xml
 )
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     ../agents/sendlateragent/org.freedesktop.Akonadi.SendLaterAgent.xml
 )
 
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     ../agents/mailmergeagent/org.freedesktop.Akonadi.MailMergeAgent.xml
 )
 
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     dbusinterface/org.freedesktop.Akonadi.NewMailNotifier.xml
 )
 
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     ../agents/followupreminderagent/org.freedesktop.Akonadi.FollowUpReminder.xml
 )
 
-qt_add_dbus_interfaces(kmailprivate_LIB_SRCS
+qt5_add_dbus_interfaces(kmailprivate_LIB_SRCS
     ../agents/mailfilteragent/org.freedesktop.Akonadi.MailFilterAgent.xml
 )
 
@@ -452,8 +444,8 @@ kconfig_add_kcfg_files(kmailprivate_LIB_SRCS
 )
 
 set(kmail_userfeedback_LIB)
-if(TARGET KF6::UserFeedbackWidgets)
-    set(kmail_userfeedback_LIB KF6::UserFeedbackWidgets)
+if(TARGET KF5::UserFeedbackWidgets)
+    set(kmail_userfeedback_LIB KF5::UserFeedbackWidgets)
 endif()
 
 target_sources(kmailprivate PRIVATE ${kmailprivate_LIB_SRCS})
@@ -479,68 +471,118 @@ endif()
 generate_export_header(kmailprivate BASE_NAME kmail)
 target_link_libraries(kmailprivate
     PRIVATE
-    KF6::KCMUtils
-    KF6::I18n
-    KF6::SonnetUi
-    KPim6::Gravatar
-    KPim6::Mime
-    KPim6::AkonadiCore
-    KPim6::AkonadiContactWidgets
-    KPim6::AkonadiMime
-    KPim6::MessageCore
-    KPim6::MessageList
-    KPim6::MessageComposer
-    KPim6::PimCommon
-    KPim6::MailCommon
-    KPim6::TemplateParser
-    KPim6::IdentityManagementWidgets
-    KF6::WindowSystem
-    KF6::Notifications
-    KF6::GuiAddons
-    KF6::Crash
-    KF6::KIOFileWidgets
-    KF6::NotifyConfig
-    KF6::Codecs
-    KPim6::MailTransport
-    KF6::KCMUtils
-    KPim6::Libkleo
-    KPim6::KSieveUi
-    KF6::KIOCore
-    KF6::Contacts
-    KPim6::PimTextEdit
-    KPim6::MessageViewer
-    KF6::IconThemes
-    KF6::IconWidgets
-    KF6::XmlGui
-    KF6::Completion
-    KPim6::LdapWidgets
-
-    KPim6::WebEngineViewer
-    KF6::SyntaxHighlighting
-    KF6::GuiAddons
-    KF6::TextUtils
-    KF6::StatusNotifierItem
-    LibGpgError::LibGpgError
+    KF5::I18n
+    KF5::SonnetUi
+    KPim5::Mime
+    KPim5::AkonadiCore
+    KPim5::AkonadiMime
+    KPim5::MessageCore
+    KPim5::MessageList 
+    KPim5::MessageComposer
+    KPim5::PimCommon
+    KPim5::MailCommon
+    KF5::WindowSystem
+    KF5::Notifications
+    KF5::GuiAddons
+    KF5::Crash
+    KF5::KIOFileWidgets
+    KF5::NotifyConfig
+    KF5::Codecs
+    KF5::KIOCore
+    KF5::Contacts
+    KF5::XmlGui
+    KF5::Completion
+    KF5::SyntaxHighlighting
+    KF5::GuiAddons
+    KF5::TextUtils
     ${kmail_userfeedback_LIB}
 )
-if(TARGET KF6::TextEditTextToSpeech)
-    target_link_libraries(kmailprivate
-        PRIVATE KF6::TextEditTextToSpeech)
+
+# LibGpgError is optional
+find_package(LibGpgError ${GPG_ERROR_REQUIRED_VERSION} CONFIG)
+if(LibGpgError_FOUND)
+    target_link_libraries(kmailprivate PRIVATE LibGpgError::LibGpgError)
+endif()
+
+# Optional dependencies - these might not be available in all environments
+if(TARGET KPim5::Gravatar)
+    target_link_libraries(kmailprivate PRIVATE KPim5::Gravatar)
+endif()
+
+if(TARGET KPim5::TemplateParser)
+    target_link_libraries(kmailprivate PRIVATE KPim5::TemplateParser)
+endif()
+
+if(TARGET KPim5::IdentityManagementWidgets)
+    target_link_libraries(kmailprivate PRIVATE KPim5::IdentityManagementWidgets)
+endif()
+
+if(TARGET KPim5::MailTransport)
+    target_link_libraries(kmailprivate PRIVATE KPim5::MailTransport)
+endif()
+
+if(TARGET KPim5::Libkleo)
+    target_link_libraries(kmailprivate PRIVATE KPim5::Libkleo)
+endif()
+
+if(TARGET KPim5::KSieveUi)
+    target_link_libraries(kmailprivate PRIVATE KPim5::KSieveUi)
+endif()
+
+if(TARGET KPim5::PimTextEdit)
+    target_link_libraries(kmailprivate PRIVATE KPim5::PimTextEdit)
+endif()
+
+if(TARGET KPim5::MessageViewer)
+    target_link_libraries(kmailprivate PRIVATE KPim5::MessageViewer)
+endif()
+
+if(TARGET KPim5::LdapWidgets)
+    target_link_libraries(kmailprivate PRIVATE KPim5::LdapWidgets)
+endif()
+
+if(TARGET KPim5::WebEngineViewer)
+    target_link_libraries(kmailprivate PRIVATE KPim5::WebEngineViewer)
+endif()
+
+if(TARGET KF5::IconThemes)
+    target_link_libraries(kmailprivate PRIVATE KF5::IconThemes)
+endif()
+
+if(TARGET KF5::IconWidgets)
+    target_link_libraries(kmailprivate PRIVATE KF5::IconWidgets)
+endif()
+
+if(TARGET KF5::KCMUtils)
+    target_link_libraries(kmailprivate PRIVATE KF5::KCMUtils)
+endif()
+
+if(TARGET KF5::TextEditTextToSpeech)
+    target_link_libraries(kmailprivate PRIVATE KF5::TextEditTextToSpeech)
+endif()
+
+if(TARGET KF5::StatusNotifierItem)
+    target_link_libraries(kmailprivate PRIVATE KF5::StatusNotifierItem)
 endif()
 
 if(KMAIL_HAVE_ACTIVITY_SUPPORT)
-    target_link_libraries(kmailprivate PRIVATE KPim6::PimCommonActivities)
+    target_link_libraries(kmailprivate PRIVATE KPim5::PimCommonActivities)
 endif()
 
-if(KPim6AkonadiSearch_FOUND)
-    target_link_libraries(kmailprivate PRIVATE KPim6::AkonadiSearchDebug KPim6::AkonadiSearchPIM)
+if(KPim5AkonadiSearch_FOUND)
+    target_link_libraries(kmailprivate PRIVATE KPim5::AkonadiSearchDebug KPim5::AkonadiSearchPIM)
 endif()
 
-target_link_libraries(kmailprivate PRIVATE qt6keychain)
+# Only link against qt5keychain if found
+if(TARGET Qt5::Keychain)
+    target_link_libraries(kmailprivate PRIVATE Qt5::Keychain)
+else()
+    message(STATUS "Qt5Keychain not found, some keychain functionality will be disabled")
+endif()
 
-target_include_directories(kmailprivate PUBLIC $<TARGET_PROPERTY:KPim6::MessageList,INTERFACE_INCLUDE_DIRECTORIES>)
-target_include_directories(kmailprivate PUBLIC $<TARGET_PROPERTY:KPim6::MessageViewer,INTERFACE_INCLUDE_DIRECTORIES>)
-target_include_directories(kmailprivate PUBLIC $<TARGET_PROPERTY:KPim6::MailCommon,INTERFACE_INCLUDE_DIRECTORIES>)
+target_include_directories(kmailprivate PUBLIC $<TARGET_PROPERTY:KPim5::MessageList,INTERFACE_INCLUDE_DIRECTORIES>)
+target_include_directories(kmailprivate PUBLIC $<TARGET_PROPERTY:KPim5::MessageViewer,INTERFACE_INCLUDE_DIRECTORIES>)
+target_include_directories(kmailprivate PUBLIC $<TARGET_PROPERTY:KPim5::MailCommon,INTERFACE_INCLUDE_DIRECTORIES>)
 
 set_target_properties(kmailprivate
     PROPERTIES VERSION ${KDEPIM_LIB_VERSION} SOVERSION ${KDEPIM_LIB_SOVERSION}
@@ -549,46 +591,55 @@ set_target_properties(kmailprivate
 ########### kcm_kmail ###############
 add_library(kcm_kmail_static STATIC ${kcm_kmail_PART_SRCS})
 target_sources(kcm_kmail_static PRIVATE kcm_kmail.cpp)
-target_link_libraries(kcm_kmail_static  kmailprivate KF6::KCMUtils KF6::Completion KF6::I18n )
+target_link_libraries(kcm_kmail_static kmailprivate KF5::Completion KF5::I18n)
 
-kcoreaddons_add_plugin(kcm_kmail_accounts SOURCES configuredialog/kcm_kmail_accounts.cpp INSTALL_NAMESPACE "pim6/kcms/kmail")
+if(TARGET KF5::KCMUtils)
+    target_link_libraries(kcm_kmail_static KF5::KCMUtils)
+endif()
 
-target_link_libraries(kcm_kmail_accounts kcm_kmail_static KPim6::AkonadiCore)
+if(TARGET KF5::KCMUtils)
+    kcoreaddons_add_plugin(kcm_kmail_accounts SOURCES configuredialog/kcm_kmail_accounts.cpp INSTALL_NAMESPACE "pim5/kcms/kmail")
+    target_link_libraries(kcm_kmail_accounts kcm_kmail_static KPim5::AkonadiCore)
 
-kcoreaddons_add_plugin(kcm_kmail_appearance SOURCES configuredialog/kcm_kmail_appearance.cpp INSTALL_NAMESPACE "pim6/kcms/kmail")
-target_link_libraries(kcm_kmail_appearance kcm_kmail_static KPim6::AkonadiCore )
+    kcoreaddons_add_plugin(kcm_kmail_appearance SOURCES configuredialog/kcm_kmail_appearance.cpp INSTALL_NAMESPACE "pim5/kcms/kmail")
+    target_link_libraries(kcm_kmail_appearance kcm_kmail_static KPim5::AkonadiCore)
 
-kcoreaddons_add_plugin(kcm_kmail_composer SOURCES configuredialog/kcm_kmail_composer.cpp INSTALL_NAMESPACE "pim6/kcms/kmail")
-target_link_libraries(kcm_kmail_composer kcm_kmail_static KPim6::AkonadiCore )
+    kcoreaddons_add_plugin(kcm_kmail_composer SOURCES configuredialog/kcm_kmail_composer.cpp INSTALL_NAMESPACE "pim5/kcms/kmail")
+    target_link_libraries(kcm_kmail_composer kcm_kmail_static KPim5::AkonadiCore)
 
-kcoreaddons_add_plugin(kcm_kmail_misc SOURCES configuredialog/kcm_kmail_misc.cpp INSTALL_NAMESPACE "pim6/kcms/kmail")
-target_link_libraries(kcm_kmail_misc kcm_kmail_static KPim6::AkonadiCore)
+    kcoreaddons_add_plugin(kcm_kmail_misc SOURCES configuredialog/kcm_kmail_misc.cpp INSTALL_NAMESPACE "pim5/kcms/kmail")
+    target_link_libraries(kcm_kmail_misc kcm_kmail_static KPim5::AkonadiCore)
 
-kcoreaddons_add_plugin(kcm_kmail_plugins SOURCES configuredialog/kcm_kmail_plugins.cpp INSTALL_NAMESPACE "pim6/kcms/kmail")
-target_link_libraries(kcm_kmail_plugins kcm_kmail_static KPim6::AkonadiCore)
+    kcoreaddons_add_plugin(kcm_kmail_plugins SOURCES configuredialog/kcm_kmail_plugins.cpp INSTALL_NAMESPACE "pim5/kcms/kmail")
+    target_link_libraries(kcm_kmail_plugins kcm_kmail_static KPim5::AkonadiCore)
 
-kcoreaddons_add_plugin(kcm_kmail_security SOURCES configuredialog/kcm_kmail_security.cpp INSTALL_NAMESPACE "pim6/kcms/kmail")
-target_link_libraries(kcm_kmail_security kcm_kmail_static KPim6::AkonadiCore)
+    kcoreaddons_add_plugin(kcm_kmail_security SOURCES configuredialog/kcm_kmail_security.cpp INSTALL_NAMESPACE "pim5/kcms/kmail")
+    target_link_libraries(kcm_kmail_security kcm_kmail_static KPim5::AkonadiCore)
+else()
+    message(STATUS "KCMUtils not found, skipping building KCM modules")
+endif()
 ########### kmailpart ###############
 
 set(kmailpart_PART_SRCS kmail_part.cpp kmail_part.h ${kmail_debugcategory_SRCS})
-qt_generate_dbus_interface(kmail_part.h org.kde.kmail.kmailpart.xml OPTIONS -a)
-qt_add_dbus_adaptor(kmailpart_PART_SRCS
-    ${kmail_BINARY_DIR}/src/org.kde.kmail.kmailpart.xml kmail_part.h KMailPart
-)
-qt_add_dbus_interfaces(kmailpart_PART_SRCS ${kmail_BINARY_DIR}/src/org.kde.kmail.kmailpart.xml)
+qt5_generate_dbus_interface(kmail_part.h org.kde.kmail.kmailpart.xml OPTIONS -a)
+# Note: This DBus adaptor function is temporarily commented out due to compatibility issues
+# qt5_add_dbus_adaptor(kmailpart_PART_SRCS ${kmail_BINARY_DIR}/src/org.kde.kmail.kmailpart.xml kmail_part.h KMailPart)
+qt5_add_dbus_interfaces(kmailpart_PART_SRCS ${kmail_BINARY_DIR}/src/org.kde.kmail.kmailpart.xml)
 add_library(kmailpart MODULE ${kmailpart_PART_SRCS})
 
 target_link_libraries(kmailpart
     kmailprivate
-    KPim6::AkonadiCore
-    KF6::I18n
-    KPim6::PimCommon
-    KF6::KCMUtils
-    KF6::Parts
-    KF6::IconThemes
-    KPim6::TemplateParser
+    KPim5::AkonadiCore
+    KF5::I18n
+    KPim5::PimCommon
+    KF5::Parts
+    KF5::IconThemes
+    KPim5::TemplateParser
 )
+
+if(TARGET KF5::KCMUtils)
+    target_link_libraries(kmailpart KF5::KCMUtils)
+endif()
 
 ########### KMail executable ###############
 
@@ -613,18 +664,18 @@ file(GLOB ICONS_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/*-apps-kmail.png")
 ecm_add_app_icon(kmail_SRCS ICONS ${ICONS_SRCS})
 add_executable(kmail ${kmail_SRCS})
 target_link_libraries(kmail
-    KPim6::KontactInterface
+    KPim5::KontactInterface
     kmailprivate
-    KPim6::AkonadiCore
-    KPim6::PimCommon
-    KF6::I18n
-    KPim6::TemplateParser
-    KPim6::Libkdepim
-    KF6::Crash
-    KPim6::WebEngineViewer
+    KPim5::AkonadiCore
+    KPim5::PimCommon
+    KF5::I18n
+    KPim5::TemplateParser
+    KPim5::Libkdepim
+    KF5::Crash
+    KPim5::WebEngineViewer
     ${kmail_userfeedback_LIB}
-    KF6::WindowSystem
-    KF6::IconThemes
+    KF5::WindowSystem
+    KF5::IconThemes
 )
 
 if(BUILD_TESTING)

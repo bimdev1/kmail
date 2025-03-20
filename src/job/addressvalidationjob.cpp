@@ -20,16 +20,14 @@ using MessageComposer::AliasesExpandJob;
 #include <KEmailAddress>
 using namespace Qt::Literals::StringLiterals;
 
-AddressValidationJob::AddressValidationJob(const QString &emailAddresses, QWidget *parentWidget, QObject *parent)
-    : KJob(parent)
-    , mEmailAddresses(emailAddresses)
-    , mParentWidget(parentWidget)
+AddressValidationJob::AddressValidationJob(const QString& emailAddresses, QWidget* parentWidget, QObject* parent)
+    : KJob(parent), mEmailAddresses(emailAddresses), mParentWidget(parentWidget)
 {
 }
 
 AddressValidationJob::~AddressValidationJob() = default;
 
-void AddressValidationJob::setDefaultDomain(const QString &domainName)
+void AddressValidationJob::setDefaultDomain(const QString& domainName)
 {
     mDomainDefaultName = domainName;
 }
@@ -46,7 +44,7 @@ bool AddressValidationJob::isValid() const
     return mIsValid;
 }
 
-void AddressValidationJob::slotAliasExpansionDone(KJob *job)
+void AddressValidationJob::slotAliasExpansionDone(KJob* job)
 {
     mIsValid = true;
 
@@ -58,12 +56,13 @@ void AddressValidationJob::slotAliasExpansionDone(KJob *job)
         return;
     }
 
-    const AliasesExpandJob *expandJob = qobject_cast<AliasesExpandJob *>(job);
+    const AliasesExpandJob* expandJob = qobject_cast<AliasesExpandJob*>(job);
     const QStringList emptyDistributionLists = expandJob->emptyDistributionLists();
 
     QString brokenAddress;
 
-    const KEmailAddress::EmailParseResult errorCode = KEmailAddress::isValidAddressList(expandJob->addresses(), brokenAddress);
+    const KEmailAddress::EmailParseResult errorCode =
+        KEmailAddress::isValidAddressList(expandJob->addresses(), brokenAddress);
     if (!emptyDistributionLists.isEmpty()) {
         QString errorMsg;
         const int numberOfDistributionList(emptyDistributionLists.count());
@@ -75,14 +74,14 @@ void AddressValidationJob::slotAliasExpansionDone(KJob *job)
             listOfDistributionList.append(QStringLiteral("\"%1\"").arg(emptyDistributionLists.at(i)));
         }
         errorMsg = i18np("Distribution list %2 is empty, it cannot be used.",
-                         "Distribution lists %2 are empty, they cannot be used.",
-                         numberOfDistributionList,
+                         "Distribution lists %2 are empty, they cannot be used.", numberOfDistributionList,
                          listOfDistributionList);
         KMessageBox::error(mParentWidget, errorMsg, i18nc("@title:window", "Invalid Email Address"));
         mIsValid = false;
     } else {
         if (!(errorCode == KEmailAddress::AddressOk || errorCode == KEmailAddress::AddressEmpty)) {
-            const QString errorMsg("<qt><p><b>"_L1 + brokenAddress + "</b></p><p>"_L1 + KEmailAddress::emailParseResultToString(errorCode) + "</p></qt>"_L1);
+            const QString errorMsg("<qt><p><b>"_L1 + brokenAddress + "</b></p><p>"_L1 +
+                                   KEmailAddress::emailParseResultToString(errorCode) + "</p></qt>"_L1);
             KMessageBox::error(mParentWidget, errorMsg, i18nc("@title:window", "Invalid Email Address"));
             mIsValid = false;
         }

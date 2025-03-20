@@ -7,8 +7,7 @@
 #include "undosendcombobox.h"
 #include <KLocalizedString>
 
-UndoSendCombobox::UndoSendCombobox(QWidget *parent)
-    : QComboBox(parent)
+UndoSendCombobox::UndoSendCombobox(QWidget* parent) : QComboBox(parent)
 {
     initialize();
 }

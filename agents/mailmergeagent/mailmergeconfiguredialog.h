@@ -12,12 +12,12 @@ class MailMergeConfigureDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit MailMergeConfigureDialog(QWidget *parent = nullptr);
+    explicit MailMergeConfigureDialog(QWidget* parent = nullptr);
     ~MailMergeConfigureDialog() override;
 
 private:
     void slotSave();
     void writeConfig();
     void readConfig();
-    MailMergeConfigureWidget *const mWidget;
+    MailMergeConfigureWidget* const mWidget;
 };

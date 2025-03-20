@@ -15,11 +15,11 @@ class KMailPluginInterface : public PimCommon::PluginInterface
 public:
     ~KMailPluginInterface() override;
 
-    void setMainWidget(KMMainWidget *mainwindow);
-    bool initializeInterfaceRequires(PimCommon::AbstractGenericPluginInterface *interface) override;
-    static KMailPluginInterface *self();
+    void setMainWidget(KMMainWidget* mainwindow);
+    bool initializeInterfaceRequires(PimCommon::AbstractGenericPluginInterface* interface) override;
+    static KMailPluginInterface* self();
 
 private:
-    explicit KMailPluginInterface(QObject *parent = nullptr);
-    KMMainWidget *mMainWindow = nullptr;
+    explicit KMailPluginInterface(QObject* parent = nullptr);
+    KMMainWidget* mMainWindow = nullptr;
 };

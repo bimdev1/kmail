@@ -5,12 +5,11 @@
 */
 
 #include "sendlaterremovemessagejob.h"
-#include "sendlateragent_debug.h"
 #include <Akonadi/ItemDeleteJob>
+#include "sendlateragent_debug.h"
 
-SendLaterRemoveMessageJob::SendLaterRemoveMessageJob(const QList<Akonadi::Item::Id> &listItem, QObject *parent)
-    : QObject(parent)
-    , mListItems(listItem)
+SendLaterRemoveMessageJob::SendLaterRemoveMessageJob(const QList<Akonadi::Item::Id>& listItem, QObject* parent)
+    : QObject(parent), mListItems(listItem)
 {
 }
 
@@ -31,7 +30,7 @@ void SendLaterRemoveMessageJob::removeMessageItem()
     }
 }
 
-void SendLaterRemoveMessageJob::slotItemDeleteDone(KJob *job)
+void SendLaterRemoveMessageJob::slotItemDeleteDone(KJob* job)
 {
     if (job->error()) {
         qCDebug(SENDLATERAGENT_LOG) << " Error during delete item :" << job->errorString();

@@ -4,12 +4,12 @@
    SPDX-License-Identifier: GPL-2.0-or-later
 */
 
-#include "serverdbuswidget.h"
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QStandardPaths>
+#include "serverdbuswidget.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QStandardPaths::setTestModeEnabled(true);

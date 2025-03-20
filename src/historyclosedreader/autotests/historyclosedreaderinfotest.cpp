@@ -4,14 +4,11 @@
 */
 
 #include "historyclosedreaderinfotest.h"
-#include "historyclosedreader/historyclosedreaderinfo.h"
 #include <Akonadi/Item>
 #include <QTest>
+#include "historyclosedreader/historyclosedreaderinfo.h"
 QTEST_GUILESS_MAIN(HistoryClosedReaderInfoTest)
-HistoryClosedReaderInfoTest::HistoryClosedReaderInfoTest(QObject *parent)
-    : QObject{parent}
-{
-}
+HistoryClosedReaderInfoTest::HistoryClosedReaderInfoTest(QObject* parent) : QObject{parent} {}
 
 void HistoryClosedReaderInfoTest::shouldHaveDefaultValues()
 {

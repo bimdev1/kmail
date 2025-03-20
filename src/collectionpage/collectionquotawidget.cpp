@@ -14,10 +14,8 @@
 #include <QLabel>
 #include <QProgressBar>
 
-CollectionQuotaWidget::CollectionQuotaWidget(QWidget *parent)
-    : QWidget(parent)
-    , mProgressBar(new QProgressBar(this))
-    , mUsage(new QLabel(this))
+CollectionQuotaWidget::CollectionQuotaWidget(QWidget* parent)
+    : QWidget(parent), mProgressBar(new QProgressBar(this)), mUsage(new QLabel(this))
 {
     auto layout = new QGridLayout(this);
 

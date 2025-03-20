@@ -12,12 +12,12 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-MailAgentDbusWidget::MailAgentDbusWidget(QWidget *parent)
-    : QWidget{parent}
+MailAgentDbusWidget::MailAgentDbusWidget(QWidget* parent) : QWidget{parent}
 {
-    const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_mailfilter_agent"));
-    mMailFilterAgentInterface =
-        new org::freedesktop::Akonadi::MailFilterAgent(service, QStringLiteral("/MailFilterAgent"), QDBusConnection::sessionBus(), this);
+    const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Agent,
+                                                                  QStringLiteral("akonadi_mailfilter_agent"));
+    mMailFilterAgentInterface = new org::freedesktop::Akonadi::MailFilterAgent(
+        service, QStringLiteral("/MailFilterAgent"), QDBusConnection::sessionBus(), this);
 
     auto mainLayout = new QVBoxLayout(this);
 

@@ -8,12 +8,10 @@
 
 #include <QDateTime>
 
-namespace SendLater
-{
+namespace SendLater {
 class SendLaterInfo;
 
-namespace SendLaterUtil
-{
-[[nodiscard]] QDateTime updateRecurence(SendLater::SendLaterInfo *info, QDateTime dateTime);
+namespace SendLaterUtil {
+[[nodiscard]] QDateTime updateRecurence(SendLater::SendLaterInfo* info, QDateTime dateTime);
 }
-}
+} // namespace SendLater

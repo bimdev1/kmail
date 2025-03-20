@@ -5,11 +5,10 @@
 */
 
 #include "cryptostateindicatorwidgettest.h"
-#include "src/editor/widgets/cryptostateindicatorwidget.h"
 #include <QLabel>
 #include <QTest>
-CryptoStateIndicatorWidgetTest::CryptoStateIndicatorWidgetTest(QObject *parent)
-    : QObject(parent)
+#include "src/editor/widgets/cryptostateindicatorwidget.h"
+CryptoStateIndicatorWidgetTest::CryptoStateIndicatorWidgetTest(QObject* parent) : QObject(parent)
 {
     if (qEnvironmentVariableIntValue("KDECI_CANNOT_CREATE_WINDOWS")) {
         QSKIP("KDE CI can't create a window on this platform, skipping some gui tests");
@@ -23,9 +22,9 @@ void CryptoStateIndicatorWidgetTest::shouldHaveDefaultValue()
     CryptoStateIndicatorWidget w;
     w.show();
     QVERIFY(QTest::qWaitForWindowExposed(&w));
-    auto signature = w.findChild<QLabel *>(QStringLiteral("signatureindicator"));
+    auto signature = w.findChild<QLabel*>(QStringLiteral("signatureindicator"));
     QVERIFY(signature);
-    auto encryption = w.findChild<QLabel *>(QStringLiteral("encryptionindicator"));
+    auto encryption = w.findChild<QLabel*>(QStringLiteral("encryptionindicator"));
     QVERIFY(encryption);
     QVERIFY(signature->isVisible());
     QVERIFY(encryption->isVisible());
@@ -36,8 +35,8 @@ void CryptoStateIndicatorWidgetTest::shouldBeNotVisibleWhenShowAlwaysIsFalse()
     CryptoStateIndicatorWidget w;
     w.setShowAlwaysIndicator(false);
     w.show();
-    auto signature = w.findChild<QLabel *>(QStringLiteral("signatureindicator"));
-    auto encryption = w.findChild<QLabel *>(QStringLiteral("encryptionindicator"));
+    auto signature = w.findChild<QLabel*>(QStringLiteral("signatureindicator"));
+    auto encryption = w.findChild<QLabel*>(QStringLiteral("encryptionindicator"));
     QVERIFY(!signature->isVisible());
     QVERIFY(!encryption->isVisible());
     w.updateSignatureAndEncrypionStateIndicators(true, true);
@@ -52,8 +51,8 @@ void CryptoStateIndicatorWidgetTest::shouldVisibleWhenChangeStatus()
     w.setShowAlwaysIndicator(true);
     w.show();
     QVERIFY(QTest::qWaitForWindowExposed(&w));
-    auto signature = w.findChild<QLabel *>(QStringLiteral("signatureindicator"));
-    auto encryption = w.findChild<QLabel *>(QStringLiteral("encryptionindicator"));
+    auto signature = w.findChild<QLabel*>(QStringLiteral("signatureindicator"));
+    auto encryption = w.findChild<QLabel*>(QStringLiteral("encryptionindicator"));
     w.updateSignatureAndEncrypionStateIndicators(true, false);
     QVERIFY(signature->isVisible());
     QVERIFY(!encryption->isVisible());

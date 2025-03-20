@@ -7,20 +7,19 @@
 #pragma once
 
 #include <PimCommon/PurposeMenuWidget>
-namespace TextCustomEditor
-{
+namespace TextCustomEditor {
 class PlainTextEditor;
 }
 class MailfilterPurposeMenuWidget : public PimCommon::PurposeMenuWidget
 {
     Q_OBJECT
 public:
-    explicit MailfilterPurposeMenuWidget(QWidget *parentWidget, QObject *parent = nullptr);
+    explicit MailfilterPurposeMenuWidget(QWidget* parentWidget, QObject* parent = nullptr);
     ~MailfilterPurposeMenuWidget() override;
 
     [[nodiscard]] QByteArray text() override;
-    void setEditorWidget(TextCustomEditor::PlainTextEditor *editor);
+    void setEditorWidget(TextCustomEditor::PlainTextEditor* editor);
 
 private:
-    TextCustomEditor::PlainTextEditor *mEditor = nullptr;
+    TextCustomEditor::PlainTextEditor* mEditor = nullptr;
 };

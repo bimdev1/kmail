@@ -15,7 +15,7 @@
 
 #include <QStringList>
 
-bool SendLaterUtil::compareSendLaterInfo(MessageComposer::SendLaterInfo *left, MessageComposer::SendLaterInfo *right)
+bool SendLaterUtil::compareSendLaterInfo(MessageComposer::SendLaterInfo* left, MessageComposer::SendLaterInfo* right)
 {
     if (left->dateTime() == right->dateTime()) {
         // Set no recursive first.
@@ -26,7 +26,7 @@ bool SendLaterUtil::compareSendLaterInfo(MessageComposer::SendLaterInfo *left, M
     return left->dateTime() < right->dateTime();
 }
 
-static QDateTime updateRecurence(MessageComposer::SendLaterInfo *info, QDateTime dateTime)
+static QDateTime updateRecurence(MessageComposer::SendLaterInfo* info, QDateTime dateTime)
 {
     switch (info->recurrenceUnit()) {
     case MessageComposer::SendLaterInfo::Days:
@@ -45,7 +45,7 @@ static QDateTime updateRecurence(MessageComposer::SendLaterInfo *info, QDateTime
     return dateTime;
 }
 
-void SendLaterUtil::changeRecurrentDate(MessageComposer::SendLaterInfo *info)
+void SendLaterUtil::changeRecurrentDate(MessageComposer::SendLaterInfo* info)
 {
     if (info && info->isRecurrence()) {
         qCDebug(SENDLATERAGENT_LOG) << "BEFORE SendLaterUtil::changeRecurrentDate " << info->dateTime().toString();
@@ -56,8 +56,8 @@ void SendLaterUtil::changeRecurrentDate(MessageComposer::SendLaterInfo *info)
             newInfoDateTime = updateRecurence(info, newInfoDateTime);
         }
         info->setDateTime(newInfoDateTime);
-        qCDebug(SENDLATERAGENT_LOG) << "AFTER SendLaterUtil::changeRecurrentDate " << info->dateTime().toString() << " info" << info << "New date"
-                                    << newInfoDateTime;
+        qCDebug(SENDLATERAGENT_LOG) << "AFTER SendLaterUtil::changeRecurrentDate " << info->dateTime().toString()
+                                    << " info" << info << "New date" << newInfoDateTime;
         writeSendLaterInfo(defaultConfig(), info);
     }
 }
@@ -67,7 +67,7 @@ KSharedConfig::Ptr SendLaterUtil::defaultConfig()
     return KSharedConfig::openConfig(QStringLiteral("akonadi_sendlater_agentrc"), KConfig::SimpleConfig);
 }
 
-MessageComposer::SendLaterInfo *SendLaterUtil::readSendLaterInfo(KConfigGroup &config)
+MessageComposer::SendLaterInfo* SendLaterUtil::readSendLaterInfo(KConfigGroup& config)
 {
     auto info = new MessageComposer::SendLaterInfo;
     if (config.hasKey(QStringLiteral("lastDateTimeSend"))) {
@@ -85,7 +85,7 @@ MessageComposer::SendLaterInfo *SendLaterUtil::readSendLaterInfo(KConfigGroup &c
     return info;
 }
 
-void SendLaterUtil::writeSendLaterInfo(KSharedConfig::Ptr config, MessageComposer::SendLaterInfo *info)
+void SendLaterUtil::writeSendLaterInfo(KSharedConfig::Ptr config, MessageComposer::SendLaterInfo* info)
 {
     if (!info || !info->isValid()) {
         return;
@@ -94,7 +94,7 @@ void SendLaterUtil::writeSendLaterInfo(KSharedConfig::Ptr config, MessageCompose
     const QString groupName = SendLaterUtil::sendLaterPattern().arg(info->itemId());
     // first, delete all filter groups:
     const QStringList filterGroups = config->groupList();
-    for (const QString &group : filterGroups) {
+    for (const QString& group : filterGroups) {
         if (group == groupName) {
             config->deleteGroup(group);
         }

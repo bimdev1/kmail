@@ -8,20 +8,19 @@
 
 #include <QLabel>
 class QHBoxLayout;
-namespace KMail
-{
+namespace KMail {
 class ServerLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit ServerLabel(const QString &toolTip, QWidget *parent = nullptr);
+    explicit ServerLabel(const QString& toolTip, QWidget* parent = nullptr);
     ~ServerLabel() override;
 
 Q_SIGNALS:
-    void clicked(const QString &serverName);
+    void clicked(const QString& serverName);
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
     const QString mServerName;
@@ -31,36 +30,36 @@ class VacationLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit VacationLabel(const QString &text, QWidget *parent = nullptr);
+    explicit VacationLabel(const QString& text, QWidget* parent = nullptr);
     ~VacationLabel() override;
 
 Q_SIGNALS:
     void vacationLabelClicked();
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 };
 
 class VacationScriptIndicatorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit VacationScriptIndicatorWidget(QWidget *parent = nullptr);
+    explicit VacationScriptIndicatorWidget(QWidget* parent = nullptr);
     ~VacationScriptIndicatorWidget() override;
 
-    void setVacationScriptActive(bool active, const QString &serverName);
+    void setVacationScriptActive(bool active, const QString& serverName);
 
     [[nodiscard]] bool hasVacationScriptActive() const;
 
 Q_SIGNALS:
-    void clicked(const QString &serverName);
+    void clicked(const QString& serverName);
 
 private:
     void updateIndicator();
     void slotVacationLabelClicked();
     void createIndicator();
     QStringList mServerActive;
-    QHBoxLayout *mBoxLayout = nullptr;
-    VacationLabel *mInfo = nullptr;
+    QHBoxLayout* mBoxLayout = nullptr;
+    VacationLabel* mInfo = nullptr;
 };
-}
+} // namespace KMail

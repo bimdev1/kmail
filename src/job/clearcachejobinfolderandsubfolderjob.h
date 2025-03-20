@@ -9,34 +9,32 @@
 
 #include <Akonadi/Collection>
 #include <QObject>
-namespace KPIM
-{
+namespace KPIM {
 class ProgressItem;
 }
-namespace Akonadi
-{
+namespace Akonadi {
 class ClearCacheFoldersJob;
 }
 class ClearCacheJobInFolderAndSubFolderJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit ClearCacheJobInFolderAndSubFolderJob(QObject *parent = nullptr, QWidget *parentWidget = nullptr);
+    explicit ClearCacheJobInFolderAndSubFolderJob(QObject* parent = nullptr, QWidget* parentWidget = nullptr);
     ~ClearCacheJobInFolderAndSubFolderJob() override;
 
     void start();
 
-    void setTopLevelCollection(const Akonadi::Collection &topLevelCollection);
+    void setTopLevelCollection(const Akonadi::Collection& topLevelCollection);
 
 Q_SIGNALS:
     void clearCacheDone();
 
 private:
     void slotFetchCollectionFailed();
-    void slotFetchCollectionDone(const Akonadi::Collection::List &list);
-    void slotFinished(Akonadi::ClearCacheFoldersJob *job);
-    void slotClearAkonadiCacheUpdate(Akonadi::ClearCacheFoldersJob *job, const QString &description);
-    void slotClearAkonadiCacheCanceled(KPIM::ProgressItem *item);
+    void slotFetchCollectionDone(const Akonadi::Collection::List& list);
+    void slotFinished(Akonadi::ClearCacheFoldersJob* job);
+    void slotClearAkonadiCacheUpdate(Akonadi::ClearCacheFoldersJob* job, const QString& description);
+    void slotClearAkonadiCacheCanceled(KPIM::ProgressItem* item);
     Akonadi::Collection mTopLevelCollection;
-    QWidget *const mParentWidget;
+    QWidget* const mParentWidget;
 };

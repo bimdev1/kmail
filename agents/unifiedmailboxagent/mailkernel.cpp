@@ -16,11 +16,9 @@
 #include <MailCommon/MailKernel>
 #include <MessageComposer/AkonadiSender>
 
-MailKernel::MailKernel(const KSharedConfigPtr &config, QObject *parent)
-    : QObject(parent)
-    , mConfig(config)
-    , mIdentityManager(new KIdentityManagementCore::IdentityManager(true, this))
-    , mMessageSender(new MessageComposer::AkonadiSender(this))
+MailKernel::MailKernel(const KSharedConfigPtr& config, QObject* parent)
+    : QObject(parent), mConfig(config), mIdentityManager(new KIdentityManagementCore::IdentityManager(true, this)),
+      mMessageSender(new MessageComposer::AkonadiSender(this))
 {
     auto session = new Akonadi::Session("UnifiedMailbox Kernel ETM", this);
 
@@ -46,17 +44,17 @@ MailKernel::~MailKernel()
     CommonKernel->registerSettingsIf(nullptr);
 }
 
-KIdentityManagementCore::IdentityManager *MailKernel::identityManager()
+KIdentityManagementCore::IdentityManager* MailKernel::identityManager()
 {
     return mIdentityManager;
 }
 
-MessageComposer::MessageSender *MailKernel::msgSender()
+MessageComposer::MessageSender* MailKernel::msgSender()
 {
     return mMessageSender;
 }
 
-Akonadi::EntityMimeTypeFilterModel *MailKernel::collectionModel() const
+Akonadi::EntityMimeTypeFilterModel* MailKernel::collectionModel() const
 {
     return mCollectionModel;
 }
@@ -71,13 +69,13 @@ void MailKernel::syncConfig()
     Q_ASSERT(false);
 }
 
-MailCommon::JobScheduler *MailKernel::jobScheduler() const
+MailCommon::JobScheduler* MailKernel::jobScheduler() const
 {
     Q_ASSERT(false);
     return nullptr;
 }
 
-Akonadi::ChangeRecorder *MailKernel::folderCollectionMonitor() const
+Akonadi::ChangeRecorder* MailKernel::folderCollectionMonitor() const
 {
     return mFolderCollectionMonitor->monitor();
 }

@@ -12,7 +12,7 @@ class CreateFollowupReminderOnExistingMessageJobTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit CreateFollowupReminderOnExistingMessageJobTest(QObject *parent = nullptr);
+    explicit CreateFollowupReminderOnExistingMessageJobTest(QObject* parent = nullptr);
     ~CreateFollowupReminderOnExistingMessageJobTest() override;
 private Q_SLOTS:
     void shouldHaveDefaultValue();

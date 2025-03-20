@@ -7,16 +7,14 @@
 #include "toomanyrecipientswarning.h"
 #include <KLocalizedString>
 #include <MessageComposer/MessageComposerSettings>
-TooManyRecipientsWarning::TooManyRecipientsWarning(QWidget *parent)
-    : KMessageWidget(parent)
+TooManyRecipientsWarning::TooManyRecipientsWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setPosition(KMessageWidget::Header);
     setVisible(false);
     setCloseButtonVisible(true);
     setMessageType(Warning);
     setWordWrap(true);
-    setText(i18nc("@info:status",
-                  "We have reached maximum recipients. Truncating recipients list to %1.",
+    setText(i18nc("@info:status", "We have reached maximum recipients. Truncating recipients list to %1.",
                   MessageComposer::MessageComposerSettings::self()->maximumRecipients()));
 }
 

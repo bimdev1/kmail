@@ -17,16 +17,11 @@
 class ConfigModule : public KCModule
 {
 public:
-    explicit ConfigModule(QObject *parent, const KPluginMetaData &data)
-        : KCModule(parent, data)
-    {
-    }
+    explicit ConfigModule(QObject* parent, const KPluginMetaData& data) : KCModule(parent, data) {}
 
     ~ConfigModule() override = default;
 
-    void defaults() override
-    {
-    }
+    void defaults() override {}
 
     /** Should return the help anchor for this page or tab */
     virtual QString helpAnchor() const = 0;

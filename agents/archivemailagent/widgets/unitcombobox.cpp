@@ -7,8 +7,7 @@
 #include "unitcombobox.h"
 #include <KLocalizedString>
 
-UnitComboBox::UnitComboBox(QWidget *parent)
-    : QComboBox(parent)
+UnitComboBox::UnitComboBox(QWidget* parent) : QComboBox(parent)
 {
     addItem(i18n("Days"), static_cast<int>(ArchiveMailInfo::ArchiveDays));
     addItem(i18n("Weeks"), static_cast<int>(ArchiveMailInfo::ArchiveWeeks));

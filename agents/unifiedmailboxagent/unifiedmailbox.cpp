@@ -11,12 +11,12 @@
 
 #include <KConfigGroup>
 
-bool UnifiedMailbox::operator==(const UnifiedMailbox &other) const
+bool UnifiedMailbox::operator==(const UnifiedMailbox& other) const
 {
     return mId == other.mId;
 }
 
-void UnifiedMailbox::load(const KConfigGroup &group)
+void UnifiedMailbox::load(const KConfigGroup& group)
 {
     mId = group.name();
     mName = group.readEntry("name");
@@ -26,7 +26,7 @@ void UnifiedMailbox::load(const KConfigGroup &group)
     mCollectionId = group.readEntry("collectionId", -1ll);
 }
 
-void UnifiedMailbox::save(KConfigGroup &group) const
+void UnifiedMailbox::save(KConfigGroup& group) const
 {
     group.writeEntry("name", name());
     group.writeEntry("icon", icon());
@@ -50,7 +50,7 @@ qint64 UnifiedMailbox::collectionId() const
     return mCollectionId;
 }
 
-void UnifiedMailbox::setId(const QString &id)
+void UnifiedMailbox::setId(const QString& id)
 {
     mId = id;
 }
@@ -60,7 +60,7 @@ QString UnifiedMailbox::id() const
     return mId;
 }
 
-void UnifiedMailbox::setName(const QString &name)
+void UnifiedMailbox::setName(const QString& name)
 {
     mName = name;
 }
@@ -70,7 +70,7 @@ QString UnifiedMailbox::name() const
     return mName;
 }
 
-void UnifiedMailbox::setIcon(const QString &icon)
+void UnifiedMailbox::setIcon(const QString& icon)
 {
     mIcon = icon;
 }
@@ -98,7 +98,7 @@ void UnifiedMailbox::removeSourceCollection(qint64 source)
     }
 }
 
-void UnifiedMailbox::setSourceCollections(const QSet<qint64> &sources)
+void UnifiedMailbox::setSourceCollections(const QSet<qint64>& sources)
 {
     while (!mSources.empty()) {
         removeSourceCollection(*mSources.begin());
@@ -113,7 +113,7 @@ QSet<qint64> UnifiedMailbox::sourceCollections() const
     return mSources;
 }
 
-void UnifiedMailbox::attachManager(UnifiedMailboxManager *manager)
+void UnifiedMailbox::attachManager(UnifiedMailboxManager* manager)
 {
     if (mManager != manager) {
         if (manager) {
@@ -123,7 +123,7 @@ void UnifiedMailbox::attachManager(UnifiedMailboxManager *manager)
                 manager->mSourceToBoxMap.insert({source, this});
             }
         } else {
-            for (const auto &source : std::as_const(mSources)) {
+            for (const auto& source : std::as_const(mSources)) {
                 mManager->mMonitor.setCollectionMonitored(Akonadi::Collection{source}, false);
                 mManager->mSourceToBoxMap.erase(source);
             }

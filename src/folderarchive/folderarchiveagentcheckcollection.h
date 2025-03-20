@@ -13,19 +13,19 @@ class FolderArchiveAgentCheckCollection : public QObject
 {
     Q_OBJECT
 public:
-    explicit FolderArchiveAgentCheckCollection(FolderArchiveAccountInfo *info, QObject *parent = nullptr);
+    explicit FolderArchiveAgentCheckCollection(FolderArchiveAccountInfo* info, QObject* parent = nullptr);
     ~FolderArchiveAgentCheckCollection() override;
 
     void start();
 
 Q_SIGNALS:
-    void collectionIdFound(const Akonadi::Collection &col);
-    void checkFailed(const QString &message);
+    void collectionIdFound(const Akonadi::Collection& col);
+    void checkFailed(const QString& message);
 
 private:
-    void slotInitialCollectionFetchingFirstLevelDone(KJob *job);
-    void slotCreateNewFolder(KJob *);
-    void createNewFolder(const QString &name);
+    void slotInitialCollectionFetchingFirstLevelDone(KJob* job);
+    void slotCreateNewFolder(KJob*);
+    void createNewFolder(const QString& name);
     const QDate mCurrentDate;
-    FolderArchiveAccountInfo *const mInfo;
+    FolderArchiveAccountInfo* const mInfo;
 };

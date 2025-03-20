@@ -12,7 +12,7 @@ class DisplayMessageFormatActionMenuTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit DisplayMessageFormatActionMenuTest(QObject *parent = nullptr);
+    explicit DisplayMessageFormatActionMenuTest(QObject* parent = nullptr);
 private Q_SLOTS:
     void shouldHaveDefaultValue();
     void shouldEmitSignalWhenClickOnSubMenu();

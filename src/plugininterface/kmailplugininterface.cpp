@@ -8,8 +8,7 @@
 #include "kmail_debug.h"
 #include "kmmainwidget.h"
 
-KMailPluginInterface::KMailPluginInterface(QObject *parent)
-    : PimCommon::PluginInterface(parent)
+KMailPluginInterface::KMailPluginInterface(QObject* parent) : PimCommon::PluginInterface(parent)
 {
     setPluginName(QStringLiteral("kmail"));
     setPluginDirectory(QStringLiteral("pim6/kmail/mainview"));
@@ -17,24 +16,24 @@ KMailPluginInterface::KMailPluginInterface(QObject *parent)
 
 KMailPluginInterface::~KMailPluginInterface() = default;
 
-KMailPluginInterface *KMailPluginInterface::self()
+KMailPluginInterface* KMailPluginInterface::self()
 {
     static KMailPluginInterface s_self;
     return &s_self;
 }
 
-void KMailPluginInterface::setMainWidget(KMMainWidget *mainwindow)
+void KMailPluginInterface::setMainWidget(KMMainWidget* mainwindow)
 {
     mMainWindow = mainwindow;
 }
 
-bool KMailPluginInterface::initializeInterfaceRequires(PimCommon::AbstractGenericPluginInterface *abstractInterface)
+bool KMailPluginInterface::initializeInterfaceRequires(PimCommon::AbstractGenericPluginInterface* abstractInterface)
 {
     if (!mMainWindow) {
         qCCritical(KMAIL_LOG) << "mainwindows not defined";
         return false;
     }
-    auto interface = static_cast<PimCommon::GenericPluginInterface *>(abstractInterface);
+    auto interface = static_cast<PimCommon::GenericPluginInterface*>(abstractInterface);
     const PimCommon::GenericPluginInterface::RequireTypes requiresFeatures = interface->requiresFeatures();
     if (requiresFeatures & PimCommon::GenericPluginInterface::CurrentItems) {
         interface->setItems(mMainWindow->currentSelection());

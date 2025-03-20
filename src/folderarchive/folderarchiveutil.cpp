@@ -20,7 +20,7 @@ QString FolderArchiveUtil::configFileName()
     return QStringLiteral("foldermailarchiverc");
 }
 
-bool FolderArchiveUtil::resourceSupportArchiving(const QString &resource)
+bool FolderArchiveUtil::resourceSupportArchiving(const QString& resource)
 {
     KConfig config(FolderArchiveUtil::configFileName());
     if (config.hasGroup(groupConfigPattern() + resource)) {

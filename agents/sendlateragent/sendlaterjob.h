@@ -14,8 +14,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <KMime/Message>
 
-namespace MessageComposer
-{
+namespace MessageComposer {
 class SendLaterInfo;
 }
 class KJob;
@@ -23,20 +22,20 @@ class SendLaterJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit SendLaterJob(SendLaterManager *manager, MessageComposer::SendLaterInfo *info, QObject *parent = nullptr);
+    explicit SendLaterJob(SendLaterManager* manager, MessageComposer::SendLaterInfo* info, QObject* parent = nullptr);
     ~SendLaterJob() override;
 
     void start();
 
 private:
     void sendDone();
-    void sendError(const QString &error, SendLaterManager::ErrorType type);
-    void slotMessageTransfered(const Akonadi::Item::List &);
-    void slotJobFinished(KJob *);
-    void slotDeleteItem(KJob *);
-    void updateAndCleanMessageBeforeSending(const KMime::Message::Ptr &msg);
+    void sendError(const QString& error, SendLaterManager::ErrorType type);
+    void slotMessageTransfered(const Akonadi::Item::List&);
+    void slotJobFinished(KJob*);
+    void slotDeleteItem(KJob*);
+    void updateAndCleanMessageBeforeSending(const KMime::Message::Ptr& msg);
     Akonadi::ItemFetchScope mFetchScope;
-    SendLaterManager *const mManager;
-    MessageComposer::SendLaterInfo *const mInfo;
+    SendLaterManager* const mManager;
+    MessageComposer::SendLaterInfo* const mInfo;
     Akonadi::Item mItem;
 };

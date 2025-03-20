@@ -14,13 +14,11 @@
 #include <MessageComposer/AttachmentControllerBase>
 class KMComposerWin;
 class QModelIndex;
-namespace MessageComposer
-{
+namespace MessageComposer {
 class AttachmentModel;
 }
 
-namespace KMail
-{
+namespace KMail {
 class AttachmentView;
 
 class AttachmentController : public MessageComposer::AttachmentControllerBase
@@ -28,7 +26,8 @@ class AttachmentController : public MessageComposer::AttachmentControllerBase
     Q_OBJECT
 
 public:
-    explicit AttachmentController(MessageComposer::AttachmentModel *model, AttachmentView *view, KMComposerWin *composer);
+    explicit AttachmentController(MessageComposer::AttachmentModel* model, AttachmentView* view,
+                                  KMComposerWin* composer);
     ~AttachmentController() override;
 
 public Q_SLOTS:
@@ -37,13 +36,13 @@ public Q_SLOTS:
 private:
     void identityChanged();
     void slotActionsCreated();
-    void addAttachmentItems(const Akonadi::Item::List &items);
+    void addAttachmentItems(const Akonadi::Item::List& items);
     void selectionChanged();
-    void onShowAttachment(KMime::Content *content, const QByteArray &charset);
-    void doubleClicked(const QModelIndex &itemClicked);
+    void onShowAttachment(KMime::Content* content, const QByteArray& charset);
+    void doubleClicked(const QModelIndex& itemClicked);
     void slotSelectAllAttachment();
 
-    KMComposerWin *const mComposer;
-    AttachmentView *const mView;
+    KMComposerWin* const mComposer;
+    AttachmentView* const mView;
 };
 } // namespace KMail

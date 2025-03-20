@@ -8,18 +8,16 @@
 #include <MailCommon/MailUtil>
 #include <QApplication>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QStringList listOfMailerFound = MailCommon::Util::foundMailer();
     if (!listOfMailerFound.isEmpty()) {
-        if (KMessageBox::questionTwoActionsList(nullptr,
-                                                QStringLiteral("Another mailer was found on system. Do you want to import data from it?"),
-                                                listOfMailerFound,
-                                                QString(),
-                                                KGuiItem(QStringLiteral("Import"), QStringLiteral("document-import")),
-                                                KGuiItem(QStringLiteral("Do Not Import"), QStringLiteral("dialog-cancel")))
-            == KMessageBox::ButtonCode::PrimaryAction) {
+        if (KMessageBox::questionTwoActionsList(
+                nullptr, QStringLiteral("Another mailer was found on system. Do you want to import data from it?"),
+                listOfMailerFound, QString(), KGuiItem(QStringLiteral("Import"), QStringLiteral("document-import")),
+                KGuiItem(QStringLiteral("Do Not Import"), QStringLiteral("dialog-cancel"))) ==
+            KMessageBox::ButtonCode::PrimaryAction) {
             qDebug() << " launch importwizard";
         } else {
             qDebug() << " no importing";

@@ -9,20 +9,16 @@
 
 #include "undostack.h"
 
-#include "kmkernel.h"
 #include <Akonadi/ItemMoveJob>
 #include <KJob>
+#include "kmkernel.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
 
 using namespace KMail;
 
-UndoStack::UndoStack(int size)
-    : QObject(nullptr)
-    , mSize(size)
-{
-}
+UndoStack::UndoStack(int size) : QObject(nullptr), mSize(size) {}
 
 UndoStack::~UndoStack()
 {
@@ -38,14 +34,14 @@ void UndoStack::clear()
 QString UndoStack::undoInfo() const
 {
     if (!mStack.isEmpty()) {
-        UndoInfo *info = mStack.first();
+        UndoInfo* info = mStack.first();
         return info->moveToTrash ? i18n("Move To Trash") : i18np("Move Message", "Move Messages", info->items.count());
     } else {
         return {};
     }
 }
 
-int UndoStack::newUndoAction(const Akonadi::Collection &srcFolder, const Akonadi::Collection &destFolder)
+int UndoStack::newUndoAction(const Akonadi::Collection& srcFolder, const Akonadi::Collection& destFolder)
 {
     auto info = new UndoInfo;
     info->id = ++mLastId;
@@ -61,10 +57,10 @@ int UndoStack::newUndoAction(const Akonadi::Collection &srcFolder, const Akonadi
     return info->id;
 }
 
-void UndoStack::addMsgToAction(int undoId, const Akonadi::Item &item)
+void UndoStack::addMsgToAction(int undoId, const Akonadi::Item& item)
 {
     if (!mCachedInfo || mCachedInfo->id != undoId) {
-        QList<UndoInfo *>::const_iterator itr = mStack.constBegin();
+        QList<UndoInfo*>::const_iterator itr = mStack.constBegin();
         while (itr != mStack.constEnd()) {
             if ((*itr)->id == undoId) {
                 mCachedInfo = (*itr);
@@ -86,7 +82,7 @@ bool UndoStack::isEmpty() const
 void UndoStack::undo()
 {
     if (!mStack.isEmpty()) {
-        UndoInfo *info = mStack.takeFirst();
+        UndoInfo* info = mStack.takeFirst();
         Q_EMIT undoStackChanged();
         auto job = new Akonadi::ItemMoveJob(info->items, info->srcFolder, this);
         connect(job, &Akonadi::ItemMoveJob::result, this, &UndoStack::slotMoveResult);
@@ -97,7 +93,7 @@ void UndoStack::undo()
     }
 }
 
-void UndoStack::slotMoveResult(KJob *job)
+void UndoStack::slotMoveResult(KJob* job)
 {
     if (job->error()) {
         KMessageBox::error(kmkernel->mainWin(), i18n("Cannot move message. %1", job->errorString()));

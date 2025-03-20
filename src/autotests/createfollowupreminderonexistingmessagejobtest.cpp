@@ -4,10 +4,10 @@
    SPDX-License-Identifier: GPL-2.0-or-later
 */
 #include "createfollowupreminderonexistingmessagejobtest.h"
-#include "../job/createfollowupreminderonexistingmessagejob.h"
 #include <QTest>
+#include "../job/createfollowupreminderonexistingmessagejob.h"
 
-CreateFollowupReminderOnExistingMessageJobTest::CreateFollowupReminderOnExistingMessageJobTest(QObject *parent)
+CreateFollowupReminderOnExistingMessageJobTest::CreateFollowupReminderOnExistingMessageJobTest(QObject* parent)
     : QObject(parent)
 {
 }

@@ -9,16 +9,15 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
 #include <QList>
 #include <QObject>
+#include "kmail_private_export.h"
 
 class KJob;
 
-namespace KMail
-{
+namespace KMail {
 /** A class for storing Undo information. */
 class UndoInfo
 {
@@ -40,8 +39,8 @@ public:
     explicit UndoStack(int size);
     ~UndoStack() override;
 
-    [[nodiscard]] int newUndoAction(const Akonadi::Collection &srcFolder, const Akonadi::Collection &destFolder);
-    void addMsgToAction(int undoId, const Akonadi::Item &item);
+    [[nodiscard]] int newUndoAction(const Akonadi::Collection& srcFolder, const Akonadi::Collection& destFolder);
+    void addMsgToAction(int undoId, const Akonadi::Item& item);
     [[nodiscard]] bool isEmpty() const;
     void undo();
 
@@ -52,10 +51,10 @@ Q_SIGNALS:
 
 private:
     KMAIL_NO_EXPORT void clear();
-    KMAIL_NO_EXPORT void slotMoveResult(KJob *);
-    QList<UndoInfo *> mStack;
+    KMAIL_NO_EXPORT void slotMoveResult(KJob*);
+    QList<UndoInfo*> mStack;
     const int mSize = 0;
     int mLastId = 0;
-    UndoInfo *mCachedInfo = nullptr;
+    UndoInfo* mCachedInfo = nullptr;
 };
-}
+} // namespace KMail

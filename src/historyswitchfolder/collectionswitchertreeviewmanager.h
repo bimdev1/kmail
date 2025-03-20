@@ -6,10 +6,10 @@ SPDX-License-Identifier: GPL-2.0-only
 */
 #pragma once
 
-#include "kmail_private_export.h"
 #include <Akonadi/Collection>
 #include <QList>
 #include <QObject>
+#include "kmail_private_export.h"
 class CollectionSwitcherTreeView;
 class CollectionSwitcherModel;
 class QAction;
@@ -18,30 +18,30 @@ class KMAILTESTS_TESTS_EXPORT CollectionSwitcherTreeViewManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit CollectionSwitcherTreeViewManager(QObject *parent = nullptr);
+    explicit CollectionSwitcherTreeViewManager(QObject* parent = nullptr);
     ~CollectionSwitcherTreeViewManager() override;
 
-    void addActions(const QList<QAction *> &lst);
+    void addActions(const QList<QAction*>& lst);
 
-    [[nodiscard]] QWidget *parentWidget() const;
-    void setParentWidget(QWidget *newParentWidget);
+    [[nodiscard]] QWidget* parentWidget() const;
+    void setParentWidget(QWidget* newParentWidget);
 
     void selectForward();
     void selectBackward();
     void updateViewGeometry();
 
-    void addHistory(const Akonadi::Collection &currentCol, const QString &fullPath);
+    void addHistory(const Akonadi::Collection& currentCol, const QString& fullPath);
 
-    [[nodiscard]] CollectionSwitcherTreeView *collectionSwitcherTreeView() const;
+    [[nodiscard]] CollectionSwitcherTreeView* collectionSwitcherTreeView() const;
 
 Q_SIGNALS:
-    void switchToFolder(const Akonadi::Collection &col);
+    void switchToFolder(const Akonadi::Collection& col);
 
 private:
-    KMAIL_NO_EXPORT void activateCollection(const QModelIndex &index);
-    KMAIL_NO_EXPORT void switchToCollectionClicked(const QModelIndex &index);
+    KMAIL_NO_EXPORT void activateCollection(const QModelIndex& index);
+    KMAIL_NO_EXPORT void switchToCollectionClicked(const QModelIndex& index);
     KMAIL_NO_EXPORT void selectCollection(const int from, const int to);
-    QWidget *mParentWidget = nullptr;
-    CollectionSwitcherTreeView *const mCollectionSwitcherTreeView;
-    CollectionSwitcherModel *const mCollectionSwitcherModel;
+    QWidget* mParentWidget = nullptr;
+    CollectionSwitcherTreeView* const mCollectionSwitcherTreeView;
+    CollectionSwitcherModel* const mCollectionSwitcherModel;
 };

@@ -13,7 +13,7 @@ class CollectionSwitcherTreeViewManagerTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit CollectionSwitcherTreeViewManagerTest(QObject *parent = nullptr);
+    explicit CollectionSwitcherTreeViewManagerTest(QObject* parent = nullptr);
     ~CollectionSwitcherTreeViewManagerTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValues();

@@ -25,20 +25,16 @@
 #include <MailCommon/FolderTreeWidget>
 #include <QWindow>
 
-namespace
-{
-static constexpr const char *EditorGroup = "UnifiedMailboxEditorDialog";
+namespace {
+static constexpr const char* EditorGroup = "UnifiedMailboxEditorDialog";
 
 class SelfFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    explicit SelfFilterProxyModel(QObject *parent = nullptr)
-        : QSortFilterProxyModel(parent)
-    {
-    }
+    explicit SelfFilterProxyModel(QObject* parent = nullptr) : QSortFilterProxyModel(parent) {}
 
-    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override
+    [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override
     {
         if (role == Qt::CheckStateRole) {
             // Make top-level collections uncheckable
@@ -51,7 +47,7 @@ public:
         return QSortFilterProxyModel::data(index, role);
     }
 
-    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex &index) const override
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override
     {
         // Make top-level collections uncheckable
         const auto col = data(index, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
@@ -62,25 +58,24 @@ public:
         }
     }
 
-    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
+    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
     {
         // Hide ourselves
         const auto sourceIndex = sourceModel()->index(source_row, 0, source_parent);
-        const auto col = sourceModel()->data(sourceIndex, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        const auto col =
+            sourceModel()->data(sourceIndex, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
         return !UnifiedMailboxManager::isUnifiedMailbox(col);
     }
 };
-}
+} // namespace
 
-UnifiedMailboxEditor::UnifiedMailboxEditor(const KSharedConfigPtr &config, QWidget *parent)
+UnifiedMailboxEditor::UnifiedMailboxEditor(const KSharedConfigPtr& config, QWidget* parent)
     : UnifiedMailboxEditor({}, config, parent)
 {
 }
 
-UnifiedMailboxEditor::UnifiedMailboxEditor(UnifiedMailbox *mailbox, const KSharedConfigPtr &config, QWidget *parent)
-    : QDialog(parent)
-    , mMailbox(mailbox)
-    , mConfig(config)
+UnifiedMailboxEditor::UnifiedMailboxEditor(UnifiedMailbox* mailbox, const KSharedConfigPtr& config, QWidget* parent)
+    : QDialog(parent), mMailbox(mailbox), mConfig(config)
 {
     setWindowTitle(i18nc("@title:window", "Configure Unified Mailbox"));
     setWindowIcon(QIcon::fromTheme(QStringLiteral("kmail")));
@@ -95,12 +90,12 @@ UnifiedMailboxEditor::UnifiedMailboxEditor(UnifiedMailbox *mailbox, const KShare
         nameEdit->setReadOnly(true);
     }
     f->addRow(i18n("Name:"), nameEdit);
-    connect(nameEdit, &QLineEdit::textChanged, this, [this](const QString &name) {
-        mMailbox->setName(name.trimmed());
-    });
+    connect(nameEdit, &QLineEdit::textChanged, this,
+            [this](const QString& name) { mMailbox->setName(name.trimmed()); });
 
     auto iconButton =
-        new QPushButton(QIcon::fromTheme(mMailbox->icon(), QIcon::fromTheme(QStringLiteral("folder-mail"))), i18nc("@action:button", "Pick icon..."));
+        new QPushButton(QIcon::fromTheme(mMailbox->icon(), QIcon::fromTheme(QStringLiteral("folder-mail"))),
+                        i18nc("@action:button", "Pick icon..."));
     f->addRow(i18n("Icon:"), iconButton);
     connect(iconButton, &QPushButton::clicked, this, [iconButton, this]() {
         const auto iconName = KIconDialog::getIcon();
@@ -113,11 +108,11 @@ UnifiedMailboxEditor::UnifiedMailboxEditor(UnifiedMailbox *mailbox, const KShare
 
     l->addSpacing(10);
 
-    auto ftw = new MailCommon::FolderTreeWidget(nullptr,
-                                                nullptr,
-                                                MailCommon::FolderTreeWidget::TreeViewOptions(MailCommon::FolderTreeWidget::UseDistinctSelectionModel
-                                                                                              | MailCommon::FolderTreeWidget::HideStatistics
-                                                                                              | MailCommon::FolderTreeWidget::HideHeaderViewMenu));
+    auto ftw = new MailCommon::FolderTreeWidget(
+        nullptr, nullptr,
+        MailCommon::FolderTreeWidget::TreeViewOptions(MailCommon::FolderTreeWidget::UseDistinctSelectionModel |
+                                                      MailCommon::FolderTreeWidget::HideStatistics |
+                                                      MailCommon::FolderTreeWidget::HideHeaderViewMenu));
     ftw->folderTreeView()->setDragEnabled(false);
     l->addWidget(ftw);
 
@@ -130,7 +125,8 @@ UnifiedMailboxEditor::UnifiedMailboxEditor(UnifiedMailbox *mailbox, const KShare
     checkable->setSelectionModel(selectionModel);
     const auto sources = mMailbox->sourceCollections();
     for (const auto source : sources) {
-        const auto index = Akonadi::EntityTreeModel::modelIndexForCollection(selectionModel->model(), Akonadi::Collection(source));
+        const auto index =
+            Akonadi::EntityTreeModel::modelIndexForCollection(selectionModel->model(), Akonadi::Collection(source));
         selectionModel->select(index, QItemSelectionModel::Select);
     }
 
@@ -145,16 +141,15 @@ UnifiedMailboxEditor::UnifiedMailboxEditor(UnifiedMailbox *mailbox, const KShare
         const auto indexes = checkable->selectionModel()->selectedIndexes();
         QSet<qint64> list;
         list.reserve(indexes.count());
-        for (const auto &index : indexes) {
+        for (const auto& index : indexes) {
             list << index.data(Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
         }
         mMailbox->setSourceCollections(list);
         accept();
     });
     connect(box, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    connect(nameEdit, &QLineEdit::textChanged, box, [box](const QString &name) {
-        box->button(QDialogButtonBox::Ok)->setEnabled(!name.trimmed().isEmpty());
-    });
+    connect(nameEdit, &QLineEdit::textChanged, box,
+            [box](const QString& name) { box->button(QDialogButtonBox::Ok)->setEnabled(!name.trimmed().isEmpty()); });
     box->button(QDialogButtonBox::Ok)->setEnabled(!nameEdit->text().trimmed().isEmpty());
     l->addWidget(box);
     readConfig();

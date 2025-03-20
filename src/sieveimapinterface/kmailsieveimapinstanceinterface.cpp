@@ -17,7 +17,7 @@ QList<KSieveCore::SieveImapInstance> KMailSieveImapInstanceInterface::sieveImapI
 
     const Akonadi::AgentInstance::List allInstances = Akonadi::AgentManager::self()->instances();
     listInstance.reserve(allInstances.count());
-    for (const Akonadi::AgentInstance &instance : allInstances) {
+    for (const Akonadi::AgentInstance& instance : allInstances) {
         KSieveCore::SieveImapInstance sieveInstance;
         sieveInstance.setCapabilities(instance.type().capabilities());
         sieveInstance.setIdentifier(instance.identifier());

@@ -7,8 +7,7 @@
 #include "formatcombobox.h"
 #include <KLocalizedString>
 
-FormatComboBox::FormatComboBox(QWidget *parent)
-    : QComboBox(parent)
+FormatComboBox::FormatComboBox(QWidget* parent) : QComboBox(parent)
 {
     // These combobox values have to stay in sync with the ArchiveType enum from BackupJob!
     addItem(i18n("Compressed Zip Archive (.zip)"), static_cast<int>(MailCommon::BackupJob::Zip));

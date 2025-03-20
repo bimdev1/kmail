@@ -7,14 +7,14 @@
 #include "kmsieveimappasswordprovider.h"
 #include "kmail_debug.h"
 using namespace QKeychain;
-KMSieveImapPasswordProvider::KMSieveImapPasswordProvider(QObject *parent)
+KMSieveImapPasswordProvider::KMSieveImapPasswordProvider(QObject* parent)
     : KSieveCore::SieveImapPasswordProvider(parent)
 {
 }
 
 KMSieveImapPasswordProvider::~KMSieveImapPasswordProvider() = default;
 
-void KMSieveImapPasswordProvider::passwords(const QString &identifier)
+void KMSieveImapPasswordProvider::passwords(const QString& identifier)
 {
     mIdentifier = identifier;
 
@@ -24,9 +24,9 @@ void KMSieveImapPasswordProvider::passwords(const QString &identifier)
     readJob->start();
 }
 
-void KMSieveImapPasswordProvider::readSieveServerPasswordFinished(QKeychain::Job *baseJob)
+void KMSieveImapPasswordProvider::readSieveServerPasswordFinished(QKeychain::Job* baseJob)
 {
-    auto job = qobject_cast<ReadPasswordJob *>(baseJob);
+    auto job = qobject_cast<ReadPasswordJob*>(baseJob);
     Q_ASSERT(job);
     if (job->error()) {
         qCWarning(KMAIL_LOG) << "An error occurred while reading password: " << job->errorString();
@@ -40,9 +40,9 @@ void KMSieveImapPasswordProvider::readSieveServerPasswordFinished(QKeychain::Job
     readJob->start();
 }
 
-void KMSieveImapPasswordProvider::readSieveServerCustomPasswordFinished(QKeychain::Job *baseJob)
+void KMSieveImapPasswordProvider::readSieveServerCustomPasswordFinished(QKeychain::Job* baseJob)
 {
-    auto job = qobject_cast<ReadPasswordJob *>(baseJob);
+    auto job = qobject_cast<ReadPasswordJob*>(baseJob);
     Q_ASSERT(job);
     if (job->error()) {
         if (job->error() != QKeychain::EntryNotFound) {

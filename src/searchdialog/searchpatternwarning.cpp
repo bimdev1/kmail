@@ -11,8 +11,7 @@
 using namespace KMail;
 using namespace Qt::Literals::StringLiterals;
 
-SearchPatternWarning::SearchPatternWarning(QWidget *parent)
-    : KMessageWidget(parent)
+SearchPatternWarning::SearchPatternWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setPosition(KMessageWidget::Header);
     setVisible(false);
@@ -23,12 +22,12 @@ SearchPatternWarning::SearchPatternWarning(QWidget *parent)
 
 SearchPatternWarning::~SearchPatternWarning() = default;
 
-void SearchPatternWarning::setError(const QStringList &lstError)
+void SearchPatternWarning::setError(const QStringList& lstError)
 {
     setText(i18n("Search failed some errors were found: <ul><li>%1</li></ul>", lstError.join("</li><li>"_L1)));
 }
 
-void SearchPatternWarning::showWarningPattern(const QStringList &lstError)
+void SearchPatternWarning::showWarningPattern(const QStringList& lstError)
 {
     setError(lstError);
     animatedShow();

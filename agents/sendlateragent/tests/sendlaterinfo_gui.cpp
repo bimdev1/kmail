@@ -10,7 +10,7 @@
 
 #include <MessageComposer/SendLaterDialog>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QStandardPaths::setTestModeEnabled(true);

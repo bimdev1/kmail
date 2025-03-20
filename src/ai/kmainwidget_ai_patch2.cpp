@@ -9,9 +9,8 @@ void KMMainWidget::slotUpdateAIActions()
 // Add the signal connection to the KMMainWidget constructor
 // Add after the line "readConfig();"
 
-    // Initialize AI extension
-    KMail::initializeAIExtension(this, actionCollection);
+// Initialize AI extension
+KMail::initializeAIExtension(this, actionCollection);
 
-    // Connect AI signals
-    connect(this, &KMMainWidget::selectionChanged,
-            this, &KMMainWidget::slotUpdateAIActions);
+// Connect AI signals
+connect(this, &KMMainWidget::selectionChanged, this, &KMMainWidget::slotUpdateAIActions);

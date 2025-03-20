@@ -5,17 +5,14 @@
 */
 
 #include "opencomposerhiddenjob.h"
-#include "kmkernel.h"
 #include <MessageComposer/ComposerJob>
+#include "kmkernel.h"
 
 #include <MessageComposer/MessageHelper>
 
 #include <TemplateParser/TemplateParserJob>
 
-OpenComposerHiddenJob::OpenComposerHiddenJob(QObject *parent)
-    : QObject(parent)
-{
-}
+OpenComposerHiddenJob::OpenComposerHiddenJob(QObject* parent) : QObject(parent) {}
 
 OpenComposerHiddenJob::~OpenComposerHiddenJob() = default;
 
@@ -42,7 +39,8 @@ void OpenComposerHiddenJob::start()
         slotOpenComposer();
     } else {
         auto parser = new TemplateParser::TemplateParserJob(mMsg, TemplateParser::TemplateParserJob::NewMessage, this);
-        connect(parser, &TemplateParser::TemplateParserJob::parsingDone, this, &OpenComposerHiddenJob::slotOpenComposer);
+        connect(parser, &TemplateParser::TemplateParserJob::parsingDone, this,
+                &OpenComposerHiddenJob::slotOpenComposer);
         parser->setIdentityManager(KMKernel::self()->identityManager());
         parser->process(KMime::Message::Ptr());
     }
@@ -51,9 +49,10 @@ void OpenComposerHiddenJob::start()
 void OpenComposerHiddenJob::slotOpenComposer()
 {
     mMsg->assemble();
-    const KMail::Composer::TemplateContext context =
-        mSettings.mBody.isEmpty() ? KMail::Composer::TemplateContext::New : KMail::Composer::TemplateContext::NoTemplate;
-    KMail::Composer *cWin = KMail::makeComposer(mMsg, false, false, context);
+    const KMail::Composer::TemplateContext context = mSettings.mBody.isEmpty()
+                                                         ? KMail::Composer::TemplateContext::New
+                                                         : KMail::Composer::TemplateContext::NoTemplate;
+    KMail::Composer* cWin = KMail::makeComposer(mMsg, false, false, context);
     if (!mSettings.mHidden) {
         cWin->showAndActivateComposer();
     } else {
@@ -65,7 +64,7 @@ void OpenComposerHiddenJob::slotOpenComposer()
     deleteLater();
 }
 
-void OpenComposerHiddenJob::setSettings(const OpenComposerHiddenJobSettings &settings)
+void OpenComposerHiddenJob::setSettings(const OpenComposerHiddenJobSettings& settings)
 {
     mSettings = settings;
 }

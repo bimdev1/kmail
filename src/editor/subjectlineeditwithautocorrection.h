@@ -6,18 +6,18 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <PimCommon/LineEditWithAutoCorrection>
+#include "kmail_private_export.h"
 class KMAILTESTS_TESTS_EXPORT SubjectLineEditWithAutoCorrection : public PimCommon::LineEditWithAutoCorrection
 {
     Q_OBJECT
 public:
-    explicit SubjectLineEditWithAutoCorrection(QWidget *parent, const QString &configFile);
+    explicit SubjectLineEditWithAutoCorrection(QWidget* parent, const QString& configFile);
     ~SubjectLineEditWithAutoCorrection() override;
 
 protected:
-    void dropEvent(QDropEvent *event) override;
+    void dropEvent(QDropEvent* event) override;
 
 Q_SIGNALS:
-    void handleMimeData(const QMimeData *mimeData);
+    void handleMimeData(const QMimeData* mimeData);
 };

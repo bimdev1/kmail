@@ -6,14 +6,11 @@
 */
 
 #include "potentialphishingemailwarningtest.h"
-#include "../potentialphishingemailwarning.h"
 #include <QAction>
 #include <QTest>
+#include "../potentialphishingemailwarning.h"
 
-PotentialPhishingEmailWarningTest::PotentialPhishingEmailWarningTest(QObject *parent)
-    : QObject(parent)
-{
-}
+PotentialPhishingEmailWarningTest::PotentialPhishingEmailWarningTest(QObject* parent) : QObject(parent) {}
 
 PotentialPhishingEmailWarningTest::~PotentialPhishingEmailWarningTest() = default;
 
@@ -22,7 +19,7 @@ void PotentialPhishingEmailWarningTest::shouldHaveDefaultValue()
     PotentialPhishingEmailWarning w;
     QVERIFY(!w.isVisible());
     // Verify QVERIFY(w.isCloseButtonVisible());
-    auto act = w.findChild<QAction *>(QStringLiteral("sendnow"));
+    auto act = w.findChild<QAction*>(QStringLiteral("sendnow"));
     QVERIFY(act);
 }
 

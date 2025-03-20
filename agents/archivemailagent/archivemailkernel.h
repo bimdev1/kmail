@@ -8,34 +8,32 @@
 
 #include <MailCommon/MailInterfaces>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class EntityTreeModel;
 class EntityMimeTypeFilterModel;
-}
+} // namespace Akonadi
 
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderCollectionMonitor;
 class JobScheduler;
-}
+} // namespace MailCommon
 
 class ArchiveMailKernel : public QObject, public MailCommon::IKernel, public MailCommon::ISettings
 {
     Q_OBJECT
 public:
-    explicit ArchiveMailKernel(QObject *parent = nullptr);
+    explicit ArchiveMailKernel(QObject* parent = nullptr);
 
-    static ArchiveMailKernel *self();
+    static ArchiveMailKernel* self();
 
-    [[nodiscard]] KIdentityManagementCore::IdentityManager *identityManager() override;
-    [[nodiscard]] MessageComposer::MessageSender *msgSender() override;
+    [[nodiscard]] KIdentityManagementCore::IdentityManager* identityManager() override;
+    [[nodiscard]] MessageComposer::MessageSender* msgSender() override;
 
-    [[nodiscard]] Akonadi::EntityMimeTypeFilterModel *collectionModel() const override;
+    [[nodiscard]] Akonadi::EntityMimeTypeFilterModel* collectionModel() const override;
     [[nodiscard]] KSharedConfig::Ptr config() override;
     void syncConfig() override;
-    [[nodiscard]] MailCommon::JobScheduler *jobScheduler() const override;
-    [[nodiscard]] Akonadi::ChangeRecorder *folderCollectionMonitor() const override;
+    [[nodiscard]] MailCommon::JobScheduler* jobScheduler() const override;
+    [[nodiscard]] Akonadi::ChangeRecorder* folderCollectionMonitor() const override;
     void updateSystemTray() override;
 
     [[nodiscard]] qreal closeToQuotaThreshold() override;
@@ -47,9 +45,9 @@ public:
     void expunge(Akonadi::Collection::Id col, bool sync) override;
 
 private:
-    KIdentityManagementCore::IdentityManager *mIdentityManager = nullptr;
-    MailCommon::FolderCollectionMonitor *mFolderCollectionMonitor = nullptr;
-    Akonadi::EntityTreeModel *mEntityTreeModel = nullptr;
-    Akonadi::EntityMimeTypeFilterModel *mCollectionModel = nullptr;
-    MailCommon::JobScheduler *mJobScheduler = nullptr;
+    KIdentityManagementCore::IdentityManager* mIdentityManager = nullptr;
+    MailCommon::FolderCollectionMonitor* mFolderCollectionMonitor = nullptr;
+    Akonadi::EntityTreeModel* mEntityTreeModel = nullptr;
+    Akonadi::EntityMimeTypeFilterModel* mCollectionModel = nullptr;
+    MailCommon::JobScheduler* mJobScheduler = nullptr;
 };

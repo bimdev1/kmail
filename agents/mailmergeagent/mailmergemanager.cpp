@@ -6,10 +6,7 @@
 
 #include "mailmergemanager.h"
 
-MailMergeManager::MailMergeManager(QObject *parent)
-    : QObject(parent)
-{
-}
+MailMergeManager::MailMergeManager(QObject* parent) : QObject(parent) {}
 
 MailMergeManager::~MailMergeManager() = default;
 

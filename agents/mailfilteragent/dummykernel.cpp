@@ -9,11 +9,10 @@
 #include <MailCommon/FolderCollectionMonitor>
 #include <MessageComposer/AkonadiSender>
 
-DummyKernel::DummyKernel(QObject *parent)
-    : QObject(parent)
-    , mMessageSender(new MessageComposer::AkonadiSender(this))
-    , mIdentityManager(new KIdentityManagementCore::IdentityManager(true, this))
-    , mCollectionModel(new Akonadi::EntityMimeTypeFilterModel(this))
+DummyKernel::DummyKernel(QObject* parent)
+    : QObject(parent), mMessageSender(new MessageComposer::AkonadiSender(this)),
+      mIdentityManager(new KIdentityManagementCore::IdentityManager(true, this)),
+      mCollectionModel(new Akonadi::EntityMimeTypeFilterModel(this))
 {
     auto session = new Akonadi::Session(QByteArrayLiteral("MailFilter Kernel ETM"), this);
 
@@ -29,17 +28,17 @@ DummyKernel::DummyKernel(QObject *parent)
     mCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 }
 
-KIdentityManagementCore::IdentityManager *DummyKernel::identityManager()
+KIdentityManagementCore::IdentityManager* DummyKernel::identityManager()
 {
     return mIdentityManager;
 }
 
-MessageComposer::MessageSender *DummyKernel::msgSender()
+MessageComposer::MessageSender* DummyKernel::msgSender()
 {
     return mMessageSender;
 }
 
-Akonadi::EntityMimeTypeFilterModel *DummyKernel::collectionModel() const
+Akonadi::EntityMimeTypeFilterModel* DummyKernel::collectionModel() const
 {
     return mCollectionModel;
 }
@@ -54,13 +53,13 @@ void DummyKernel::syncConfig()
     Q_ASSERT(false);
 }
 
-MailCommon::JobScheduler *DummyKernel::jobScheduler() const
+MailCommon::JobScheduler* DummyKernel::jobScheduler() const
 {
     Q_ASSERT(false);
     return nullptr;
 }
 
-Akonadi::ChangeRecorder *DummyKernel::folderCollectionMonitor() const
+Akonadi::ChangeRecorder* DummyKernel::folderCollectionMonitor() const
 {
     return mFolderCollectionMonitor->monitor();
 }

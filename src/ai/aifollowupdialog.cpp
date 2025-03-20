@@ -1,35 +1,30 @@
 #include "aifollowupdialog.h"
-#include "localaiservice.h"
 #include "../kmmessage.h"
+#include "localaiservice.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QDateTimeEdit>
-#include <QPushButton>
-#include <QProgressBar>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 namespace KMail {
 
-AIFollowUpDialog::AIFollowUpDialog(KMMessage *message, QWidget *parent)
-    : QDialog(parent)
-    , m_message(message)
-    , m_aiService(new LocalAIService(this))
-    , m_isChecking(false)
+AIFollowUpDialog::AIFollowUpDialog(KMMessage* message, QWidget* parent)
+    : QDialog(parent), m_message(message), m_aiService(new LocalAIService(this)), m_isChecking(false)
 {
     setupUi();
     createConnections();
-    
+
     // Check for follow-up automatically
     slotCheckFollowUp();
 }
 
-AIFollowUpDialog::~AIFollowUpDialog()
-{
-}
+AIFollowUpDialog::~AIFollowUpDialog() {}
 
 void AIFollowUpDialog::setupUi()
 {
@@ -59,18 +54,18 @@ void AIFollowUpDialog::setupUi()
 
     // Add buttons
     auto buttonLayout = new QHBoxLayout;
-    
+
     m_checkButton = new QPushButton(i18n("Check Again"), this);
     m_acceptButton = new QPushButton(i18n("Set Reminder"), this);
     m_cancelButton = new QPushButton(i18n("Cancel"), this);
-    
+
     m_acceptButton->setDefault(true);
-    
+
     buttonLayout->addWidget(m_checkButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(m_acceptButton);
     buttonLayout->addWidget(m_cancelButton);
-    
+
     mainLayout->addLayout(buttonLayout);
 
     // Initially disable accept button until we check
@@ -80,17 +75,12 @@ void AIFollowUpDialog::setupUi()
 
 void AIFollowUpDialog::createConnections()
 {
-    connect(m_checkButton, &QPushButton::clicked,
-            this, &AIFollowUpDialog::slotCheckFollowUp);
-    connect(m_acceptButton, &QPushButton::clicked,
-            this, &AIFollowUpDialog::slotAccept);
-    connect(m_cancelButton, &QPushButton::clicked,
-            this, &QDialog::reject);
-            
-    connect(m_aiService, &LocalAIService::followUpChecked,
-            this, &AIFollowUpDialog::slotFollowUpChecked);
-    connect(m_aiService, &LocalAIService::error,
-            this, &AIFollowUpDialog::slotError);
+    connect(m_checkButton, &QPushButton::clicked, this, &AIFollowUpDialog::slotCheckFollowUp);
+    connect(m_acceptButton, &QPushButton::clicked, this, &AIFollowUpDialog::slotAccept);
+    connect(m_cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+
+    connect(m_aiService, &LocalAIService::followUpChecked, this, &AIFollowUpDialog::slotFollowUpChecked);
+    connect(m_aiService, &LocalAIService::error, this, &AIFollowUpDialog::slotError);
 }
 
 void AIFollowUpDialog::slotCheckFollowUp()
@@ -110,7 +100,7 @@ void AIFollowUpDialog::slotCheckFollowUp()
     m_aiService->checkFollowUp(content);
 }
 
-void AIFollowUpDialog::slotFollowUpChecked(bool needsFollowUp, const QDateTime &suggestedTime)
+void AIFollowUpDialog::slotFollowUpChecked(bool needsFollowUp, const QDateTime& suggestedTime)
 {
     m_isChecking = false;
     m_checkButton->setEnabled(true);
@@ -128,7 +118,7 @@ void AIFollowUpDialog::slotFollowUpChecked(bool needsFollowUp, const QDateTime &
     }
 }
 
-void AIFollowUpDialog::slotError(const QString &error)
+void AIFollowUpDialog::slotError(const QString& error)
 {
     m_isChecking = false;
     m_checkButton->setEnabled(true);

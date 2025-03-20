@@ -29,7 +29,7 @@ QString AccountInfoSource::description() const
     return i18n("Number and type of accounts configured in KMail (receiver and sender).");
 }
 
-void AccountInfoSource::updateAccountInfo(const QString &resourceName, int numberOfResource, QVariantList &l)
+void AccountInfoSource::updateAccountInfo(const QString& resourceName, int numberOfResource, QVariantList& l)
 {
     QVariantMap m;
     m.insert(QStringLiteral("name"), resourceName);
@@ -46,7 +46,7 @@ QVariant AccountInfoSource::data()
     int numberOfEws = 0;
     int numberOfMaildir = 0;
     int numberOfMbox = 0;
-    for (const Akonadi::AgentInstance &type : lst) {
+    for (const Akonadi::AgentInstance& type : lst) {
         const QString identifier = type.identifier();
         if (identifier.startsWith("akonadi_pop3_resource"_L1)) {
             numberOfPop3++;

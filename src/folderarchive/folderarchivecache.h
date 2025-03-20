@@ -21,12 +21,12 @@ class FolderArchiveCache : public QObject
 {
     Q_OBJECT
 public:
-    explicit FolderArchiveCache(QObject *parent = nullptr);
+    explicit FolderArchiveCache(QObject* parent = nullptr);
     ~FolderArchiveCache() override;
 
-    void addToCache(const QString &resourceName, Akonadi::Collection::Id id);
+    void addToCache(const QString& resourceName, Akonadi::Collection::Id id);
 
-    [[nodiscard]] Akonadi::Collection::Id collectionId(FolderArchiveAccountInfo *info);
+    [[nodiscard]] Akonadi::Collection::Id collectionId(FolderArchiveAccountInfo* info);
 
     void clearCacheWithContainsCollection(Akonadi::Collection::Id id);
 

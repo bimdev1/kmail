@@ -14,9 +14,7 @@
 #include <Akonadi/TagFetchScope>
 
 using namespace Qt::Literals::StringLiterals;
-TagMonitorManager::TagMonitorManager(QObject *parent)
-    : QObject(parent)
-    , mMonitor(new Akonadi::Monitor(this))
+TagMonitorManager::TagMonitorManager(QObject* parent) : QObject(parent), mMonitor(new Akonadi::Monitor(this))
 {
     mMonitor->setObjectName("TagActionManagerMonitor"_L1);
     mMonitor->setTypeMonitored(Akonadi::Monitor::Tags);
@@ -29,7 +27,7 @@ TagMonitorManager::TagMonitorManager(QObject *parent)
 
 TagMonitorManager::~TagMonitorManager() = default;
 
-TagMonitorManager *TagMonitorManager::self()
+TagMonitorManager* TagMonitorManager::self()
 {
     static TagMonitorManager s_self;
     return &s_self;
@@ -44,14 +42,14 @@ void TagMonitorManager::createActions()
     }
 }
 
-void TagMonitorManager::finishedTagListing(KJob *job)
+void TagMonitorManager::finishedTagListing(KJob* job)
 {
     if (job->error()) {
         qCWarning(KMAIL_LOG) << job->errorString();
     }
-    auto fetchJob = static_cast<Akonadi::TagFetchJob *>(job);
+    auto fetchJob = static_cast<Akonadi::TagFetchJob*>(job);
     const Akonadi::Tag::List lstTags = fetchJob->tags();
-    for (const Akonadi::Tag &result : lstTags) {
+    for (const Akonadi::Tag& result : lstTags) {
         mTags.append(MailCommon::Tag::fromAkonadi(result));
     }
     std::sort(mTags.begin(), mTags.end(), MailCommon::Tag::compare);
@@ -63,16 +61,16 @@ QList<MailCommon::Tag::Ptr> TagMonitorManager::tags() const
     return mTags;
 }
 
-void TagMonitorManager::onTagAdded(const Akonadi::Tag &akonadiTag)
+void TagMonitorManager::onTagAdded(const Akonadi::Tag& akonadiTag)
 {
     mTags.append(MailCommon::Tag::fromAkonadi(akonadiTag));
     std::sort(mTags.begin(), mTags.end(), MailCommon::Tag::compare);
     Q_EMIT tagAdded();
 }
 
-void TagMonitorManager::onTagRemoved(const Akonadi::Tag &akonadiTag)
+void TagMonitorManager::onTagRemoved(const Akonadi::Tag& akonadiTag)
 {
-    for (const MailCommon::Tag::Ptr &tag : std::as_const(mTags)) {
+    for (const MailCommon::Tag::Ptr& tag : std::as_const(mTags)) {
         if (tag->id() == akonadiTag.id()) {
             mTags.removeAll(tag);
             break;
@@ -81,9 +79,9 @@ void TagMonitorManager::onTagRemoved(const Akonadi::Tag &akonadiTag)
     Q_EMIT tagRemoved();
 }
 
-void TagMonitorManager::onTagChanged(const Akonadi::Tag &akonadiTag)
+void TagMonitorManager::onTagChanged(const Akonadi::Tag& akonadiTag)
 {
-    for (const MailCommon::Tag::Ptr &tag : std::as_const(mTags)) {
+    for (const MailCommon::Tag::Ptr& tag : std::as_const(mTags)) {
         if (tag->id() == akonadiTag.id()) {
             mTags.removeAll(tag);
             break;

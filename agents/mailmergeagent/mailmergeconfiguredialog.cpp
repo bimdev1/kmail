@@ -6,8 +6,6 @@
 
 #include "mailmergeconfiguredialog.h"
 
-#include "kmail-version.h"
-#include "mailmergeconfigurewidget.h"
 #include <KAboutData>
 #include <KConfigGroup>
 #include <KHelpMenu>
@@ -21,22 +19,23 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWindow>
+#include "kmail-version.h"
+#include "mailmergeconfigurewidget.h"
 
 using namespace Qt::Literals::StringLiterals;
-namespace
-{
+namespace {
 static const char myConfigureMailMergeConfigureDialogGroupName[] = "MailMergeConfigureDialog";
 }
 
-MailMergeConfigureDialog::MailMergeConfigureDialog(QWidget *parent)
-    : QDialog(parent)
-    , mWidget(new MailMergeConfigureWidget(this))
+MailMergeConfigureDialog::MailMergeConfigureDialog(QWidget* parent)
+    : QDialog(parent), mWidget(new MailMergeConfigureWidget(this))
 {
     setWindowTitle(i18nc("@title:window", "Configure"));
     setWindowIcon(QIcon::fromTheme(QStringLiteral("kmail")));
     auto mainLayout = new QVBoxLayout(this);
-    auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, this);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    auto buttonBox =
+        new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, this);
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &MailMergeConfigureDialog::reject);
@@ -48,12 +47,10 @@ MailMergeConfigureDialog::MailMergeConfigureDialog(QWidget *parent)
 
     readConfig();
 
-    KAboutData aboutData = KAboutData(QStringLiteral("mailmergeagent"),
-                                      i18n("Mail Merge Agent"),
-                                      QStringLiteral(KDEPIM_VERSION),
-                                      i18n("Merge email addresses agent."),
-                                      KAboutLicense::GPL_V2,
-                                      i18n("Copyright (C) 2021-%1 Laurent Montel", QStringLiteral("2025")));
+    KAboutData aboutData =
+        KAboutData(QStringLiteral("mailmergeagent"), i18n("Mail Merge Agent"), QStringLiteral(KDEPIM_VERSION),
+                   i18n("Merge email addresses agent."), KAboutLicense::GPL_V2,
+                   i18n("Copyright (C) 2021-%1 Laurent Montel", QStringLiteral("2025")));
 
     aboutData.addAuthor(i18nc("@info:credit", "Laurent Montel"), i18n("Maintainer"), QStringLiteral("montel@kde.org"));
     aboutData.setProductName(QByteArrayLiteral("Akonadi/MailMergeAgent"));
@@ -63,7 +60,7 @@ MailMergeConfigureDialog::MailMergeConfigureDialog(QWidget *parent)
     auto helpMenu = new KHelpMenu(this, aboutData);
     helpMenu->setShowWhatsThis(true);
     // Initialize menu
-    QMenu *menu = helpMenu->menu();
+    QMenu* menu = helpMenu->menu();
     helpMenu->action(KHelpMenu::menuAboutApp)->setIcon(QIcon::fromTheme(QStringLiteral("kmail")));
     buttonBox->button(QDialogButtonBox::Help)->setMenu(menu);
 }
@@ -82,14 +79,16 @@ void MailMergeConfigureDialog::readConfig()
 {
     create(); // ensure a window is created
     windowHandle()->resize(QSize(800, 600));
-    KConfigGroup group(KSharedConfig::openStateConfig(), QLatin1StringView(myConfigureMailMergeConfigureDialogGroupName));
+    KConfigGroup group(KSharedConfig::openStateConfig(),
+                       QLatin1StringView(myConfigureMailMergeConfigureDialogGroupName));
     KWindowConfig::restoreWindowSize(windowHandle(), group);
     resize(windowHandle()->size()); // workaround for QTBUG-40584
 }
 
 void MailMergeConfigureDialog::writeConfig()
 {
-    KConfigGroup group(KSharedConfig::openStateConfig(), QLatin1StringView(myConfigureMailMergeConfigureDialogGroupName));
+    KConfigGroup group(KSharedConfig::openStateConfig(),
+                       QLatin1StringView(myConfigureMailMergeConfigureDialogGroupName));
     KWindowConfig::saveWindowSize(windowHandle(), group);
     group.sync();
 }

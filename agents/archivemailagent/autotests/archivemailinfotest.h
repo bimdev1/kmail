@@ -12,7 +12,7 @@ class ArchiveMailInfoTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ArchiveMailInfoTest(QObject *parent = nullptr);
+    explicit ArchiveMailInfoTest(QObject* parent = nullptr);
     ~ArchiveMailInfoTest() override;
 
 private Q_SLOTS:

@@ -9,9 +9,9 @@
 #include "settings/kmailsettings.h"
 #include <QTimer>
 
-KMailSettings *KMailSettings::mSelf = nullptr;
+KMailSettings* KMailSettings::mSelf = nullptr;
 
-KMailSettings *KMailSettings::self()
+KMailSettings* KMailSettings::self()
 {
     if (!mSelf) {
         mSelf = new KMailSettings();
@@ -21,8 +21,7 @@ KMailSettings *KMailSettings::self()
     return mSelf;
 }
 
-KMailSettings::KMailSettings()
-    : mConfigSyncTimer(new QTimer(this))
+KMailSettings::KMailSettings() : mConfigSyncTimer(new QTimer(this))
 {
     mConfigSyncTimer->setSingleShot(true);
     connect(mConfigSyncTimer, &QTimer::timeout, this, &KMailSettings::slotSyncNow);

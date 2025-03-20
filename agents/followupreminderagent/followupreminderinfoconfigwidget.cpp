@@ -4,28 +4,24 @@
    SPDX-License-Identifier: GPL-2.0-or-later
 */
 #include "followupreminderinfoconfigwidget.h"
-#include "followupreminderinfowidget.h"
-#include "kmail-version.h"
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <QLayout>
-namespace
-{
+#include "followupreminderinfowidget.h"
+#include "kmail-version.h"
+namespace {
 static const char myConfigGroupName[] = "FollowUpReminderInfoDialog";
 }
 
-FollowUpReminderInfoConfigWidget::FollowUpReminderInfoConfigWidget(const KSharedConfigPtr &config, QWidget *parent, const QVariantList &args)
-    : Akonadi::AgentConfigurationBase(config, parent, args)
-    , mWidget(new FollowUpReminderInfoWidget(parent))
+FollowUpReminderInfoConfigWidget::FollowUpReminderInfoConfigWidget(const KSharedConfigPtr& config, QWidget* parent,
+                                                                   const QVariantList& args)
+    : Akonadi::AgentConfigurationBase(config, parent, args), mWidget(new FollowUpReminderInfoWidget(parent))
 {
     parent->layout()->addWidget(mWidget);
 
-    KAboutData aboutData = KAboutData(QStringLiteral("followupreminderagent"),
-                                      i18n("Follow Up Reminder Agent"),
-                                      QStringLiteral(KDEPIM_VERSION),
-                                      i18n("Follow Up Reminder"),
-                                      KAboutLicense::GPL_V2,
+    KAboutData aboutData = KAboutData(QStringLiteral("followupreminderagent"), i18n("Follow Up Reminder Agent"),
+                                      QStringLiteral(KDEPIM_VERSION), i18n("Follow Up Reminder"), KAboutLicense::GPL_V2,
                                       i18n("Copyright (C) 2014-%1 Laurent Montel", QStringLiteral("2025")));
 
     aboutData.addAuthor(i18nc("@info:credit", "Laurent Montel"), i18n("Maintainer"), QStringLiteral("montel@kde.org"));
@@ -54,7 +50,7 @@ QSize FollowUpReminderInfoConfigWidget::restoreDialogSize() const
     return size;
 }
 
-void FollowUpReminderInfoConfigWidget::saveDialogSize(const QSize &size)
+void FollowUpReminderInfoConfigWidget::saveDialogSize(const QSize& size)
 {
     auto group = config()->group(QLatin1StringView(myConfigGroupName));
     group.writeEntry("Size", size);

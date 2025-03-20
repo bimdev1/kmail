@@ -12,7 +12,7 @@ class SendLaterUtilTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit SendLaterUtilTest(QObject *parent = nullptr);
+    explicit SendLaterUtilTest(QObject* parent = nullptr);
 
 private Q_SLOTS:
     void shouldRestoreFromSettings();

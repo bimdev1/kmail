@@ -6,24 +6,23 @@
 
 #pragma once
 #include <Akonadi/CollectionPropertiesPage>
-namespace MailCommon
-{
+namespace MailCommon {
 class CollectionTemplatesWidget;
 }
 class CollectionTemplatesPage : public Akonadi::CollectionPropertiesPage
 {
     Q_OBJECT
 public:
-    explicit CollectionTemplatesPage(QWidget *parent = nullptr);
+    explicit CollectionTemplatesPage(QWidget* parent = nullptr);
     ~CollectionTemplatesPage() override;
 
-    void load(const Akonadi::Collection &col) override;
-    void save(Akonadi::Collection &col) override;
-    [[nodiscard]] bool canHandle(const Akonadi::Collection &collection) const override;
+    void load(const Akonadi::Collection& col) override;
+    void save(Akonadi::Collection& col) override;
+    [[nodiscard]] bool canHandle(const Akonadi::Collection& collection) const override;
 
 private:
     void init();
-    MailCommon::CollectionTemplatesWidget *const mCollectionTemplateWidget;
+    MailCommon::CollectionTemplatesWidget* const mCollectionTemplateWidget;
 };
 
 AKONADI_COLLECTION_PROPERTIES_PAGE_FACTORY(CollectionTemplatesPageFactory, CollectionTemplatesPage)

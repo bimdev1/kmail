@@ -12,7 +12,7 @@ class ArchiveMailAgentUtilTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ArchiveMailAgentUtilTest(QObject *parent = nullptr);
+    explicit ArchiveMailAgentUtilTest(QObject* parent = nullptr);
     ~ArchiveMailAgentUtilTest() override = default;
 
 private Q_SLOTS:

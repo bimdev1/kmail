@@ -14,14 +14,14 @@ class ComposeNewMessageJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComposeNewMessageJob(QObject *parent = nullptr);
+    explicit ComposeNewMessageJob(QObject* parent = nullptr);
     ~ComposeNewMessageJob() override;
 
     void start();
-    void setFolderSettings(const QSharedPointer<MailCommon::FolderSettings> &folder);
+    void setFolderSettings(const QSharedPointer<MailCommon::FolderSettings>& folder);
 
-    void setCurrentCollection(const Akonadi::Collection &col);
-    void setRecipientsFromMessage(const Akonadi::Item &from);
+    void setCurrentCollection(const Akonadi::Collection& col);
+    void setRecipientsFromMessage(const Akonadi::Item& from);
 
 private:
     void slotOpenComposer(bool forceCursorPosition);

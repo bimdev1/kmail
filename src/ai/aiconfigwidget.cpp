@@ -7,18 +7,16 @@
 #include "aiconfigwidget.h"
 #include "localaiservice.h"
 
-#include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QLabel>
 #include <QSettings>
+#include <QVBoxLayout>
 
 namespace KMail {
 
-AIConfigWidget::AIConfigWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_isValidating(false)
+AIConfigWidget::AIConfigWidget(QWidget* parent) : QWidget(parent), m_isValidating(false)
 {
     setupUi();
     createConnections();
@@ -28,25 +26,25 @@ AIConfigWidget::AIConfigWidget(QWidget *parent)
 void AIConfigWidget::setupUi()
 {
     auto mainLayout = new QVBoxLayout(this);
-    
+
     // API Key section
     auto apiKeyLayout = new QHBoxLayout;
     auto apiKeyLabel = new QLabel(tr("DeepSeek API Key:"), this);
     m_apiKeyEdit = new QLineEdit(this);
     m_apiKeyEdit->setEchoMode(QLineEdit::Password);
     m_apiKeyEdit->setPlaceholderText(tr("Enter your DeepSeek API key"));
-    
+
     m_testButton = new QPushButton(tr("Test Connection"), this);
     m_testButton->setEnabled(false);
-    
+
     apiKeyLayout->addWidget(apiKeyLabel);
     apiKeyLayout->addWidget(m_apiKeyEdit);
     apiKeyLayout->addWidget(m_testButton);
-    
+
     // Status section
     m_statusLabel = new QLabel(this);
     m_statusLabel->setWordWrap(true);
-    
+
     mainLayout->addLayout(apiKeyLayout);
     mainLayout->addWidget(m_statusLabel);
     mainLayout->addStretch();
@@ -54,10 +52,8 @@ void AIConfigWidget::setupUi()
 
 void AIConfigWidget::createConnections()
 {
-    connect(m_apiKeyEdit, &QLineEdit::textChanged,
-            this, &AIConfigWidget::slotApiKeyChanged);
-    connect(m_testButton, &QPushButton::clicked,
-            this, &AIConfigWidget::slotTestConnection);
+    connect(m_apiKeyEdit, &QLineEdit::textChanged, this, &AIConfigWidget::slotApiKeyChanged);
+    connect(m_testButton, &QPushButton::clicked, this, &AIConfigWidget::slotTestConnection);
 }
 
 void AIConfigWidget::loadSettings()
@@ -100,7 +96,7 @@ void AIConfigWidget::slotTestConnection()
     service->setApiKey(m_apiKeyEdit->text());
 
     // Test the connection by trying to categorize a simple email
-    connect(service, &LocalAIService::error, this, [this, service](const QString &error) {
+    connect(service, &LocalAIService::error, this, [this, service](const QString& error) {
         service->deleteLater();
         m_isValidating = false;
         updateTestButton();

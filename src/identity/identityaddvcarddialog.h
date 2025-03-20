@@ -5,9 +5,9 @@
 */
 
 #pragma once
-#include "kmail_private_export.h"
 #include <QDialog>
 #include <QUrl>
+#include "kmail_private_export.h"
 class QButtonGroup;
 class QComboBox;
 class KUrlRequester;
@@ -22,7 +22,7 @@ public:
         FromExistingVCard,
     };
 
-    explicit IdentityAddVcardDialog(const QStringList &shadowIdentities, QWidget *parent = nullptr);
+    explicit IdentityAddVcardDialog(const QStringList& shadowIdentities, QWidget* parent = nullptr);
     ~IdentityAddVcardDialog() override;
 
     [[nodiscard]] DuplicateMode duplicateMode() const;
@@ -30,7 +30,7 @@ public:
     [[nodiscard]] QUrl existingVCard() const;
 
 private:
-    QButtonGroup *const mButtonGroup;
-    QComboBox *const mComboBox;
-    KUrlRequester *const mVCardPath;
+    QButtonGroup* const mButtonGroup;
+    QComboBox* const mComboBox;
+    KUrlRequester* const mVCardPath;
 };

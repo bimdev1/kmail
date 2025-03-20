@@ -18,7 +18,7 @@ class ArchiveMailAgent : public Akonadi::AgentWidgetBase, public Akonadi::AgentB
     Q_OBJECT
 
 public:
-    explicit ArchiveMailAgent(const QString &id);
+    explicit ArchiveMailAgent(const QString& id);
     ~ArchiveMailAgent() override;
 
     [[nodiscard]] QString printArchiveListInfo() const;
@@ -27,7 +27,7 @@ public:
     [[nodiscard]] bool enabledAgent() const;
 
     [[nodiscard]] QString printCurrentListInfo() const;
-    void archiveFolder(const QString &path, Akonadi::Collection::Id collectionId);
+    void archiveFolder(const QString& path, Akonadi::Collection::Id collectionId);
 Q_SIGNALS:
     void needUpdateConfigDialogBox();
 
@@ -40,7 +40,7 @@ protected:
     void doSetOnline(bool online) override;
 
 private:
-    void mailCollectionRemoved(const Akonadi::Collection &collection);
-    QTimer *const mTimer;
-    ArchiveMailManager *const mArchiveManager;
+    void mailCollectionRemoved(const Akonadi::Collection& collection);
+    QTimer* const mTimer;
+    ArchiveMailManager* const mArchiveManager;
 };

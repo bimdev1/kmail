@@ -21,23 +21,19 @@ class KXMLGUIClient;
 class KMReaderWin;
 class QMenu;
 
-namespace Akonadi
-{
+namespace Akonadi {
 class Item;
 class StandardMailActionManager;
-}
+} // namespace Akonadi
 
-namespace TemplateParser
-{
+namespace TemplateParser {
 class CustomTemplatesMenu;
 }
 
-namespace KIO
-{
+namespace KIO {
 class KUriFilterSearchProviderActions;
 }
-namespace KMail
-{
+namespace KMail {
 /**
   Manages common actions that can be performed on one or more messages.
 */
@@ -45,57 +41,57 @@ class MessageActions : public QObject
 {
     Q_OBJECT
 public:
-    explicit MessageActions(KActionCollection *ac, QWidget *parent);
+    explicit MessageActions(KActionCollection* ac, QWidget* parent);
     ~MessageActions() override;
-    void setMessageView(KMReaderWin *msgView);
+    void setMessageView(KMReaderWin* msgView);
 
     /**
      * This function adds or updates the actions of the forward action menu, taking the
      * preference whether to forward inline or as attachment by default into account.
      * This has to be called when that preference config has been changed.
      */
-    void setupForwardActions(KActionCollection *ac);
+    void setupForwardActions(KActionCollection* ac);
 
     /**
      * Sets up action list for forward menu.
      */
-    void setupForwardingActionsList(KXMLGUIClient *guiClient);
+    void setupForwardingActionsList(KXMLGUIClient* guiClient);
 
-    void setCurrentMessage(const Akonadi::Item &item, const Akonadi::Item::List &items = Akonadi::Item::List());
+    void setCurrentMessage(const Akonadi::Item& item, const Akonadi::Item::List& items = Akonadi::Item::List());
 
-    [[nodiscard]] KActionMenu *replyMenu() const;
-    [[nodiscard]] QAction *replyListAction() const;
-    [[nodiscard]] QAction *forwardInlineAction() const;
-    [[nodiscard]] QAction *forwardAttachedAction() const;
-    [[nodiscard]] QAction *redirectAction() const;
-    [[nodiscard]] QAction *newToRecipientsAction() const;
+    [[nodiscard]] KActionMenu* replyMenu() const;
+    [[nodiscard]] QAction* replyListAction() const;
+    [[nodiscard]] QAction* forwardInlineAction() const;
+    [[nodiscard]] QAction* forwardAttachedAction() const;
+    [[nodiscard]] QAction* redirectAction() const;
+    [[nodiscard]] QAction* newToRecipientsAction() const;
 
-    [[nodiscard]] KActionMenu *messageStatusMenu() const;
-    [[nodiscard]] KActionMenu *forwardMenu() const;
+    [[nodiscard]] KActionMenu* messageStatusMenu() const;
+    [[nodiscard]] KActionMenu* forwardMenu() const;
 
-    [[nodiscard]] QAction *printAction() const;
-    [[nodiscard]] QAction *printPreviewAction() const;
-    [[nodiscard]] QAction *listFilterAction() const;
+    [[nodiscard]] QAction* printAction() const;
+    [[nodiscard]] QAction* printPreviewAction() const;
+    [[nodiscard]] QAction* listFilterAction() const;
 
-    [[nodiscard]] KActionMenu *mailingListActionMenu() const;
-    [[nodiscard]] TemplateParser::CustomTemplatesMenu *customTemplatesMenu() const;
+    [[nodiscard]] KActionMenu* mailingListActionMenu() const;
+    [[nodiscard]] TemplateParser::CustomTemplatesMenu* customTemplatesMenu() const;
 
-    void addWebShortcutsMenu(QMenu *menu, const QString &text);
+    void addWebShortcutsMenu(QMenu* menu, const QString& text);
 
-    [[nodiscard]] QAction *debugAkonadiSearchAction() const;
-    [[nodiscard]] QAction *addFollowupReminderAction() const;
+    [[nodiscard]] QAction* debugAkonadiSearchAction() const;
+    [[nodiscard]] QAction* addFollowupReminderAction() const;
 
-    [[nodiscard]] QAction *sendAgainAction() const;
+    [[nodiscard]] QAction* sendAgainAction() const;
 
-    [[nodiscard]] QAction *newMessageFromTemplateAction() const;
+    [[nodiscard]] QAction* newMessageFromTemplateAction() const;
 
-    [[nodiscard]] QAction *editAsNewAction() const;
+    [[nodiscard]] QAction* editAsNewAction() const;
 
-    [[nodiscard]] QAction *exportToPdfAction() const;
+    [[nodiscard]] QAction* exportToPdfAction() const;
 
-    [[nodiscard]] QAction *archiveMessageAction() const;
+    [[nodiscard]] QAction* archiveMessageAction() const;
 
-    void fillAkonadiStandardAction(Akonadi::StandardMailActionManager *akonadiStandardActionManager);
+    void fillAkonadiStandardAction(Akonadi::StandardMailActionManager* akonadiStandardActionManager);
     [[nodiscard]] Akonadi::Item currentItem() const;
 
 Q_SIGNALS:
@@ -111,26 +107,26 @@ public Q_SLOTS:
 private:
     void updateActions();
     void replyCommand(MessageComposer::ReplyStrategy strategy);
-    void addMailingListAction(const QString &item, const QUrl &url);
-    void addMailingListActions(const QString &item, const QList<QUrl> &list);
-    void updateMailingListActions(const Akonadi::Item &messageItem);
+    void addMailingListAction(const QString& item, const QUrl& url);
+    void addMailingListActions(const QString& item, const QList<QUrl>& list);
+    void updateMailingListActions(const Akonadi::Item& messageItem);
     void printMessage(bool preview);
     void clearMailingListActions();
 
 private Q_SLOTS:
-    void slotItemModified(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers);
-    void slotItemRemoved(const Akonadi::Item &item);
+    void slotItemModified(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers);
+    void slotItemRemoved(const Akonadi::Item& item);
 
     void slotReplyToMsg();
     void slotReplyAuthorToMsg();
     void slotReplyListToMsg();
     void slotReplyAllToMsg();
     void slotNoQuoteReplyToMsg();
-    void slotRunUrl(QAction *urlAction);
+    void slotRunUrl(QAction* urlAction);
     void slotPrintMessage();
     void slotPrintPreviewMsg();
 
-    void slotUpdateActionsFetchDone(KJob *job);
+    void slotUpdateActionsFetchDone(KJob* job);
     void slotMailingListFilter();
     void slotDebugAkonadiSearch();
 
@@ -143,36 +139,36 @@ private Q_SLOTS:
     void slotArchiveMessage();
 
 private:
-    QList<QAction *> mMailListActionList;
+    QList<QAction*> mMailListActionList;
     Akonadi::Item mCurrentItem;
     Akonadi::Item::List mVisibleItems;
-    QWidget *const mParent;
-    KMReaderWin *mMessageView = nullptr;
+    QWidget* const mParent;
+    KMReaderWin* mMessageView = nullptr;
 
-    KActionMenu *const mReplyActionMenu;
-    QAction *const mReplyAction;
-    QAction *const mReplyAllAction;
-    QAction *const mReplyAuthorAction;
-    QAction *const mReplyListAction;
-    QAction *const mNoQuoteReplyAction;
-    QAction *const mForwardInlineAction;
-    QAction *const mForwardAttachedAction;
-    QAction *const mRedirectAction;
-    QAction *const mNewToRecipientsAction;
-    KActionMenu *const mStatusMenu;
-    KActionMenu *const mForwardActionMenu;
-    KActionMenu *const mMailingListActionMenu;
-    QAction *const mEditAsNewAction;
-    QAction *mPrintAction = nullptr;
-    QAction *mPrintPreviewAction = nullptr;
-    TemplateParser::CustomTemplatesMenu *mCustomTemplatesMenu = nullptr;
-    QAction *const mListFilterAction;
-    QAction *const mAddFollowupReminderAction;
-    QAction *const mDebugAkonadiSearchAction;
-    QAction *const mSendAgainAction;
-    QAction *const mNewMessageFromTemplateAction;
-    KIO::KUriFilterSearchProviderActions *const mWebShortcutMenuManager;
-    QAction *const mExportToPdfAction;
-    QAction *const mArchiveMessageAction;
+    KActionMenu* const mReplyActionMenu;
+    QAction* const mReplyAction;
+    QAction* const mReplyAllAction;
+    QAction* const mReplyAuthorAction;
+    QAction* const mReplyListAction;
+    QAction* const mNoQuoteReplyAction;
+    QAction* const mForwardInlineAction;
+    QAction* const mForwardAttachedAction;
+    QAction* const mRedirectAction;
+    QAction* const mNewToRecipientsAction;
+    KActionMenu* const mStatusMenu;
+    KActionMenu* const mForwardActionMenu;
+    KActionMenu* const mMailingListActionMenu;
+    QAction* const mEditAsNewAction;
+    QAction* mPrintAction = nullptr;
+    QAction* mPrintPreviewAction = nullptr;
+    TemplateParser::CustomTemplatesMenu* mCustomTemplatesMenu = nullptr;
+    QAction* const mListFilterAction;
+    QAction* const mAddFollowupReminderAction;
+    QAction* const mDebugAkonadiSearchAction;
+    QAction* const mSendAgainAction;
+    QAction* const mNewMessageFromTemplateAction;
+    KIO::KUriFilterSearchProviderActions* const mWebShortcutMenuManager;
+    QAction* const mExportToPdfAction;
+    QAction* const mArchiveMessageAction;
 };
-}
+} // namespace KMail

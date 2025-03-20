@@ -9,8 +9,7 @@
 
 #include <QKeyEvent>
 
-CollectionSwitcherTreeView::CollectionSwitcherTreeView(QWidget *parent)
-    : QTreeView(parent)
+CollectionSwitcherTreeView::CollectionSwitcherTreeView(QWidget* parent) : QTreeView(parent)
 {
     setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -34,7 +33,7 @@ void CollectionSwitcherTreeView::resizeColumnsToContents()
     resizeColumnToContents(0);
 }
 
-void CollectionSwitcherTreeView::keyReleaseEvent(QKeyEvent *event)
+void CollectionSwitcherTreeView::keyReleaseEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Control) {
         Q_EMIT collectionSelected(selectionModel()->currentIndex());
@@ -45,7 +44,7 @@ void CollectionSwitcherTreeView::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
-void CollectionSwitcherTreeView::keyPressEvent(QKeyEvent *event)
+void CollectionSwitcherTreeView::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Escape) {
         event->accept();
@@ -55,7 +54,7 @@ void CollectionSwitcherTreeView::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void CollectionSwitcherTreeView::showEvent(QShowEvent *event)
+void CollectionSwitcherTreeView::showEvent(QShowEvent* event)
 {
     resizeColumnsToContents();
     reset();

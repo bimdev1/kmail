@@ -19,7 +19,7 @@ QByteArray SearchDescriptionAttribute::type() const
     return sType;
 }
 
-Akonadi::Attribute *SearchDescriptionAttribute::clone() const
+Akonadi::Attribute* SearchDescriptionAttribute::clone() const
 {
     return new SearchDescriptionAttribute(*this);
 }
@@ -36,7 +36,7 @@ QByteArray SearchDescriptionAttribute::serialized() const
     return ba;
 }
 
-void SearchDescriptionAttribute::deserialize(const QByteArray &data)
+void SearchDescriptionAttribute::deserialize(const QByteArray& data)
 {
     QDataStream s(data);
     s.setVersion(QDataStream::Qt_5_15);
@@ -53,7 +53,7 @@ QByteArray SearchDescriptionAttribute::description() const
     return mDescription;
 }
 
-void SearchDescriptionAttribute::setDescription(const QByteArray &desc)
+void SearchDescriptionAttribute::setDescription(const QByteArray& desc)
 {
     mDescription = desc;
 }
@@ -63,7 +63,7 @@ Akonadi::Collection SearchDescriptionAttribute::baseCollection() const
     return mBaseCollection;
 }
 
-void SearchDescriptionAttribute::setBaseCollection(const Akonadi::Collection &col)
+void SearchDescriptionAttribute::setBaseCollection(const Akonadi::Collection& col)
 {
     mBaseCollection = col;
 }
@@ -78,7 +78,7 @@ void SearchDescriptionAttribute::setRecursive(bool r)
     mRecursive = r;
 }
 
-void SearchDescriptionAttribute::setListCollection(const QList<Akonadi::Collection::Id> &col)
+void SearchDescriptionAttribute::setListCollection(const QList<Akonadi::Collection::Id>& col)
 {
     mListCollection = col;
 }

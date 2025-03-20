@@ -12,8 +12,7 @@
 #include <QStandardPaths>
 #include <QTest>
 
-SendLaterConfigTest::SendLaterConfigTest(QObject *parent)
-    : QObject(parent)
+SendLaterConfigTest::SendLaterConfigTest(QObject* parent) : QObject(parent)
 {
     QStandardPaths::setTestModeEnabled(true);
 }
@@ -30,7 +29,7 @@ void SendLaterConfigTest::init()
 void SendLaterConfigTest::cleanup()
 {
     const QStringList filterGroups = mConfig->groupList();
-    for (const QString &group : filterGroups) {
+    for (const QString& group : filterGroups) {
         mConfig->deleteGroup(group);
     }
     mConfig->sync();

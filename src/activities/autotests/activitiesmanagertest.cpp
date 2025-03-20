@@ -5,13 +5,10 @@
 */
 
 #include "activitiesmanagertest.h"
-#include "activities/activitiesmanager.h"
 #include <QTest>
+#include "activities/activitiesmanager.h"
 QTEST_MAIN(ActivitiesManagerTest)
-ActivitiesManagerTest::ActivitiesManagerTest(QObject *parent)
-    : QObject{parent}
-{
-}
+ActivitiesManagerTest::ActivitiesManagerTest(QObject* parent) : QObject{parent} {}
 
 void ActivitiesManagerTest::shouldHaveDefaultValues()
 {

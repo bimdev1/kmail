@@ -13,50 +13,46 @@
 
 using namespace KMail;
 
-ServerLabel::ServerLabel(const QString &serverName, QWidget *parent)
-    : QLabel(parent)
-    , mServerName(serverName)
+ServerLabel::ServerLabel(const QString& serverName, QWidget* parent) : QLabel(parent), mServerName(serverName)
 {
     setToolTip(serverName);
     setPixmap(QIcon::fromTheme(QStringLiteral("network-server")).pixmap(16, 16));
-    setStyleSheet(QStringLiteral("background-color: %1; color: %2;").arg(QColor(Qt::yellow).name(), QColor(Qt::black).name()));
+    setStyleSheet(
+        QStringLiteral("background-color: %1; color: %2;").arg(QColor(Qt::yellow).name(), QColor(Qt::black).name()));
     setContentsMargins(2, 0, 4, 0);
 }
 
 ServerLabel::~ServerLabel() = default;
 
-void ServerLabel::mouseReleaseEvent(QMouseEvent *event)
+void ServerLabel::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_EMIT clicked(mServerName);
     QLabel::mouseReleaseEvent(event);
 }
 
-VacationLabel::VacationLabel(const QString &text, QWidget *parent)
-    : QLabel(text, parent)
+VacationLabel::VacationLabel(const QString& text, QWidget* parent) : QLabel(text, parent)
 {
     // changing the palette doesn't work, seems to be overwritten by the
     // statusbar again, stylesheets seems to work though
-    setStyleSheet(QStringLiteral("background-color: %1; color: %2;").arg(QColor(Qt::yellow).name(), QColor(Qt::black).name()));
+    setStyleSheet(
+        QStringLiteral("background-color: %1; color: %2;").arg(QColor(Qt::yellow).name(), QColor(Qt::black).name()));
     setContentsMargins(4, 0, 2, 0);
     setCursor(QCursor(Qt::PointingHandCursor));
 }
 
 VacationLabel::~VacationLabel() = default;
 
-void VacationLabel::mouseReleaseEvent(QMouseEvent *event)
+void VacationLabel::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_EMIT vacationLabelClicked();
     QLabel::mouseReleaseEvent(event);
 }
 
-VacationScriptIndicatorWidget::VacationScriptIndicatorWidget(QWidget *parent)
-    : QWidget(parent)
-{
-}
+VacationScriptIndicatorWidget::VacationScriptIndicatorWidget(QWidget* parent) : QWidget(parent) {}
 
 VacationScriptIndicatorWidget::~VacationScriptIndicatorWidget() = default;
 
-void VacationScriptIndicatorWidget::setVacationScriptActive(bool active, const QString &serverName)
+void VacationScriptIndicatorWidget::setVacationScriptActive(bool active, const QString& serverName)
 {
     if (serverName.isEmpty()) {
         return;
@@ -81,10 +77,12 @@ void VacationScriptIndicatorWidget::createIndicator()
     mBoxLayout = new QHBoxLayout(this);
     mBoxLayout->setContentsMargins({});
     mBoxLayout->setSpacing(0);
-    mInfo = new VacationLabel(i18np("Out of office reply active on server", "Out of office reply active on servers", mServerActive.count()));
-    connect(mInfo, &VacationLabel::vacationLabelClicked, this, &VacationScriptIndicatorWidget::slotVacationLabelClicked);
+    mInfo = new VacationLabel(
+        i18np("Out of office reply active on server", "Out of office reply active on servers", mServerActive.count()));
+    connect(mInfo, &VacationLabel::vacationLabelClicked, this,
+            &VacationScriptIndicatorWidget::slotVacationLabelClicked);
     mBoxLayout->addWidget(mInfo);
-    for (const QString &server : std::as_const(mServerActive)) {
+    for (const QString& server : std::as_const(mServerActive)) {
         auto lab = new ServerLabel(server);
         connect(lab, &ServerLabel::clicked, this, &VacationScriptIndicatorWidget::clicked);
         mBoxLayout->addWidget(lab);

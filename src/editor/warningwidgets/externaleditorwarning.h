@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <KMessageWidget>
+#include "kmail_private_export.h"
 class KMAILTESTS_TESTS_EXPORT ExternalEditorWarning : public KMessageWidget
 {
     Q_OBJECT
 public:
-    explicit ExternalEditorWarning(QWidget *parent = nullptr);
+    explicit ExternalEditorWarning(QWidget* parent = nullptr);
     ~ExternalEditorWarning() override;
 };

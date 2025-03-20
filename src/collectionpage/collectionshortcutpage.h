@@ -12,7 +12,7 @@
 
 #include <Akonadi/CollectionPropertiesPage>
 
-template<typename T>
+template <typename T>
 class QSharedPointer;
 
 class KKeySequenceWidget;
@@ -21,18 +21,18 @@ class CollectionShortcutPage : public Akonadi::CollectionPropertiesPage
 {
     Q_OBJECT
 public:
-    explicit CollectionShortcutPage(QWidget *parent = nullptr);
+    explicit CollectionShortcutPage(QWidget* parent = nullptr);
     ~CollectionShortcutPage() override;
 
-    void load(const Akonadi::Collection &col) override;
-    void save(Akonadi::Collection &col) override;
+    void load(const Akonadi::Collection& col) override;
+    void save(Akonadi::Collection& col) override;
 
 private:
     void slotShortcutChanged();
-    void init(const Akonadi::Collection &);
+    void init(const Akonadi::Collection&);
     QSharedPointer<MailCommon::FolderSettings> mFolder;
     Akonadi::Collection mCurrentCollection;
-    KKeySequenceWidget *const mKeySeqWidget;
+    KKeySequenceWidget* const mKeySeqWidget;
     bool mShortcutChanged = false;
 };
 

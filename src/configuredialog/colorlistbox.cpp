@@ -19,8 +19,7 @@
 #include <QDropEvent>
 #include <QHeaderView>
 
-ColorListBox::ColorListBox(QWidget *parent)
-    : QTreeWidget(parent)
+ColorListBox::ColorListBox(QWidget* parent) : QTreeWidget(parent)
 {
     setColumnCount(1);
     setRootIsDecorated(false);
@@ -30,21 +29,21 @@ ColorListBox::ColorListBox(QWidget *parent)
     setAcceptDrops(true);
 }
 
-void ColorListBox::addColor(const QString &text, const QColor &color)
+void ColorListBox::addColor(const QString& text, const QColor& color)
 {
     auto item = new QTreeWidgetItem(QStringList() << text);
     item->setData(0, Qt::DecorationRole, color);
     addTopLevelItem(item);
 }
 
-void ColorListBox::setColorSilently(int index, const QColor &color)
+void ColorListBox::setColorSilently(int index, const QColor& color)
 {
     if (index < model()->rowCount()) {
         topLevelItem(index)->setData(0, Qt::DecorationRole, color);
     }
 }
 
-void ColorListBox::setColor(int index, const QColor &color)
+void ColorListBox::setColor(int index, const QColor& color)
 {
     if (index < model()->rowCount()) {
         topLevelItem(index)->setData(0, Qt::DecorationRole, color);
@@ -61,7 +60,7 @@ QColor ColorListBox::color(int index) const
     }
 }
 
-void ColorListBox::newColor(const QModelIndex &index)
+void ColorListBox::newColor(const QModelIndex& index)
 {
     if (!isEnabled()) {
         return;
@@ -75,7 +74,7 @@ void ColorListBox::newColor(const QModelIndex &index)
     }
 }
 
-void ColorListBox::dragEnterEvent(QDragEnterEvent *e)
+void ColorListBox::dragEnterEvent(QDragEnterEvent* e)
 {
     if (KColorMimeData::canDecode(e->mimeData()) && isEnabled()) {
         mCurrentOnDragEnter = currentItem();
@@ -86,7 +85,7 @@ void ColorListBox::dragEnterEvent(QDragEnterEvent *e)
     }
 }
 
-void ColorListBox::dragLeaveEvent(QDragLeaveEvent *)
+void ColorListBox::dragLeaveEvent(QDragLeaveEvent*)
 {
     if (mCurrentOnDragEnter) {
         setCurrentItem(mCurrentOnDragEnter);
@@ -94,21 +93,21 @@ void ColorListBox::dragLeaveEvent(QDragLeaveEvent *)
     }
 }
 
-void ColorListBox::dragMoveEvent(QDragMoveEvent *e)
+void ColorListBox::dragMoveEvent(QDragMoveEvent* e)
 {
     if (KColorMimeData::canDecode(e->mimeData()) && isEnabled()) {
-        QTreeWidgetItem *item = itemAt(e->position().toPoint());
+        QTreeWidgetItem* item = itemAt(e->position().toPoint());
         if (item) {
             setCurrentItem(item);
         }
     }
 }
 
-void ColorListBox::dropEvent(QDropEvent *e)
+void ColorListBox::dropEvent(QDropEvent* e)
 {
     const QColor color = KColorMimeData::fromMimeData(e->mimeData());
     if (color.isValid()) {
-        QTreeWidgetItem *item = currentItem();
+        QTreeWidgetItem* item = currentItem();
         if (item) {
             item->setData(0, Qt::DecorationRole, color);
             Q_EMIT changed();

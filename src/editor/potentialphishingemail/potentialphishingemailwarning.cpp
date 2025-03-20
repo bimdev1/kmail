@@ -7,13 +7,12 @@
 
 #include "potentialphishingemailwarning.h"
 
-#include "potentialphishingdetaildialog.h"
 #include <KLocalizedString>
 #include <QAction>
+#include "potentialphishingdetaildialog.h"
 
 using namespace Qt::Literals::StringLiterals;
-PotentialPhishingEmailWarning::PotentialPhishingEmailWarning(QWidget *parent)
-    : KMessageWidget(parent)
+PotentialPhishingEmailWarning::PotentialPhishingEmailWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setVisible(false);
     setCloseButtonVisible(true);
@@ -32,7 +31,7 @@ PotentialPhishingEmailWarning::PotentialPhishingEmailWarning(QWidget *parent)
 
 PotentialPhishingEmailWarning::~PotentialPhishingEmailWarning() = default;
 
-void PotentialPhishingEmailWarning::slotShowDetails(const QString &link)
+void PotentialPhishingEmailWarning::slotShowDetails(const QString& link)
 {
     if (link == "phishingdetails"_L1) {
         PotentialPhishingDetailDialog dlg(this);
@@ -41,7 +40,7 @@ void PotentialPhishingEmailWarning::slotShowDetails(const QString &link)
     }
 }
 
-void PotentialPhishingEmailWarning::setPotentialPhisingEmail(const QStringList &lst)
+void PotentialPhishingEmailWarning::setPotentialPhisingEmail(const QStringList& lst)
 {
     mPotentialPhishingEmails = lst;
     if (!mPotentialPhishingEmails.isEmpty()) {

@@ -4,19 +4,19 @@
 */
 
 #include "historyclosedreadermenu.h"
-#include "historyclosedreadermanager.h"
-#include "kmail_debug.h"
 #include <KLocalizedString>
 #include <QMenu>
+#include "historyclosedreadermanager.h"
+#include "kmail_debug.h"
 
-HistoryClosedReaderMenu::HistoryClosedReaderMenu(QObject *parent)
-    : KActionMenu{parent}
+HistoryClosedReaderMenu::HistoryClosedReaderMenu(QObject* parent) : KActionMenu{parent}
 {
     setText(i18nc("List of message viewer closed", "Closed Reader"));
     delete menu();
     auto subMenu = new QMenu;
     setMenu(subMenu);
-    connect(HistoryClosedReaderManager::self(), &HistoryClosedReaderManager::historyClosedReaderChanged, this, &HistoryClosedReaderMenu::updateMenu);
+    connect(HistoryClosedReaderManager::self(), &HistoryClosedReaderManager::historyClosedReaderChanged, this,
+            &HistoryClosedReaderMenu::updateMenu);
 }
 
 HistoryClosedReaderMenu::~HistoryClosedReaderMenu() = default;
@@ -38,7 +38,7 @@ void HistoryClosedReaderMenu::updateMenu()
     const QList<HistoryClosedReaderInfo> list = HistoryClosedReaderManager::self()->closedReaderInfos();
     if (!list.isEmpty()) {
         addReOpenClosedAction();
-        for (const auto &info : list) {
+        for (const auto& info : list) {
             QString subject = info.subject();
             const QString originalSubject{subject};
             if (subject.length() > 61) {
@@ -54,7 +54,8 @@ void HistoryClosedReaderMenu::updateMenu()
             menu()->addAction(action);
         }
         menu()->addSeparator();
-        auto clearAction = new QAction(QIcon::fromTheme(QStringLiteral("edit-clear-history")), i18n("Clear History"), menu());
+        auto clearAction =
+            new QAction(QIcon::fromTheme(QStringLiteral("edit-clear-history")), i18n("Clear History"), menu());
         connect(clearAction, &QAction::triggered, this, &HistoryClosedReaderMenu::slotClear);
         menu()->addAction(clearAction);
     }
@@ -92,7 +93,7 @@ void HistoryClosedReaderMenu::addReOpenClosedAction()
     menu()->addAction(mSeparatorAction);
 }
 
-QAction *HistoryClosedReaderMenu::reopenAction() const
+QAction* HistoryClosedReaderMenu::reopenAction() const
 {
     return mReopenAction;
 }

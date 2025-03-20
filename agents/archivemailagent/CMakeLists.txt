@@ -22,7 +22,7 @@ kconfig_add_kcfg_files(archivemailagent
 )
 
 
-qt_add_dbus_adaptor(libarchivemailagent_SRCS org.freedesktop.Akonadi.ArchiveMailAgent.xml archivemailagent.h ArchiveMailAgent)
+qt5_add_dbus_adaptor(libarchivemailagent_SRCS org.freedesktop.Akonadi.ArchiveMailAgent.xml archivemailagent.h ArchiveMailAgent)
 target_sources(archivemailagent PRIVATE ${libarchivemailagent_SRCS})
 
 ecm_qt_declare_logging_category(archivemailagent HEADER archivemailagent_debug.h IDENTIFIER ARCHIVEMAILAGENT_LOG CATEGORY_NAME org.kde.pim.archivemailagent
@@ -38,12 +38,15 @@ ki18n_wrap_ui(archivemailagent ui/archivemailwidget.ui)
 #    set_target_properties(archivemailagent PROPERTIES UNITY_BUILD ON)
 #endif()
 target_link_libraries(archivemailagent
-    KPim6::MailCommon
-    KPim6::AkonadiAgentWidgetBase
-    KF6::I18n
-    KF6::Notifications
-    KF6::KIOWidgets
+    KPim5::MailCommon
+    KF5::I18n
+    KF5::Notifications
+    KF5::KIOWidgets
 )
+
+if(TARGET KPim5::AkonadiAgentWidgetBase)
+    target_link_libraries(archivemailagent KPim5::AkonadiAgentWidgetBase)
+endif()
 
 ########################### Agent executable ################################
 
@@ -51,17 +54,23 @@ add_executable(akonadi_archivemail_agent archivemailagent.cpp archivemailagent.h
 
 target_link_libraries(akonadi_archivemail_agent
     archivemailagent
-    KPim6::AkonadiCore
-    KPim6::IdentityManagementCore
-    KPim6::AkonadiMime
-    KPim6::AkonadiAgentWidgetBase
-    KF6::DBusAddons
-    KF6::XmlGui
-    KF6::KIOWidgets
-    KF6::Notifications
-    KPim6::MailCommon
-    KF6::I18n
+    KPim5::AkonadiCore
+    KPim5::AkonadiMime
+    KF5::DBusAddons
+    KF5::XmlGui
+    KF5::KIOWidgets
+    KF5::Notifications
+    KPim5::MailCommon
+    KF5::I18n
 )
+
+if(TARGET KPim5::IdentityManagementCore)
+    target_link_libraries(akonadi_archivemail_agent KPim5::IdentityManagementCore)
+endif()
+
+if(TARGET KPim5::AkonadiAgentWidgetBase)
+    target_link_libraries(akonadi_archivemail_agent KPim5::AkonadiAgentWidgetBase)
+endif()
 
 if(APPLE)
     set_target_properties(akonadi_archivemail_agent PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${kmail_SOURCE_DIR}/agents/Info.plist.template)
@@ -83,7 +92,7 @@ endif()
 
 
 kcoreaddons_add_plugin(archivemailagentconfig
-    INSTALL_NAMESPACE pim6/akonadi/config
+    INSTALL_NAMESPACE pim5/akonadi/config
 )
 target_sources(archivemailagentconfig PRIVATE
     addarchivemaildialog.cpp
@@ -109,9 +118,9 @@ target_sources(archivemailagentconfig PRIVATE
 )
 target_link_libraries(archivemailagentconfig
     archivemailagent
-    KPim6::AkonadiCore
-    KF6::XmlGui
-    KF6::I18n
+    KPim5::AkonadiCore
+    KF5::XmlGui
+    KF5::I18n
 )
 #if(COMPILE_WITH_UNITY_CMAKE_SUPPORT)
 #    set_target_properties(archivemailagentconfig PROPERTIES UNITY_BUILD ON)

@@ -33,20 +33,19 @@ using namespace Qt::Literals::StringLiterals;
 using namespace std::chrono;
 using namespace std::chrono_literals;
 
-namespace
-{
-#define AKVERIFY_RET(statement, ret)                                                                                                                           \
-    do {                                                                                                                                                       \
-        if (!QTest::qVerify(static_cast<bool>(statement), #statement, "", __FILE__, __LINE__)) {                                                               \
-            return ret;                                                                                                                                        \
-        }                                                                                                                                                      \
+namespace {
+#define AKVERIFY_RET(statement, ret)                                                             \
+    do {                                                                                         \
+        if (!QTest::qVerify(static_cast<bool>(statement), #statement, "", __FILE__, __LINE__)) { \
+            return ret;                                                                          \
+        }                                                                                        \
     } while (false)
 
-#define AKCOMPARE_RET(actual, expected, ret)                                                                                                                   \
-    do {                                                                                                                                                       \
-        if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__)) {                                                                      \
-            return ret;                                                                                                                                        \
-        }                                                                                                                                                      \
+#define AKCOMPARE_RET(actual, expected, ret)                                              \
+    do {                                                                                  \
+        if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__)) { \
+            return ret;                                                                   \
+        }                                                                                 \
     } while (false)
 
 Akonadi::Collection collectionForId(qint64 id)
@@ -59,28 +58,28 @@ Akonadi::Collection collectionForId(qint64 id)
     return cols.first();
 }
 
-Akonadi::Collection collectionForRid(const QString &rid)
+Akonadi::Collection collectionForRid(const QString& rid)
 {
     auto fetch = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(), Akonadi::CollectionFetchJob::Recursive);
     fetch->fetchScope().fetchAttribute<Akonadi::SpecialCollectionAttribute>();
     fetch->fetchScope().setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
     AKVERIFY_RET(fetch->exec(), {});
     const auto cols = fetch->collections();
-    auto colIt = std::find_if(cols.cbegin(), cols.cend(), [&rid](const Akonadi::Collection &col) {
-        return col.remoteId() == rid;
-    });
+    auto colIt = std::find_if(cols.cbegin(), cols.cend(),
+                              [&rid](const Akonadi::Collection& col) { return col.remoteId() == rid; });
     AKVERIFY_RET(colIt != cols.cend(), {});
     return *colIt;
 }
 
 // A kingdom and a horse for std::optional!
-std::unique_ptr<UnifiedMailbox> createUnifiedMailbox(const QString &id, const QString &name, const QStringList &sourceRids)
+std::unique_ptr<UnifiedMailbox> createUnifiedMailbox(const QString& id, const QString& name,
+                                                     const QStringList& sourceRids)
 {
     auto mailbox = std::make_unique<UnifiedMailbox>();
     mailbox->setId(id);
     mailbox->setName(name);
     mailbox->setIcon(QStringLiteral("dummy-icon"));
-    for (const auto &srcRid : sourceRids) {
+    for (const auto& srcRid : sourceRids) {
         const auto srcCol = collectionForRid(srcRid);
         AKVERIFY_RET(srcCol.isValid(), {});
         mailbox->addSourceCollection(srcCol.id());
@@ -105,13 +104,13 @@ public:
         }
     }
 
-    EntityDeleter &operator<<(const Akonadi::Collection &col)
+    EntityDeleter& operator<<(const Akonadi::Collection& col)
     {
         cols.push_back(col);
         return *this;
     }
 
-    EntityDeleter &operator<<(const Akonadi::Item &item)
+    EntityDeleter& operator<<(const Akonadi::Item& item)
     {
         items.push_back(item);
         return *this;
@@ -122,7 +121,7 @@ private:
     Akonadi::Item::List items;
 };
 
-Akonadi::Collection createCollection(const QString &name, const Akonadi::Collection &parent, EntityDeleter &deleter)
+Akonadi::Collection createCollection(const QString& name, const Akonadi::Collection& parent, EntityDeleter& deleter)
 {
     Akonadi::Collection col;
     col.setName(name);
@@ -144,10 +143,7 @@ class UnifiedMailboxManagerTest : public QObject
 
 private Q_SLOTS:
 
-    void initTestCase()
-    {
-        AkonadiTest::checkTestIsIsolated();
-    }
+    void initTestCase() { AkonadiTest::checkTestIsIsolated(); }
 
     void testCreateDefaultBoxes()
     {
@@ -161,20 +157,17 @@ private Q_SLOTS:
 
         // Call loadBoxes and wait for it to finish
         bool loadingDone = false;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Check all the three boxes were created
         bool success;
-        const auto verifyBox = [&manager, &success](const QString &id, int numSources) {
+        const auto verifyBox = [&manager, &success](const QString& id, int numSources) {
             success = false;
-            auto boxIt = std::find_if(manager.begin(), manager.end(), [&id](const UnifiedMailboxManager::Entry &e) {
-                return e.second->id() == id;
-            });
+            auto boxIt = std::find_if(manager.begin(), manager.end(),
+                                      [&id](const UnifiedMailboxManager::Entry& e) { return e.second->id() == id; });
             QVERIFY(boxIt != manager.end());
-            const auto &box = boxIt->second;
+            const auto& box = boxIt->second;
             const auto sourceCollections = box->sourceCollections();
             QCOMPARE(sourceCollections.size(), numSources);
             for (auto source : sourceCollections) {
@@ -206,13 +199,14 @@ private Q_SLOTS:
         auto kcfg = KSharedConfig::openConfig(QString::fromUtf8(QTest::currentTestFunction()));
         const auto boxesGroup = kcfg->group(QStringLiteral("UnifiedMailboxes"));
         UnifiedMailboxManager manager(kcfg);
-        Akonadi::ChangeRecorder &recorder = manager.changeRecorder();
+        Akonadi::ChangeRecorder& recorder = manager.changeRecorder();
 
         // Nothing should be monitored as of now
         QVERIFY(recorder.collectionsMonitored().isEmpty());
 
         // Create a new unified mailbox and passit to the manager
-        auto mailbox = createUnifiedMailbox(QStringLiteral("Test1"), QStringLiteral("Test 1"), {QStringLiteral("res1_inbox")});
+        auto mailbox =
+            createUnifiedMailbox(QStringLiteral("Test1"), QStringLiteral("Test 1"), {QStringLiteral("res1_inbox")});
         QVERIFY(mailbox);
         const auto sourceCol = mailbox->sourceCollections().values().first();
         manager.insertBox(std::move(mailbox));
@@ -238,22 +232,21 @@ private Q_SLOTS:
         // Setup
         auto kcfg = KSharedConfig::openConfig(QString::fromUtf8(QTest::currentTestFunction()));
         auto boxesGroup = kcfg->group(QStringLiteral("UnifiedMailboxes"));
-        auto mailbox = createUnifiedMailbox(QStringLiteral("Test1"), QStringLiteral("Test 1"), {QStringLiteral("res1_foo"), QStringLiteral("res2_foo")});
+        auto mailbox = createUnifiedMailbox(QStringLiteral("Test1"), QStringLiteral("Test 1"),
+                                            {QStringLiteral("res1_foo"), QStringLiteral("res2_foo")});
         QVERIFY(mailbox);
         auto group = boxesGroup.group(mailbox->id());
         mailbox->save(group);
 
         UnifiedMailboxManager manager(kcfg);
-        Akonadi::ChangeRecorder &recorder = manager.changeRecorder();
+        Akonadi::ChangeRecorder& recorder = manager.changeRecorder();
 
         // Nothing should be monitored right now
         QVERIFY(recorder.collectionsMonitored().isEmpty());
 
         // Load the config
         bool loadingDone = false;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now the box should be loaded and its source collections monitored
@@ -288,10 +281,12 @@ private Q_SLOTS:
         auto boxesGroup = kcfg->group(QStringLiteral("UnifiedMailboxes"));
         UnifiedMailboxManager manager(kcfg);
         EntityDeleter deleter;
-        const auto inbox = createUnifiedMailbox(Common::InboxBoxId, QStringLiteral("Inbox"), {QStringLiteral("res1_inbox"), QStringLiteral("res2_inbox")});
+        const auto inbox = createUnifiedMailbox(Common::InboxBoxId, QStringLiteral("Inbox"),
+                                                {QStringLiteral("res1_inbox"), QStringLiteral("res2_inbox")});
         auto boxGroup = boxesGroup.group(inbox->id());
         inbox->save(boxGroup);
-        const auto sentBox = createUnifiedMailbox(Common::SentBoxId, QStringLiteral("Sent"), {QStringLiteral("res1_sent"), QStringLiteral("res2_sent")});
+        const auto sentBox = createUnifiedMailbox(Common::SentBoxId, QStringLiteral("Sent"),
+                                                  {QStringLiteral("res1_sent"), QStringLiteral("res2_sent")});
         boxGroup = boxesGroup.group(sentBox->id());
         sentBox->save(boxGroup);
 
@@ -306,9 +301,7 @@ private Q_SLOTS:
 
         // Load from config
         bool loadingDone = false;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now the boxes should be loaded and we should be able to access them
@@ -339,16 +332,12 @@ private Q_SLOTS:
         // Load boxes - config is empty so this will create the default Boxes and
         // assign the Inboxes from Knuts to it
         bool loadingDone = true;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now discover collections for the created boxes
         loadingDone = false;
-        manager.discoverBoxCollections([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.discoverBoxCollections([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Get one of the source collections for Inbox
@@ -398,16 +387,12 @@ private Q_SLOTS:
         // Load boxes - config is empty so this will create the default Boxes and
         // assign the Inboxes from Knuts to it
         bool loadingDone = true;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now discover collections for the created boxes
         loadingDone = false;
-        manager.discoverBoxCollections([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.discoverBoxCollections([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Get one of the source collections for Inbox
@@ -469,16 +454,12 @@ private Q_SLOTS:
         // Load boxes - config is empty so this will create the default Boxes and
         // assign the Inboxes from Knuts to it
         bool loadingDone = true;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now discover collections for the created boxes
         loadingDone = false;
-        manager.discoverBoxCollections([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.discoverBoxCollections([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Get one of the source collections for Inbox and Drafts
@@ -534,7 +515,7 @@ private Q_SLOTS:
         // Setup
         auto kcfg = KSharedConfig::openConfig(QString::fromUtf8(QTest::currentTestFunction()));
         UnifiedMailboxManager manager(kcfg);
-        auto &changeRecorder = manager.changeRecorder();
+        auto& changeRecorder = manager.changeRecorder();
         QSignalSpy crRemovedSpy(&changeRecorder, &Akonadi::Monitor::collectionRemoved);
         EntityDeleter deleter;
 
@@ -547,16 +528,12 @@ private Q_SLOTS:
         // Load boxes - config is empty so this will create the default Boxes and
         // assign the Inboxes from Knuts to it
         bool loadingDone = true;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now discover collections for the created boxes
         loadingDone = false;
-        manager.discoverBoxCollections([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.discoverBoxCollections([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         auto inboxSourceCol = collectionForRid(QStringLiteral("res1_inbox"));
@@ -602,8 +579,9 @@ private Q_SLOTS:
         // Setup
         auto kcfg = KSharedConfig::openConfig(QString::fromUtf8(QTest::currentTestFunction()));
         UnifiedMailboxManager manager(kcfg);
-        auto &changeRecorder = manager.changeRecorder();
-        QSignalSpy crChangedSpy(&changeRecorder, qOverload<const Akonadi::Collection &, const QSet<QByteArray> &>(&Akonadi::Monitor::collectionChanged));
+        auto& changeRecorder = manager.changeRecorder();
+        QSignalSpy crChangedSpy(&changeRecorder, qOverload<const Akonadi::Collection&, const QSet<QByteArray>&>(
+                                                     &Akonadi::Monitor::collectionChanged));
         EntityDeleter deleter;
 
         const auto parentCol = collectionForRid(Common::AgentIdentifier);
@@ -615,16 +593,12 @@ private Q_SLOTS:
         // Load boxes - config is empty so this will create the default Boxes and
         // assign the Inboxes from Knuts to it
         bool loadingDone = true;
-        manager.loadBoxes([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.loadBoxes([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         // Now discover collections for the created boxes
         loadingDone = false;
-        manager.discoverBoxCollections([&loadingDone]() {
-            loadingDone = true;
-        });
+        manager.discoverBoxCollections([&loadingDone]() { loadingDone = true; });
         QTRY_VERIFY_WITH_TIMEOUT(loadingDone, milliseconds(10s).count());
 
         auto sentSourceCol = collectionForRid(QStringLiteral("res1_sent"));

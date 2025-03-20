@@ -9,8 +9,7 @@
 #include <QObject>
 class QWidget;
 class QItemSelectionModel;
-namespace KPIM
-{
+namespace KPIM {
 class ProgressItem;
 }
 class KJob;
@@ -18,15 +17,15 @@ class RemoveDuplicateMailJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit RemoveDuplicateMailJob(QItemSelectionModel *selectionModel, QWidget *widget, QObject *parent = nullptr);
+    explicit RemoveDuplicateMailJob(QItemSelectionModel* selectionModel, QWidget* widget, QObject* parent = nullptr);
     ~RemoveDuplicateMailJob() override;
 
     void start();
 
 private:
-    void slotRemoveDuplicatesDone(KJob *job);
-    void slotRemoveDuplicatesCanceled(KPIM::ProgressItem *item);
-    void slotRemoveDuplicatesUpdate(KJob *job, const QString &description);
-    QWidget *const mParent;
-    QItemSelectionModel *const mSelectionModel;
+    void slotRemoveDuplicatesDone(KJob* job);
+    void slotRemoveDuplicatesCanceled(KPIM::ProgressItem* item);
+    void slotRemoveDuplicatesUpdate(KJob* job, const QString& description);
+    QWidget* const mParent;
+    QItemSelectionModel* const mSelectionModel;
 };

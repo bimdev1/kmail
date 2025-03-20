@@ -16,8 +16,7 @@
 
 using namespace KMail;
 //---------------------------------------------------------------------------
-SecondaryWindow::SecondaryWindow(const QString &name)
-    : KXmlGuiWindow(nullptr)
+SecondaryWindow::SecondaryWindow(const QString& name) : KXmlGuiWindow(nullptr)
 {
     setObjectName(name);
 }
@@ -26,7 +25,7 @@ SecondaryWindow::SecondaryWindow(const QString &name)
 SecondaryWindow::~SecondaryWindow() = default;
 
 //---------------------------------------------------------------------------
-void SecondaryWindow::closeEvent(QCloseEvent *e)
+void SecondaryWindow::closeEvent(QCloseEvent* e)
 {
     // if there's a system tray applet then just do what needs to be done if a
     // window is closed.
@@ -67,7 +66,7 @@ void SecondaryWindow::closeEvent(QCloseEvent *e)
     }
 }
 
-void SecondaryWindow::setCaption(const QString &userCaption)
+void SecondaryWindow::setCaption(const QString& userCaption)
 {
     const QString caption = QGuiApplication::applicationDisplayName();
     QString captionString = userCaption.isEmpty() ? caption : userCaption;

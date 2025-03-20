@@ -12,7 +12,7 @@ class KActionMenuTransportTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit KActionMenuTransportTest(QObject *parent = nullptr);
+    explicit KActionMenuTransportTest(QObject* parent = nullptr);
     ~KActionMenuTransportTest() override;
 private Q_SLOTS:
     void shouldHaveDefaultValue();

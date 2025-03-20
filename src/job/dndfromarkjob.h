@@ -14,11 +14,11 @@ class DndFromArkJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit DndFromArkJob(QObject *parent = nullptr);
-    [[nodiscard]] static bool dndFromArk(const QMimeData *source);
-    [[nodiscard]] bool extract(const QMimeData *source);
-    void setComposerWin(KMComposerWin *composerWin);
+    explicit DndFromArkJob(QObject* parent = nullptr);
+    [[nodiscard]] static bool dndFromArk(const QMimeData* source);
+    [[nodiscard]] bool extract(const QMimeData* source);
+    void setComposerWin(KMComposerWin* composerWin);
 
 private:
-    KMComposerWin *mComposerWin = nullptr;
+    KMComposerWin* mComposerWin = nullptr;
 };

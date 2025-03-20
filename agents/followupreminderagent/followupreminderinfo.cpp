@@ -10,25 +10,20 @@ using namespace FollowUpReminder;
 
 FollowUpReminderInfo::FollowUpReminderInfo() = default;
 
-FollowUpReminderInfo::FollowUpReminderInfo(const KConfigGroup &config)
+FollowUpReminderInfo::FollowUpReminderInfo(const KConfigGroup& config)
 {
     readConfig(config);
 }
 
-FollowUpReminderInfo::FollowUpReminderInfo(const FollowUpReminderInfo &info)
-    : mOriginalMessageItemId(info.originalMessageItemId())
-    , mAnswerMessageItemId(info.answerMessageItemId())
-    , mTodoId(info.todoId())
-    , mMessageId(info.messageId())
-    , mFollowUpReminderDate(info.followUpReminderDate())
-    , mTo(info.to())
-    , mSubject(info.subject())
-    , mUniqueIdentifier(info.uniqueIdentifier())
-    , mAnswerWasReceived(info.answerWasReceived())
+FollowUpReminderInfo::FollowUpReminderInfo(const FollowUpReminderInfo& info)
+    : mOriginalMessageItemId(info.originalMessageItemId()), mAnswerMessageItemId(info.answerMessageItemId()),
+      mTodoId(info.todoId()), mMessageId(info.messageId()), mFollowUpReminderDate(info.followUpReminderDate()),
+      mTo(info.to()), mSubject(info.subject()), mUniqueIdentifier(info.uniqueIdentifier()),
+      mAnswerWasReceived(info.answerWasReceived())
 {
 }
 
-void FollowUpReminderInfo::readConfig(const KConfigGroup &config)
+void FollowUpReminderInfo::readConfig(const KConfigGroup& config)
 {
     if (config.hasKey(QStringLiteral("followUpReminderDate"))) {
         mFollowUpReminderDate = QDate::fromString(config.readEntry("followUpReminderDate"), Qt::ISODate);
@@ -78,12 +73,12 @@ QString FollowUpReminderInfo::subject() const
     return mSubject;
 }
 
-void FollowUpReminderInfo::setSubject(const QString &subject)
+void FollowUpReminderInfo::setSubject(const QString& subject)
 {
     mSubject = subject;
 }
 
-void FollowUpReminderInfo::writeConfig(KConfigGroup &config, qint32 identifier)
+void FollowUpReminderInfo::writeConfig(KConfigGroup& config, qint32 identifier)
 {
     if (mFollowUpReminderDate.isValid()) {
         config.writeEntry("followUpReminderDate", mFollowUpReminderDate.toString(Qt::ISODate));
@@ -130,12 +125,12 @@ QString FollowUpReminderInfo::messageId() const
     return mMessageId;
 }
 
-void FollowUpReminderInfo::setMessageId(const QString &messageId)
+void FollowUpReminderInfo::setMessageId(const QString& messageId)
 {
     mMessageId = messageId;
 }
 
-void FollowUpReminderInfo::setTo(const QString &to)
+void FollowUpReminderInfo::setTo(const QString& to)
 {
     mTo = to;
 }
@@ -155,14 +150,15 @@ void FollowUpReminderInfo::setFollowUpReminderDate(QDate followUpReminderDate)
     mFollowUpReminderDate = followUpReminderDate;
 }
 
-bool FollowUpReminderInfo::operator==(const FollowUpReminderInfo &other) const
+bool FollowUpReminderInfo::operator==(const FollowUpReminderInfo& other) const
 {
-    return mOriginalMessageItemId == other.originalMessageItemId() && mMessageId == other.messageId() && mTo == other.to()
-        && mFollowUpReminderDate == other.followUpReminderDate() && mSubject == other.subject() && mAnswerWasReceived == other.answerWasReceived()
-        && mAnswerMessageItemId == other.answerMessageItemId() && mUniqueIdentifier == other.uniqueIdentifier() && mTodoId == other.todoId();
+    return mOriginalMessageItemId == other.originalMessageItemId() && mMessageId == other.messageId() &&
+           mTo == other.to() && mFollowUpReminderDate == other.followUpReminderDate() && mSubject == other.subject() &&
+           mAnswerWasReceived == other.answerWasReceived() && mAnswerMessageItemId == other.answerMessageItemId() &&
+           mUniqueIdentifier == other.uniqueIdentifier() && mTodoId == other.todoId();
 }
 
-QDebug operator<<(QDebug d, const FollowUpReminderInfo &other)
+QDebug operator<<(QDebug d, const FollowUpReminderInfo& other)
 {
     d << "mOriginalMessageItemId: " << other.originalMessageItemId();
     d << "mMessageId: " << other.messageId();

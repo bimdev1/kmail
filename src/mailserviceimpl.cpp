@@ -7,9 +7,9 @@
  */
 
 #include "mailserviceimpl.h"
+#include <serviceadaptor.h>
 #include "editor/composer.h"
 #include "kmkernel.h"
-#include <serviceadaptor.h>
 
 // kdepim includes
 #include <MessageComposer/MessageHelper>
@@ -19,20 +19,14 @@
 #include <QDBusConnection>
 
 using namespace KMail;
-MailServiceImpl::MailServiceImpl(QObject *parent)
-    : QObject(parent)
+MailServiceImpl::MailServiceImpl(QObject* parent) : QObject(parent)
 {
     new ServiceAdaptor(this);
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/MailTransportService"), this);
 }
 
-bool MailServiceImpl::sendMessage(const QString &from,
-                                  const QString &to,
-                                  const QString &cc,
-                                  const QString &bcc,
-                                  const QString &subject,
-                                  const QString &body,
-                                  const QStringList &attachments)
+bool MailServiceImpl::sendMessage(const QString& from, const QString& to, const QString& cc, const QString& bcc,
+                                  const QString& subject, const QString& body, const QStringList& attachments)
 {
     if (to.isEmpty() && cc.isEmpty() && bcc.isEmpty()) {
         return false;
@@ -63,7 +57,7 @@ bool MailServiceImpl::sendMessage(const QString &from,
         msg->setBody(body.toUtf8());
     }
 
-    KMail::Composer *cWin = KMail::makeComposer(msg);
+    KMail::Composer* cWin = KMail::makeComposer(msg);
 
     QList<QUrl> attachUrls;
     const int nbAttachments = attachments.count();
@@ -76,13 +70,8 @@ bool MailServiceImpl::sendMessage(const QString &from,
     return true;
 }
 
-bool MailServiceImpl::sendMessage(const QString &from,
-                                  const QString &to,
-                                  const QString &cc,
-                                  const QString &bcc,
-                                  const QString &subject,
-                                  const QString &body,
-                                  const QByteArray &attachment)
+bool MailServiceImpl::sendMessage(const QString& from, const QString& to, const QString& cc, const QString& bcc,
+                                  const QString& subject, const QString& body, const QByteArray& attachment)
 {
     if (to.isEmpty() && cc.isEmpty() && bcc.isEmpty()) {
         return false;

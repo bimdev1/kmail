@@ -12,7 +12,7 @@ class CommandLineInfoTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit CommandLineInfoTest(QObject *parent = nullptr);
+    explicit CommandLineInfoTest(QObject* parent = nullptr);
     ~CommandLineInfoTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValues();

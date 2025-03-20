@@ -5,15 +5,14 @@
 */
 
 #include "folderarchiveaccountinfotest.h"
-#include "../folderarchiveaccountinfo.h"
 #include <Akonadi/Collection>
 #include <KSharedConfig>
 #include <QStandardPaths>
 #include <QTest>
+#include "../folderarchiveaccountinfo.h"
 QTEST_MAIN(FolderArchiveAccountInfoTest)
 
-FolderArchiveAccountInfoTest::FolderArchiveAccountInfoTest(QObject *parent)
-    : QObject(parent)
+FolderArchiveAccountInfoTest::FolderArchiveAccountInfoTest(QObject* parent) : QObject(parent)
 {
     QStandardPaths::setTestModeEnabled(true);
 }

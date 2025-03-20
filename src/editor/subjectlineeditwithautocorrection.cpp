@@ -9,7 +9,7 @@
 #include <QDropEvent>
 #include <QMimeData>
 
-SubjectLineEditWithAutoCorrection::SubjectLineEditWithAutoCorrection(QWidget *parent, const QString &configFile)
+SubjectLineEditWithAutoCorrection::SubjectLineEditWithAutoCorrection(QWidget* parent, const QString& configFile)
     : PimCommon::LineEditWithAutoCorrection(parent, configFile)
 {
     setActivateLanguageMenu(false);
@@ -18,9 +18,9 @@ SubjectLineEditWithAutoCorrection::SubjectLineEditWithAutoCorrection(QWidget *pa
 
 SubjectLineEditWithAutoCorrection::~SubjectLineEditWithAutoCorrection() = default;
 
-void SubjectLineEditWithAutoCorrection::dropEvent(QDropEvent *event)
+void SubjectLineEditWithAutoCorrection::dropEvent(QDropEvent* event)
 {
-    const QMimeData *mimeData = event->mimeData();
+    const QMimeData* mimeData = event->mimeData();
     if (mimeData->hasUrls()) {
         Q_EMIT handleMimeData(mimeData);
         event->accept();

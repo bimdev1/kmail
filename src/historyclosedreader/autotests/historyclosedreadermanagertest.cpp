@@ -4,14 +4,11 @@
 */
 
 #include "historyclosedreadermanagertest.h"
-#include "historyclosedreader/historyclosedreadermanager.h"
 #include <QSignalSpy>
 #include <QTest>
+#include "historyclosedreader/historyclosedreadermanager.h"
 QTEST_GUILESS_MAIN(HistoryClosedReaderManagerTest)
-HistoryClosedReaderManagerTest::HistoryClosedReaderManagerTest(QObject *parent)
-    : QObject{parent}
-{
-}
+HistoryClosedReaderManagerTest::HistoryClosedReaderManagerTest(QObject* parent) : QObject{parent} {}
 
 void HistoryClosedReaderManagerTest::shouldHaveDefaultValues()
 {

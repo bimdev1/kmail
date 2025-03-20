@@ -7,10 +7,9 @@
 #pragma once
 
 #include <Akonadi/Tag>
-#include <QObject>
 #include <mailcommon/tag.h>
-namespace Akonadi
-{
+#include <QObject>
+namespace Akonadi {
 class Monitor;
 }
 class KJob;
@@ -19,10 +18,10 @@ class TagMonitorManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit TagMonitorManager(QObject *parent = nullptr);
+    explicit TagMonitorManager(QObject* parent = nullptr);
     ~TagMonitorManager() override;
 
-    static TagMonitorManager *self();
+    static TagMonitorManager* self();
 
     [[nodiscard]] QList<MailCommon::Tag::Ptr> tags() const;
 
@@ -34,13 +33,13 @@ Q_SIGNALS:
 
 private:
     void createActions();
-    void finishedTagListing(KJob *job);
-    void onTagAdded(const Akonadi::Tag &akonadiTag);
-    void onTagRemoved(const Akonadi::Tag &akonadiTag);
-    void onTagChanged(const Akonadi::Tag &akonadiTag);
+    void finishedTagListing(KJob* job);
+    void onTagAdded(const Akonadi::Tag& akonadiTag);
+    void onTagRemoved(const Akonadi::Tag& akonadiTag);
+    void onTagChanged(const Akonadi::Tag& akonadiTag);
 
     // A sorted list of all tags
     QList<MailCommon::Tag::Ptr> mTags;
 
-    Akonadi::Monitor *const mMonitor;
+    Akonadi::Monitor* const mMonitor;
 };

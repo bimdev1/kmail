@@ -15,15 +15,17 @@ class FollowUpReminderInfoConfigWidget : public Akonadi::AgentConfigurationBase
 {
     Q_OBJECT
 public:
-    explicit FollowUpReminderInfoConfigWidget(const KSharedConfigPtr &config, QWidget *parentWidget, const QVariantList &args);
+    explicit FollowUpReminderInfoConfigWidget(const KSharedConfigPtr& config, QWidget* parentWidget,
+                                              const QVariantList& args);
     ~FollowUpReminderInfoConfigWidget() override;
 
     [[nodiscard]] bool save() const override;
     void load() override;
     [[nodiscard]] QSize restoreDialogSize() const override;
-    void saveDialogSize(const QSize &size) override;
+    void saveDialogSize(const QSize& size) override;
 
 private:
-    FollowUpReminderInfoWidget *const mWidget;
+    FollowUpReminderInfoWidget* const mWidget;
 };
-AKONADI_AGENTCONFIG_FACTORY(FollowUpReminderInfoAgentConfigFactory, "followupreminderagentconfig.json", FollowUpReminderInfoConfigWidget)
+AKONADI_AGENTCONFIG_FACTORY(FollowUpReminderInfoAgentConfigFactory, "followupreminderagentconfig.json",
+                            FollowUpReminderInfoConfigWidget)

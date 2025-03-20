@@ -16,7 +16,7 @@ class KMailSettings : public GlobalSettingsBase
 {
     Q_OBJECT
 public:
-    static KMailSettings *self();
+    static KMailSettings* self();
 
     /** Call this slot instead of directly KConfig::sync() to
         minimize the overall config writes. Calling this slot will
@@ -31,7 +31,7 @@ private Q_SLOTS:
 private:
     KMailSettings();
     ~KMailSettings() override;
-    static KMailSettings *mSelf;
+    static KMailSettings* mSelf;
 
-    QTimer *const mConfigSyncTimer;
+    QTimer* const mConfigSyncTimer;
 };

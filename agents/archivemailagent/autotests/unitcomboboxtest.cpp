@@ -5,13 +5,10 @@
 */
 
 #include "unitcomboboxtest.h"
-#include "../widgets/unitcombobox.h"
 #include <QTest>
+#include "../widgets/unitcombobox.h"
 
-UnitComboBoxTest::UnitComboBoxTest(QObject *parent)
-    : QObject(parent)
-{
-}
+UnitComboBoxTest::UnitComboBoxTest(QObject* parent) : QObject(parent) {}
 
 UnitComboBoxTest::~UnitComboBoxTest() = default;
 

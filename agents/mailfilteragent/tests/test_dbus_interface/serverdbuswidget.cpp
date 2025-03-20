@@ -14,9 +14,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-ServerDbusWidget::ServerDbusWidget(QWidget *parent)
-    : QWidget{parent}
-    , mEdit(new QTextEdit(this))
+ServerDbusWidget::ServerDbusWidget(QWidget* parent) : QWidget{parent}, mEdit(new QTextEdit(this))
 {
     const QString path = QStringLiteral("/ServerDbusTest");
     auto mainLayout = new QHBoxLayout(this);
@@ -41,7 +39,7 @@ QString ServerDbusWidget::debug()
     return QStringLiteral("DEBUGGING");
 }
 
-void ServerDbusWidget::sendElements(const QList<qint64> &items, int index)
+void ServerDbusWidget::sendElements(const QList<qint64>& items, int index)
 {
     qDebug() << " sendElements " << items << " index " << index;
     QString str = QStringLiteral("index: %1").arg(QString::number(index));

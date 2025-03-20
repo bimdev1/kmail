@@ -12,22 +12,11 @@
 struct NewMessageJobSettings {
     NewMessageJobSettings() = default;
 
-    NewMessageJobSettings(const QString &to,
-                          const QString &cc,
-                          const QString &bcc,
-                          bool hidden,
-                          const QString &attachURL,
-                          const QSharedPointer<MailCommon::FolderSettings> &folder,
-                          uint identity,
-                          const Akonadi::Collection &currentCollection)
-        : mTo(to)
-        , mCc(cc)
-        , mBcc(bcc)
-        , mAttachURL(attachURL)
-        , mFolder(folder)
-        , mCurrentCollection(currentCollection)
-        , mHidden(hidden)
-        , mIdentity(identity)
+    NewMessageJobSettings(const QString& to, const QString& cc, const QString& bcc, bool hidden,
+                          const QString& attachURL, const QSharedPointer<MailCommon::FolderSettings>& folder,
+                          uint identity, const Akonadi::Collection& currentCollection)
+        : mTo(to), mCc(cc), mBcc(bcc), mAttachURL(attachURL), mFolder(folder), mCurrentCollection(currentCollection),
+          mHidden(hidden), mIdentity(identity)
     {
     }
 
@@ -45,11 +34,11 @@ class NewMessageJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit NewMessageJob(QObject *parent = nullptr);
+    explicit NewMessageJob(QObject* parent = nullptr);
     ~NewMessageJob() override;
     void start();
 
-    void setNewMessageJobSettings(const NewMessageJobSettings &newMessageJobSettings);
+    void setNewMessageJobSettings(const NewMessageJobSettings& newMessageJobSettings);
 
 private:
     void slotOpenComposer();

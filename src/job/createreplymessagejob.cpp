@@ -6,29 +6,26 @@
 
 #include "createreplymessagejob.h"
 
-#include "../util.h"
-#include "kmkernel.h"
 #include <KEmailAddress>
 #include <MailCommon/MailUtil>
 #include <MessageComposer/ComposerJob>
+#include "../util.h"
+#include "kmkernel.h"
 
-CreateReplyMessageJob::CreateReplyMessageJob(QObject *parent)
-    : QObject(parent)
-{
-}
+CreateReplyMessageJob::CreateReplyMessageJob(QObject* parent) : QObject(parent) {}
 
 CreateReplyMessageJob::~CreateReplyMessageJob()
 {
     delete mMessageFactory;
 }
 
-void CreateReplyMessageJob::setSettings(const CreateReplyMessageJobSettings &settings)
+void CreateReplyMessageJob::setSettings(const CreateReplyMessageJobSettings& settings)
 {
     mSettings = settings;
 }
 
 /// Small helper function to get the composer context from a reply
-inline KMail::Composer::TemplateContext replyContext(const MessageComposer::MessageFactoryNG::MessageReply &reply)
+inline KMail::Composer::TemplateContext replyContext(const MessageComposer::MessageFactoryNG::MessageReply& reply)
 {
     if (reply.replyAll) {
         return KMail::Composer::TemplateContext::ReplyToAll;
@@ -51,12 +48,13 @@ void CreateReplyMessageJob::start()
     if (mSettings.noQuote) {
         mMessageFactory->setQuote(false);
     }
-    connect(mMessageFactory, &MessageComposer::MessageFactoryNG::createReplyDone, this, &CreateReplyMessageJob::slotCreateReplyDone);
+    connect(mMessageFactory, &MessageComposer::MessageFactoryNG::createReplyDone, this,
+            &CreateReplyMessageJob::slotCreateReplyDone);
     mMessageFactory->setReplyStrategy(mSettings.replyStrategy);
     mMessageFactory->createReplyAsync();
 }
 
-void CreateReplyMessageJob::slotCreateReplyDone(const MessageComposer::MessageFactoryNG::MessageReply &reply)
+void CreateReplyMessageJob::slotCreateReplyDone(const MessageComposer::MessageFactoryNG::MessageReply& reply)
 {
     KMime::Message::Ptr rmsg = reply.msg;
     if (mSettings.url.isValid()) {
@@ -66,14 +64,11 @@ void CreateReplyMessageJob::slotCreateReplyDone(const MessageComposer::MessageFa
     bool lastSign = false;
     KMail::Util::lastEncryptAndSignState(lastEncrypt, lastSign, mSettings.msg);
 
-    KMail::Composer *win =
-        KMail::makeComposer(rmsg,
-                            lastSign,
-                            lastEncrypt,
-                            (mSettings.replyStrategy == MessageComposer::ReplyNone) ? KMail::Composer::TemplateContext::Reply : replyContext(reply),
-                            0,
-                            mSettings.selection,
-                            mSettings.templateStr);
+    KMail::Composer* win = KMail::makeComposer(rmsg, lastSign, lastEncrypt,
+                                               (mSettings.replyStrategy == MessageComposer::ReplyNone)
+                                                   ? KMail::Composer::TemplateContext::Reply
+                                                   : replyContext(reply),
+                                               0, mSettings.selection, mSettings.templateStr);
     win->setFocusToEditor();
     win->show();
     deleteLater();

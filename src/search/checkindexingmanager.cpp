@@ -6,8 +6,6 @@
 
 #include "checkindexingmanager.h"
 
-#include "checkindexingjob.h"
-#include "kmail_debug.h"
 #include <Akonadi/CachePolicy>
 #include <Akonadi/EntityHiddenAttribute>
 #include <Akonadi/EntityTreeModel>
@@ -18,17 +16,17 @@
 #include <PIM/indexeditems.h>
 #include <PimCommon/PimUtil>
 #include <PimCommonAkonadi/MailUtil>
+#include <chrono>
 #include <QDBusInterface>
 #include <QTimer>
-#include <chrono>
+#include "checkindexingjob.h"
+#include "kmail_debug.h"
 
 using namespace std::chrono_literals;
 using namespace Qt::Literals::StringLiterals;
 
-CheckIndexingManager::CheckIndexingManager(Akonadi::Search::PIM::IndexedItems *indexer, QObject *parent)
-    : QObject(parent)
-    , mIndexedItems(indexer)
-    , mTimer(new QTimer(this))
+CheckIndexingManager::CheckIndexingManager(Akonadi::Search::PIM::IndexedItems* indexer, QObject* parent)
+    : QObject(parent), mIndexedItems(indexer), mTimer(new QTimer(this))
 {
     mTimer->setSingleShot(true);
     mTimer->setInterval(5s);
@@ -43,7 +41,7 @@ CheckIndexingManager::~CheckIndexingManager()
     grp.writeEntry(QStringLiteral("collectionsIndexed"), mCollectionsIndexed);
 }
 
-void CheckIndexingManager::start(QAbstractItemModel *collectionModel)
+void CheckIndexingManager::start(QAbstractItemModel* collectionModel)
 {
     if (mIsReady) {
         const KSharedConfig::Ptr cfg = KSharedConfig::openConfig(QStringLiteral("kmailsearchindexingrc"));
@@ -85,12 +83,12 @@ void CheckIndexingManager::checkNextCollection()
 void CheckIndexingManager::callToReindexCollection()
 {
     if (!mCollectionsNeedToBeReIndexed.isEmpty()) {
-        QDBusInterface interfaceAkonadiIndexer(PimCommon::MailUtil::indexerServiceName(),
-                                               QStringLiteral("/"),
+        QDBusInterface interfaceAkonadiIndexer(PimCommon::MailUtil::indexerServiceName(), QStringLiteral("/"),
                                                QStringLiteral("org.freedesktop.Akonadi.Indexer"));
         if (interfaceAkonadiIndexer.isValid()) {
             qCDebug(KMAIL_LOG) << "Reindex collections :" << mCollectionsIndexed;
-            interfaceAkonadiIndexer.asyncCall(QStringLiteral("reindexCollections"), QVariant::fromValue(mCollectionsNeedToBeReIndexed));
+            interfaceAkonadiIndexer.asyncCall(QStringLiteral("reindexCollections"),
+                                              QVariant::fromValue(mCollectionsNeedToBeReIndexed));
         }
     }
 }
@@ -129,12 +127,13 @@ void CheckIndexingManager::indexingFinished(qint64 index, bool reindexCollection
     }
 }
 
-void CheckIndexingManager::initializeCollectionList(QAbstractItemModel *model, const QModelIndex &parentIndex)
+void CheckIndexingManager::initializeCollectionList(QAbstractItemModel* model, const QModelIndex& parentIndex)
 {
     const int rowCount = model->rowCount(parentIndex);
     for (int row = 0; row < rowCount; ++row) {
         const QModelIndex index = model->index(row, 0, parentIndex);
-        const auto collection = model->data(index, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        const auto collection =
+            model->data(index, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
 
         if (!collection.isValid() || MailCommon::Util::isVirtualCollection(collection)) {
             continue;
@@ -142,7 +141,8 @@ void CheckIndexingManager::initializeCollectionList(QAbstractItemModel *model, c
         if (collection.hasAttribute<Akonadi::EntityHiddenAttribute>()) {
             continue;
         }
-        if (PimCommon::Util::isImapResource(collection.resource()) && !collection.cachePolicy().localParts().contains("RFC822"_L1)) {
+        if (PimCommon::Util::isImapResource(collection.resource()) &&
+            !collection.cachePolicy().localParts().contains("RFC822"_L1)) {
             continue;
         }
         if (!mCollectionsIndexed.contains(collection.id())) {

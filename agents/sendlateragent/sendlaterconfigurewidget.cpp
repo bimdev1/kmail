@@ -18,44 +18,40 @@
 #include <QPointer>
 
 using namespace Qt::Literals::StringLiterals;
-namespace
-{
+namespace {
 inline QString sendLaterItemPattern()
 {
     return QStringLiteral("SendLaterItem \\d+");
 }
-}
+} // namespace
 
 // #define DEBUG_MESSAGE_ID
 
-SendLaterItem::SendLaterItem(QTreeWidget *parent)
-    : QTreeWidgetItem(parent)
-{
-}
+SendLaterItem::SendLaterItem(QTreeWidget* parent) : QTreeWidgetItem(parent) {}
 
 SendLaterItem::~SendLaterItem()
 {
     delete mInfo;
 }
 
-void SendLaterItem::setInfo(MessageComposer::SendLaterInfo *info)
+void SendLaterItem::setInfo(MessageComposer::SendLaterInfo* info)
 {
     mInfo = info;
 }
 
-MessageComposer::SendLaterInfo *SendLaterItem::info() const
+MessageComposer::SendLaterInfo* SendLaterItem::info() const
 {
     return mInfo;
 }
 
-SendLaterWidget::SendLaterWidget(QWidget *parent)
-    : QWidget(parent)
+SendLaterWidget::SendLaterWidget(QWidget* parent) : QWidget(parent)
 {
     mWidget = new Ui::SendLaterConfigureWidget;
     mWidget->setupUi(this);
-    const QStringList headers = QStringList() << i18n("To") << i18n("Subject") << i18n("Send around") << i18n("Recurrent")
+    const QStringList headers = QStringList()
+                                << i18n("To") << i18n("Subject") << i18n("Send around") << i18n("Recurrent")
 #ifdef DEBUG_MESSAGE_ID
-                                              << i18n("Message Id");
+                                << i18n("Message Id");
 #else
         ;
 #endif
@@ -68,7 +64,8 @@ SendLaterWidget::SendLaterWidget(QWidget *parent)
     mWidget->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     mWidget->treeWidget->setDefaultText(i18n("No messages waiting…"));
 
-    connect(mWidget->treeWidget, &QTreeWidget::customContextMenuRequested, this, &SendLaterWidget::slotCustomContextMenuRequested);
+    connect(mWidget->treeWidget, &QTreeWidget::customContextMenuRequested, this,
+            &SendLaterWidget::slotCustomContextMenuRequested);
 
     connect(mWidget->deleteItem, &QPushButton::clicked, this, &SendLaterWidget::slotDeleteItem);
     connect(mWidget->modifyItem, &QPushButton::clicked, this, &SendLaterWidget::slotModifyItem);
@@ -85,7 +82,7 @@ SendLaterWidget::~SendLaterWidget()
 
 void SendLaterWidget::slotCustomContextMenuRequested(QPoint)
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget->treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget->treeWidget->selectedItems();
     if (!listItems.isEmpty()) {
         QMenu menu(this);
         if (listItems.count() == 1) {
@@ -94,33 +91,34 @@ void SendLaterWidget::slotCustomContextMenuRequested(QPoint)
             menu.addAction(i18nc("@action", "Send now"), this, &SendLaterWidget::slotSendNow);
         }
         menu.addSeparator();
-        menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18nc("@action", "Delete"), this, &SendLaterWidget::slotDeleteItem);
+        menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18nc("@action", "Delete"), this,
+                       &SendLaterWidget::slotDeleteItem);
         menu.exec(QCursor::pos());
     }
 }
 
 void SendLaterWidget::slotSendNow()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget->treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget->treeWidget->selectedItems();
     if (listItems.count() == 1) {
-        auto mailItem = static_cast<SendLaterItem *>(listItems.first());
+        auto mailItem = static_cast<SendLaterItem*>(listItems.first());
         Q_EMIT sendNow(mailItem->info()->itemId());
     }
 }
 
-void SendLaterWidget::restoreTreeWidgetHeader(const QByteArray &data)
+void SendLaterWidget::restoreTreeWidgetHeader(const QByteArray& data)
 {
     mWidget->treeWidget->header()->restoreState(data);
 }
 
-void SendLaterWidget::saveTreeWidgetHeader(KConfigGroup &group)
+void SendLaterWidget::saveTreeWidgetHeader(KConfigGroup& group)
 {
     group.writeEntry("HeaderState", mWidget->treeWidget->header()->saveState());
 }
 
 void SendLaterWidget::updateButtons()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget->treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget->treeWidget->selectedItems();
     if (listItems.isEmpty()) {
         mWidget->deleteItem->setEnabled(false);
         mWidget->modifyItem->setEnabled(false);
@@ -150,7 +148,7 @@ void SendLaterWidget::load()
     mWidget->treeWidget->setShowDefaultText(numberOfItem == 0);
 }
 
-void SendLaterWidget::createOrUpdateItem(MessageComposer::SendLaterInfo *info, SendLaterItem *item)
+void SendLaterWidget::createOrUpdateItem(MessageComposer::SendLaterInfo* info, SendLaterItem* item)
 {
     if (!item) {
         item = new SendLaterItem(mWidget->treeWidget);
@@ -181,13 +179,13 @@ bool SendLaterWidget::save()
     // first, delete all filter groups:
     const QStringList filterGroups = config->groupList().filter(QRegularExpression(sendLaterItemPattern()));
 
-    for (const QString &group : filterGroups) {
+    for (const QString& group : filterGroups) {
         config->deleteGroup(group);
     }
 
     const int numberOfItem(mWidget->treeWidget->topLevelItemCount());
     for (int i = 0; i < numberOfItem; ++i) {
-        auto mailItem = static_cast<SendLaterItem *>(mWidget->treeWidget->topLevelItem(i));
+        auto mailItem = static_cast<SendLaterItem*>(mWidget->treeWidget->topLevelItem(i));
         if (mailItem->info()) {
             SendLaterUtil::writeSendLaterInfo(config, mailItem->info());
         }
@@ -199,31 +197,31 @@ bool SendLaterWidget::save()
 
 void SendLaterWidget::slotDeleteItem()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget->treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget->treeWidget->selectedItems();
 
     if (listItems.isEmpty()) {
         return;
     }
     const int numberOfItems(listItems.count());
-    int answer = KMessageBox::warningTwoActions(this,
-                                                i18np("Do you want to delete the selected item?", "Do you want to delete the selected items?", numberOfItems),
-                                                i18nc("@title:window", "Delete Items"),
-                                                KStandardGuiItem::del(),
-                                                KStandardGuiItem::cancel());
+    int answer = KMessageBox::warningTwoActions(
+        this,
+        i18np("Do you want to delete the selected item?", "Do you want to delete the selected items?", numberOfItems),
+        i18nc("@title:window", "Delete Items"), KStandardGuiItem::del(), KStandardGuiItem::cancel());
     if (answer == KMessageBox::ButtonCode::SecondaryAction) {
         return;
     }
 
-    answer = KMessageBox::warningTwoActions(this,
-                                            i18np("Do you want to delete the message as well?", "Do you want to delete the messages as well?", numberOfItems),
-                                            i18nc("@title:window", "Delete Messages"),
-                                            KStandardGuiItem::del(),
-                                            KGuiItem(i18nc("@action:button", "Do Not Delete"), QStringLiteral("dialog-cancel")));
+    answer = KMessageBox::warningTwoActions(
+        this,
+        i18np("Do you want to delete the message as well?", "Do you want to delete the messages as well?",
+              numberOfItems),
+        i18nc("@title:window", "Delete Messages"), KStandardGuiItem::del(),
+        KGuiItem(i18nc("@action:button", "Do Not Delete"), QStringLiteral("dialog-cancel")));
     const bool deleteMessage = (answer == KMessageBox::ButtonCode::PrimaryAction);
 
-    for (QTreeWidgetItem *item : listItems) {
+    for (QTreeWidgetItem* item : listItems) {
         if (deleteMessage) {
-            auto mailItem = static_cast<SendLaterItem *>(item);
+            auto mailItem = static_cast<SendLaterItem*>(item);
             if (mailItem->info()) {
                 Akonadi::Item::Id id = mailItem->info()->itemId();
                 if (id != -1) {
@@ -240,15 +238,16 @@ void SendLaterWidget::slotDeleteItem()
 
 void SendLaterWidget::slotModifyItem()
 {
-    const QList<QTreeWidgetItem *> listItems = mWidget->treeWidget->selectedItems();
+    const QList<QTreeWidgetItem*> listItems = mWidget->treeWidget->selectedItems();
     if (listItems.count() == 1) {
-        QTreeWidgetItem *item = listItems.at(0);
+        QTreeWidgetItem* item = listItems.at(0);
         if (!item) {
             return;
         }
-        auto mailItem = static_cast<SendLaterItem *>(item);
+        auto mailItem = static_cast<SendLaterItem*>(item);
 
-        QPointer<MessageComposer::SendLaterDialog> dialog = new MessageComposer::SendLaterDialog(mailItem->info(), this);
+        QPointer<MessageComposer::SendLaterDialog> dialog =
+            new MessageComposer::SendLaterDialog(mailItem->info(), this);
         if (dialog->exec()) {
             auto info = dialog->info();
             createOrUpdateItem(info, mailItem);

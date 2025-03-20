@@ -11,10 +11,7 @@
 #include <MessageComposer/MessageHelper>
 #include <TemplateParser/TemplateParserJob>
 
-KMComposerUpdateTemplateJob::KMComposerUpdateTemplateJob(QObject *parent)
-    : QObject(parent)
-{
-}
+KMComposerUpdateTemplateJob::KMComposerUpdateTemplateJob(QObject* parent) : QObject(parent) {}
 
 KMComposerUpdateTemplateJob::~KMComposerUpdateTemplateJob() = default;
 
@@ -38,17 +35,17 @@ void KMComposerUpdateTemplateJob::slotFinished()
     deleteLater();
 }
 
-void KMComposerUpdateTemplateJob::setMsg(const KMime::Message::Ptr &msg)
+void KMComposerUpdateTemplateJob::setMsg(const KMime::Message::Ptr& msg)
 {
     mMsg = msg;
 }
 
-void KMComposerUpdateTemplateJob::setCustomTemplate(const QString &customTemplate)
+void KMComposerUpdateTemplateJob::setCustomTemplate(const QString& customTemplate)
 {
     mCustomTemplate = customTemplate;
 }
 
-void KMComposerUpdateTemplateJob::setTextSelection(const QString &textSelection)
+void KMComposerUpdateTemplateJob::setTextSelection(const QString& textSelection)
 {
     mTextSelection = textSelection;
 }
@@ -68,12 +65,12 @@ void KMComposerUpdateTemplateJob::setUoid(uint uoid)
     mUoid = uoid;
 }
 
-void KMComposerUpdateTemplateJob::setIdent(const KIdentityManagementCore::Identity &ident)
+void KMComposerUpdateTemplateJob::setIdent(const KIdentityManagementCore::Identity& ident)
 {
     mIdent = ident;
 }
 
-void KMComposerUpdateTemplateJob::setCollection(const Akonadi::Collection &col)
+void KMComposerUpdateTemplateJob::setCollection(const Akonadi::Collection& col)
 {
     mCollectionForNewMessage = col;
 }

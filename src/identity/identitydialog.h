@@ -8,8 +8,8 @@
 */
 
 #pragma once
-#include "config-kmail.h"
 #include <QDialog>
+#include "config-kmail.h"
 class QCheckBox;
 
 class KEditListWidget;
@@ -20,55 +20,44 @@ class QLineEdit;
 class QPushButton;
 class QTabWidget;
 
-namespace GpgME
-{
+namespace GpgME {
 class Key;
 }
-namespace KIdentityManagementCore
-{
+namespace KIdentityManagementCore {
 class Identity;
 }
-namespace KIdentityManagementWidgets
-{
+namespace KIdentityManagementWidgets {
 class SignatureConfigurator;
 }
-namespace KMail
-{
+namespace KMail {
 class XFaceConfigurator;
 }
 
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderRequester;
 }
-namespace Sonnet
-{
+namespace Sonnet {
 class DictionaryComboBox;
 }
 
-namespace MailTransport
-{
+namespace MailTransport {
 class TransportComboBox;
 }
 
-namespace TemplateParser
-{
+namespace TemplateParser {
 class TemplatesConfiguration;
 }
-namespace TextAutoCorrectionWidgets
-{
+namespace TextAutoCorrectionWidgets {
 class AutoCorrectionLanguage;
 }
 
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
-namespace PimCommonActivities
-{
+namespace PimCommonActivities {
 class ConfigureActivitiesWidget;
 }
 #endif
 
-namespace KMail
-{
+namespace KMail {
 class IdentityFolderRequester;
 class IdentityInvalidFolder;
 class KeySelectionCombo;
@@ -77,82 +66,82 @@ class IdentityDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit IdentityDialog(QWidget *parent = nullptr);
+    explicit IdentityDialog(QWidget* parent = nullptr);
     ~IdentityDialog() override;
 
-    void setIdentity(/*_not_ const*/ KIdentityManagementCore::Identity &ident);
+    void setIdentity(/*_not_ const*/ KIdentityManagementCore::Identity& ident);
 
-    void updateIdentity(KIdentityManagementCore::Identity &ident);
+    void updateIdentity(KIdentityManagementCore::Identity& ident);
 
 private:
     void slotAboutToShow(int);
     // copy default templates to identity templates
     void slotCopyGlobal();
     void slotAccepted();
-    void slotDelayedButtonClicked(KJob *);
+    void slotDelayedButtonClicked(KJob*);
     void slotEditVcard();
     void slotRefreshDefaultDomainName();
     void slotVCardRemoved();
     void slotHelp();
 
-    [[nodiscard]] bool keyMatchesEmailAddress(const GpgME::Key &key, const QString &email);
-    [[nodiscard]] bool checkFolderExists(const QString &folder);
+    [[nodiscard]] bool keyMatchesEmailAddress(const GpgME::Key& key, const QString& email);
+    [[nodiscard]] bool checkFolderExists(const QString& folder);
     void updateVcardButton();
-    void editVcard(const QString &filename);
+    void editVcard(const QString& filename);
     void unregisterSpecialCollection(qint64 id);
 
     QString mVcardFilename;
 
     // "general" tab:
-    QLineEdit *mNameEdit = nullptr;
-    QLineEdit *mOrganizationEdit = nullptr;
-    QLineEdit *mEmailEdit = nullptr;
-    KEditListWidget *mAliasEdit = nullptr;
+    QLineEdit* mNameEdit = nullptr;
+    QLineEdit* mOrganizationEdit = nullptr;
+    QLineEdit* mEmailEdit = nullptr;
+    KEditListWidget* mAliasEdit = nullptr;
     // "cryptography" tab:
-    QWidget *mCryptographyTab = nullptr;
-    KeySelectionCombo *mPGPSigningKeyRequester = nullptr;
-    KeySelectionCombo *mPGPEncryptionKeyRequester = nullptr;
-    KeySelectionCombo *mSMIMESigningKeyRequester = nullptr;
-    KeySelectionCombo *mSMIMEEncryptionKeyRequester = nullptr;
-    QComboBox *mPreferredCryptoMessageFormat = nullptr;
-    QGroupBox *mAutocrypt = nullptr;
-    QCheckBox *mAutocryptPrefer = nullptr;
-    QGroupBox *mOverrideDefault = nullptr;
-    QCheckBox *mPGPSameKey = nullptr;
-    QCheckBox *mAutoSign = nullptr;
-    QCheckBox *mAutoEncrypt = nullptr;
-    QCheckBox *mWarnNotEncrypt = nullptr;
-    QCheckBox *mWarnNotSign = nullptr;
+    QWidget* mCryptographyTab = nullptr;
+    KeySelectionCombo* mPGPSigningKeyRequester = nullptr;
+    KeySelectionCombo* mPGPEncryptionKeyRequester = nullptr;
+    KeySelectionCombo* mSMIMESigningKeyRequester = nullptr;
+    KeySelectionCombo* mSMIMEEncryptionKeyRequester = nullptr;
+    QComboBox* mPreferredCryptoMessageFormat = nullptr;
+    QGroupBox* mAutocrypt = nullptr;
+    QCheckBox* mAutocryptPrefer = nullptr;
+    QGroupBox* mOverrideDefault = nullptr;
+    QCheckBox* mPGPSameKey = nullptr;
+    QCheckBox* mAutoSign = nullptr;
+    QCheckBox* mAutoEncrypt = nullptr;
+    QCheckBox* mWarnNotEncrypt = nullptr;
+    QCheckBox* mWarnNotSign = nullptr;
     // "advanced" tab:
-    QLineEdit *mReplyToEdit = nullptr;
-    QLineEdit *mBccEdit = nullptr;
-    QLineEdit *mCcEdit = nullptr;
-    Sonnet::DictionaryComboBox *mDictionaryCombo = nullptr;
-    IdentityFolderRequester *mFccFolderRequester = nullptr;
-    QCheckBox *mSentMailFolderCheck = nullptr;
-    IdentityFolderRequester *mDraftsFolderRequester = nullptr;
-    IdentityFolderRequester *mTemplatesFolderRequester = nullptr;
-    QCheckBox *mSpamFolderCheck = nullptr;
-    IdentityFolderRequester *mSpamFolderRequester = nullptr;
-    QCheckBox *mTransportCheck = nullptr;
-    MailTransport::TransportComboBox *mTransportCombo = nullptr;
-    QCheckBox *mAttachMyVCard = nullptr;
-    QPushButton *mEditVCard = nullptr;
-    TextAutoCorrectionWidgets::AutoCorrectionLanguage *mAutoCorrectionLanguage = nullptr;
-    QLineEdit *mDefaultDomainEdit = nullptr;
+    QLineEdit* mReplyToEdit = nullptr;
+    QLineEdit* mBccEdit = nullptr;
+    QLineEdit* mCcEdit = nullptr;
+    Sonnet::DictionaryComboBox* mDictionaryCombo = nullptr;
+    IdentityFolderRequester* mFccFolderRequester = nullptr;
+    QCheckBox* mSentMailFolderCheck = nullptr;
+    IdentityFolderRequester* mDraftsFolderRequester = nullptr;
+    IdentityFolderRequester* mTemplatesFolderRequester = nullptr;
+    QCheckBox* mSpamFolderCheck = nullptr;
+    IdentityFolderRequester* mSpamFolderRequester = nullptr;
+    QCheckBox* mTransportCheck = nullptr;
+    MailTransport::TransportComboBox* mTransportCombo = nullptr;
+    QCheckBox* mAttachMyVCard = nullptr;
+    QPushButton* mEditVCard = nullptr;
+    TextAutoCorrectionWidgets::AutoCorrectionLanguage* mAutoCorrectionLanguage = nullptr;
+    QLineEdit* mDefaultDomainEdit = nullptr;
 
     // "templates" tab:
-    TemplateParser::TemplatesConfiguration *mWidget = nullptr;
-    QCheckBox *mCustom = nullptr;
-    QPushButton *mCopyGlobal = nullptr;
+    TemplateParser::TemplatesConfiguration* mWidget = nullptr;
+    QCheckBox* mCustom = nullptr;
+    QPushButton* mCopyGlobal = nullptr;
     // "signature" tab:
-    KIdentityManagementWidgets::SignatureConfigurator *mSignatureConfigurator = nullptr;
+    KIdentityManagementWidgets::SignatureConfigurator* mSignatureConfigurator = nullptr;
     // "X-Face" tab:
-    KMail::XFaceConfigurator *mXFaceConfigurator = nullptr;
-    QTabWidget *mTabWidget = nullptr;
-    IdentityInvalidFolder *mIdentityInvalidFolder = nullptr;
+    KMail::XFaceConfigurator* mXFaceConfigurator = nullptr;
+    QTabWidget* mTabWidget = nullptr;
+    IdentityInvalidFolder* mIdentityInvalidFolder = nullptr;
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
-    PimCommonActivities::ConfigureActivitiesWidget *const mConfigureActivitiesWidget;
+    PimCommonActivities::ConfigureActivitiesWidget* const mConfigureActivitiesWidget;
 #endif
 };
 } // namespace KMail

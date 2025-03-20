@@ -14,13 +14,13 @@ class SendLaterInfoConfigWidget : public Akonadi::AgentConfigurationBase
 {
     Q_OBJECT
 public:
-    explicit SendLaterInfoConfigWidget(const KSharedConfigPtr &config, QWidget *parent, const QVariantList &args);
+    explicit SendLaterInfoConfigWidget(const KSharedConfigPtr& config, QWidget* parent, const QVariantList& args);
     ~SendLaterInfoConfigWidget() override;
 
     [[nodiscard]] QList<Akonadi::Item::Id> messagesToRemove() const;
 
     [[nodiscard]] QSize restoreDialogSize() const override;
-    void saveDialogSize(const QSize &size) override;
+    void saveDialogSize(const QSize& size) override;
 
     [[nodiscard]] bool save() const override;
     void load() override;
@@ -29,6 +29,6 @@ public Q_SLOTS:
     void slotNeedToReloadConfig();
 
 private:
-    SendLaterWidget *const mWidget;
+    SendLaterWidget* const mWidget;
 };
 AKONADI_AGENTCONFIG_FACTORY(SendLaterInfoConfigFactory, "sendlateragentconfig.json", SendLaterInfoConfigWidget)

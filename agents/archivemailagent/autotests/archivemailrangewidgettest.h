@@ -12,7 +12,7 @@ class ArchiveMailRangeWidgetTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ArchiveMailRangeWidgetTest(QObject *parent = nullptr);
+    explicit ArchiveMailRangeWidgetTest(QObject* parent = nullptr);
     ~ArchiveMailRangeWidgetTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValues();

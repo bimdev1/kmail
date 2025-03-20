@@ -9,24 +9,18 @@
 
 namespace KMail {
 
-KOrganizerIntegration::KOrganizerIntegration(QObject *parent)
-    : QObject(parent)
-{
-}
+KOrganizerIntegration::KOrganizerIntegration(QObject* parent) : QObject(parent) {}
 
-KOrganizerIntegration::~KOrganizerIntegration()
-{
-}
+KOrganizerIntegration::~KOrganizerIntegration() {}
 
-bool KOrganizerIntegration::addTask(const ExtractedTask &task)
+bool KOrganizerIntegration::addTask(const ExtractedTask& task)
 {
     if (!connectToKOrganizer()) {
         return false;
     }
 
-    QDBusInterface iface(QStringLiteral("org.kde.korganizer"),
-                        QStringLiteral("/Calendar"),
-                        QStringLiteral("org.kde.calendar.Calendar"));
+    QDBusInterface iface(QStringLiteral("org.kde.korganizer"), QStringLiteral("/Calendar"),
+                         QStringLiteral("org.kde.calendar.Calendar"));
 
     if (!iface.isValid()) {
         emit error(i18n("Failed to connect to KOrganizer: %1", iface.lastError().message()));
@@ -50,10 +44,10 @@ bool KOrganizerIntegration::addTask(const ExtractedTask &task)
     return false;
 }
 
-bool KOrganizerIntegration::addTasks(const QList<ExtractedTask> &tasks)
+bool KOrganizerIntegration::addTasks(const QList<ExtractedTask>& tasks)
 {
     bool allSuccess = true;
-    for (const ExtractedTask &task : tasks) {
+    for (const ExtractedTask& task : tasks) {
         if (!addTask(task)) {
             allSuccess = false;
         }
@@ -64,24 +58,22 @@ bool KOrganizerIntegration::addTasks(const QList<ExtractedTask> &tasks)
 bool KOrganizerIntegration::connectToKOrganizer()
 {
     // Check if KOrganizer is running
-    QDBusInterface iface(QStringLiteral("org.kde.korganizer"),
-                        QStringLiteral("/MainApplication"),
-                        QStringLiteral("org.qtproject.Qt.QApplication"));
+    QDBusInterface iface(QStringLiteral("org.kde.korganizer"), QStringLiteral("/MainApplication"),
+                         QStringLiteral("org.qtproject.Qt.QApplication"));
 
     if (!iface.isValid()) {
         // Try to start KOrganizer
-        QDBusInterface launcher(QStringLiteral("org.kde.klauncher5"),
-                              QStringLiteral("/KLauncher"),
-                              QStringLiteral("org.kde.KLauncher"));
+        QDBusInterface launcher(QStringLiteral("org.kde.klauncher5"), QStringLiteral("/KLauncher"),
+                                QStringLiteral("org.kde.KLauncher"));
 
         if (!launcher.isValid()) {
             emit error(i18n("Failed to connect to KLauncher"));
             return false;
         }
 
-        QDBusReply<int> reply = launcher.call(QStringLiteral("start_service_by_desktop_name"),
-                                             QStringLiteral("org.kde.korganizer.desktop"),
-                                             QStringList(), QStringList(), QString(), QString());
+        QDBusReply<int> reply =
+            launcher.call(QStringLiteral("start_service_by_desktop_name"), QStringLiteral("org.kde.korganizer.desktop"),
+                          QStringList(), QStringList(), QString(), QString());
 
         if (!reply.isValid() || reply.value() != 0) {
             emit error(i18n("Failed to start KOrganizer"));
@@ -95,7 +87,7 @@ bool KOrganizerIntegration::connectToKOrganizer()
     return true;
 }
 
-QString KOrganizerIntegration::createIncidenceXML(const ExtractedTask &task) const
+QString KOrganizerIntegration::createIncidenceXML(const ExtractedTask& task) const
 {
     // Create a unique ID for the task
     QString uid = QUuid::createUuid().toString();
@@ -110,23 +102,22 @@ QString KOrganizerIntegration::createIncidenceXML(const ExtractedTask &task) con
     }
 
     // Create the iCal XML
-    QString xml = QStringLiteral(
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<icalendar xmlns=\"urn:ietf:params:xml:ns:icalendar-2.0\">\n"
-        " <vtodo>\n"
-        "  <uid>%1</uid>\n"
-        "  <dtstamp>%2</dtstamp>\n"
-        "  <summary>%3</summary>\n"
-        "  <due>%4</due>\n"
-        "  <priority>%5</priority>\n"
-        "  <status>NEEDS-ACTION</status>\n"
-        " </vtodo>\n"
-        "</icalendar>")
-        .arg(uid)
-        .arg(QDateTime::currentDateTime().toString(Qt::ISODate))
-        .arg(task.description.toHtmlEscaped())
-        .arg(task.dueDate.toString(Qt::ISODate))
-        .arg(priority);
+    QString xml = QStringLiteral("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                 "<icalendar xmlns=\"urn:ietf:params:xml:ns:icalendar-2.0\">\n"
+                                 " <vtodo>\n"
+                                 "  <uid>%1</uid>\n"
+                                 "  <dtstamp>%2</dtstamp>\n"
+                                 "  <summary>%3</summary>\n"
+                                 "  <due>%4</due>\n"
+                                 "  <priority>%5</priority>\n"
+                                 "  <status>NEEDS-ACTION</status>\n"
+                                 " </vtodo>\n"
+                                 "</icalendar>")
+                      .arg(uid)
+                      .arg(QDateTime::currentDateTime().toString(Qt::ISODate))
+                      .arg(task.description.toHtmlEscaped())
+                      .arg(task.dueDate.toString(Qt::ISODate))
+                      .arg(priority);
 
     return xml;
 }

@@ -4,14 +4,11 @@
 */
 #include "historyclosedreadermanager.h"
 
-HistoryClosedReaderManager::HistoryClosedReaderManager(QObject *parent)
-    : QObject{parent}
-{
-}
+HistoryClosedReaderManager::HistoryClosedReaderManager(QObject* parent) : QObject{parent} {}
 
 HistoryClosedReaderManager::~HistoryClosedReaderManager() = default;
 
-HistoryClosedReaderManager *HistoryClosedReaderManager::self()
+HistoryClosedReaderManager* HistoryClosedReaderManager::self()
 {
     static HistoryClosedReaderManager s_self;
     return &s_self;
@@ -22,13 +19,12 @@ bool HistoryClosedReaderManager::isEmpty() const
     return mClosedReaderInfos.isEmpty();
 }
 
-void HistoryClosedReaderManager::addInfo(const HistoryClosedReaderInfo &info)
+void HistoryClosedReaderManager::addInfo(const HistoryClosedReaderInfo& info)
 {
     if (info.isValid()) {
         if (!mClosedReaderInfos.isEmpty()) {
-            auto infoIt = std::find_if(mClosedReaderInfos.cbegin(), mClosedReaderInfos.cend(), [&info](const HistoryClosedReaderInfo &i) {
-                return i == info;
-            });
+            auto infoIt = std::find_if(mClosedReaderInfos.cbegin(), mClosedReaderInfos.cend(),
+                                       [&info](const HistoryClosedReaderInfo& i) { return i == info; });
             // Remove same element.
             if (infoIt != mClosedReaderInfos.cend()) {
                 mClosedReaderInfos.removeAll(*infoIt);
@@ -68,9 +64,8 @@ void HistoryClosedReaderManager::removeItem(Akonadi::Item::Id id)
     if (mClosedReaderInfos.isEmpty()) {
         return;
     }
-    auto infoIt = std::find_if(mClosedReaderInfos.cbegin(), mClosedReaderInfos.cend(), [&id](const HistoryClosedReaderInfo &info) {
-        return info.item() == id;
-    });
+    auto infoIt = std::find_if(mClosedReaderInfos.cbegin(), mClosedReaderInfos.cend(),
+                               [&id](const HistoryClosedReaderInfo& info) { return info.item() == id; });
     if (infoIt != mClosedReaderInfos.cend()) {
         mClosedReaderInfos.removeAll(*infoIt);
         Q_EMIT historyClosedReaderChanged();

@@ -16,15 +16,15 @@ class AIReplyDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AIReplyDialog(KMMessage *originalMessage, QWidget *parent = nullptr);
+    explicit AIReplyDialog(KMMessage* originalMessage, QWidget* parent = nullptr);
     ~AIReplyDialog() override;
 
     QString replyText() const;
 
 private Q_SLOTS:
     void slotGenerateReply();
-    void slotReplyGenerated(const QString &reply);
-    void slotError(const QString &error);
+    void slotReplyGenerated(const QString& reply);
+    void slotError(const QString& error);
     void slotAccept();
 
 private:
@@ -32,13 +32,13 @@ private:
     void createConnections();
     QString extractEmailContent() const;
 
-    KMMessage *m_originalMessage;
-    LocalAIService *m_aiService;
-    
-    QTextEdit *m_replyEdit;
-    QPushButton *m_generateButton;
-    QPushButton *m_acceptButton;
-    QPushButton *m_cancelButton;
-    QProgressBar *m_progressBar;
+    KMMessage* m_originalMessage;
+    LocalAIService* m_aiService;
+
+    QTextEdit* m_replyEdit;
+    QPushButton* m_generateButton;
+    QPushButton* m_acceptButton;
+    QPushButton* m_cancelButton;
+    QProgressBar* m_progressBar;
     bool m_isGenerating;
 };

@@ -8,13 +8,13 @@
 
 #include "kmmainwin.h"
 
-#include "kmmainwidget.h"
-#include "tag/tagactionmanager.h"
 #include <Libkdepim/ProgressStatusBarWidget>
 #include <Libkdepim/StatusbarProgressWidget>
 #include <PimCommon/BroadcastStatus>
 #include <PimCommon/NeedUpdateVersionUtils>
 #include <PimCommon/NeedUpdateVersionWidget>
+#include "kmmainwidget.h"
+#include "tag/tagactionmanager.h"
 
 #include <KConfigGroup>
 #include <KToolBar>
@@ -47,9 +47,7 @@
 using namespace Qt::Literals::StringLiterals;
 using namespace std::chrono_literals;
 
-KMMainWin::KMMainWin(QWidget *)
-    : KXmlGuiWindow(nullptr)
-    , mMessageLabel(new QLabel(i18nc("@label:textbox", "Starting…")))
+KMMainWin::KMMainWin(QWidget*) : KXmlGuiWindow(nullptr), mMessageLabel(new QLabel(i18nc("@label:textbox", "Starting…")))
 
 {
 #ifdef Q_OS_UNIX
@@ -74,11 +72,13 @@ KMMainWin::KMMainWin(QWidget *)
     auto mainWidgetLayout = new QVBoxLayout(mainWidget);
     mainWidgetLayout->setContentsMargins({});
     if (PimCommon::NeedUpdateVersionUtils::checkVersion()) {
-        const auto status = PimCommon::NeedUpdateVersionUtils::obsoleteVersionStatus(QLatin1String(KMAIL_RELEASE_VERSION_DATE), QDate::currentDate());
+        const auto status = PimCommon::NeedUpdateVersionUtils::obsoleteVersionStatus(
+            QLatin1String(KMAIL_RELEASE_VERSION_DATE), QDate::currentDate());
         if (status != PimCommon::NeedUpdateVersionUtils::ObsoleteVersion::NotObsoleteYet) {
             auto needUpdateVersionWidget = new PimCommon::NeedUpdateVersionWidget(this);
             mainWidgetLayout->addWidget(needUpdateVersionWidget);
-            qCDebug(KMAIL_LOG) << " KAboutData::applicationData().version() " << KAboutData::applicationData().version();
+            qCDebug(KMAIL_LOG) << " KAboutData::applicationData().version() "
+                               << KAboutData::applicationData().version();
             needUpdateVersionWidget->setObsoleteVersion(status);
         }
     }
@@ -123,9 +123,11 @@ KMMainWin::KMMainWin(QWidget *)
     // The next line implicitly calls applyMainWindowSettings(stateConfigGroup())
     setAutoSaveSettings(stateConfigGroup(), true);
 
-    connect(PimCommon::BroadcastStatus::instance(), &PimCommon::BroadcastStatus::statusMsg, this, &KMMainWin::displayStatusMessage);
+    connect(PimCommon::BroadcastStatus::instance(), &PimCommon::BroadcastStatus::statusMsg, this,
+            &KMMainWin::displayStatusMessage);
 
-    connect(mKMMainWidget, &KMMainWidget::captionChangeRequest, this, qOverload<const QString &>(&KMainWindow::setCaption));
+    connect(mKMMainWidget, &KMMainWidget::captionChangeRequest, this,
+            qOverload<const QString&>(&KMainWindow::setCaption));
 
     mKMMainWidget->updateQuickSearchLineText();
     mShowMenuBarAction->setChecked(KMailSettings::self()->showMenuBar());
@@ -148,7 +150,7 @@ KMMainWin::~KMMainWin()
 void KMMainWin::slotFullScreen(bool t)
 {
     KToggleFullScreenAction::setFullScreen(this, t);
-    QMenuBar *mb = menuBar();
+    QMenuBar* mb = menuBar();
     if (t) {
         auto b = new QToolButton(mb);
         b->setDefaultAction(mShowFullScreenAction);
@@ -158,7 +160,7 @@ void KMMainWin::slotFullScreen(bool t)
         b->setVisible(true);
         b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     } else {
-        QWidget *w = mb->cornerWidget(Qt::TopRightCorner);
+        QWidget* w = mb->cornerWidget(Qt::TopRightCorner);
         if (w) {
             w->deleteLater();
         }
@@ -187,12 +189,12 @@ void KMMainWin::updateHamburgerMenu()
     mHamburgerMenu->setMenu(menu);
 }
 
-KMMainWidget *KMMainWin::mainKMWidget() const
+KMMainWidget* KMMainWin::mainKMWidget() const
 {
     return mKMMainWidget;
 }
 
-void KMMainWin::displayStatusMessage(const QString &aText)
+void KMMainWin::displayStatusMessage(const QString& aText)
 {
     if (!statusBar() || !mProgressBar->littleProgress()) {
         return;
@@ -223,8 +225,7 @@ void KMMainWin::slotToggleMenubar(bool dontShowWarning)
                                          i18n("<qt>This will hide the menu bar completely."
                                               " You can show it again by typing %1.</qt>",
                                               accel),
-                                         i18nc("@title:window", "Hide menu bar"),
-                                         QStringLiteral("HideMenuBarWarning"));
+                                         i18nc("@title:window", "Hide menu bar"), QStringLiteral("HideMenuBarWarning"));
             }
             menuBar()->hide();
         }
@@ -297,7 +298,7 @@ void KMMainWin::showAndActivateWindow()
     activateWindow();
 }
 
-void KMMainWin::saveProperties(KConfigGroup &config)
+void KMMainWin::saveProperties(KConfigGroup& config)
 {
     // This is called by the session manager on log-off
     // Save the shown/hidden status so we can restore to the same state.

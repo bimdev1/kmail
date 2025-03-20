@@ -11,19 +11,19 @@
 #include <MessageComposer/PluginEditorCheckBeforeSendInterface>
 #include <MessageComposer/PluginEditorCheckBeforeSendManager>
 
-KMailPluginEditorCheckBeforeSendManagerInterface::KMailPluginEditorCheckBeforeSendManagerInterface(QObject *parent)
+KMailPluginEditorCheckBeforeSendManagerInterface::KMailPluginEditorCheckBeforeSendManagerInterface(QObject* parent)
     : QObject(parent)
 {
 }
 
 KMailPluginEditorCheckBeforeSendManagerInterface::~KMailPluginEditorCheckBeforeSendManagerInterface() = default;
 
-QWidget *KMailPluginEditorCheckBeforeSendManagerInterface::parentWidget() const
+QWidget* KMailPluginEditorCheckBeforeSendManagerInterface::parentWidget() const
 {
     return mParentWidget;
 }
 
-void KMailPluginEditorCheckBeforeSendManagerInterface::setParentWidget(QWidget *parentWidget)
+void KMailPluginEditorCheckBeforeSendManagerInterface::setParentWidget(QWidget* parentWidget)
 {
     mParentWidget = parentWidget;
 }
@@ -38,10 +38,11 @@ void KMailPluginEditorCheckBeforeSendManagerInterface::initializePlugins()
         qCWarning(KMAIL_LOG) << "KMailPluginEditorCheckBeforeSendManagerInterface : Parent is null. This is a bug";
     }
 
-    const QList<MessageComposer::PluginEditorCheckBeforeSend *> lstPlugin = MessageComposer::PluginEditorCheckBeforeSendManager::self()->pluginsList();
-    for (MessageComposer::PluginEditorCheckBeforeSend *plugin : lstPlugin) {
+    const QList<MessageComposer::PluginEditorCheckBeforeSend*> lstPlugin =
+        MessageComposer::PluginEditorCheckBeforeSendManager::self()->pluginsList();
+    for (MessageComposer::PluginEditorCheckBeforeSend* plugin : lstPlugin) {
         if (plugin->isEnabled()) {
-            MessageComposer::PluginEditorCheckBeforeSendInterface *interface = plugin->createInterface(this);
+            MessageComposer::PluginEditorCheckBeforeSendInterface* interface = plugin->createInterface(this);
             interface->setParentWidget(mParentWidget);
             interface->reloadConfig();
             mListPluginInterface.append(interface);
@@ -49,9 +50,10 @@ void KMailPluginEditorCheckBeforeSendManagerInterface::initializePlugins()
     }
 }
 
-bool KMailPluginEditorCheckBeforeSendManagerInterface::execute(const MessageComposer::PluginEditorCheckBeforeSendParams &params) const
+bool KMailPluginEditorCheckBeforeSendManagerInterface::execute(
+    const MessageComposer::PluginEditorCheckBeforeSendParams& params) const
 {
-    for (MessageComposer::PluginEditorCheckBeforeSendInterface *interface : std::as_const(mListPluginInterface)) {
+    for (MessageComposer::PluginEditorCheckBeforeSendInterface* interface : std::as_const(mListPluginInterface)) {
         if (!interface->exec(params)) {
             return false;
         }

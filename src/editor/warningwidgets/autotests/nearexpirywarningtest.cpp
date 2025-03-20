@@ -5,16 +5,13 @@
 */
 
 #include "nearexpirywarningtest.h"
-#include "../nearexpirywarning.h"
 #include <QHBoxLayout>
 #include <QTest>
+#include "../nearexpirywarning.h"
 
 QTEST_MAIN(NearExpiryWarningTest)
 
-NearExpiryWarningTest::NearExpiryWarningTest(QObject *parent)
-    : QObject(parent)
-{
-}
+NearExpiryWarningTest::NearExpiryWarningTest(QObject* parent) : QObject(parent) {}
 
 void NearExpiryWarningTest::shouldHaveDefaultValue()
 {

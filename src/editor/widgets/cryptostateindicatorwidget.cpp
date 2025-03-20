@@ -14,10 +14,8 @@
 #include <QLabel>
 
 using namespace Qt::Literals::StringLiterals;
-CryptoStateIndicatorWidget::CryptoStateIndicatorWidget(QWidget *parent)
-    : QWidget(parent)
-    , mSignatureStateIndicator(new QLabel(this))
-    , mEncryptionStateIndicator(new QLabel(this))
+CryptoStateIndicatorWidget::CryptoStateIndicatorWidget(QWidget* parent)
+    : QWidget(parent), mSignatureStateIndicator(new QLabel(this)), mEncryptionStateIndicator(new QLabel(this))
 {
     auto hbox = new QHBoxLayout(this);
     hbox->setContentsMargins({});
@@ -78,7 +76,8 @@ void CryptoStateIndicatorWidget::updateSignatureAndEncrypionStateIndicators(bool
     mIsSign = isSign;
 
     mSignatureStateIndicator->setText(isSign ? i18n("Message will be signed") : i18n("Message will not be signed"));
-    mEncryptionStateIndicator->setText(isEncrypted ? i18n("Message will be encrypted") : i18n("Message will not be encrypted"));
+    mEncryptionStateIndicator->setText(isEncrypted ? i18n("Message will be encrypted")
+                                                   : i18n("Message will not be encrypted"));
     updateShowAlwaysIndicator();
 }
 

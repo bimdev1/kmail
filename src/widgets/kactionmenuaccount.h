@@ -6,18 +6,16 @@
 
 #pragma once
 
-#include "config-kmail.h"
 #include <KActionMenu>
+#include "config-kmail.h"
 
 class AgentIdentifier
 {
 public:
     AgentIdentifier() = default;
 
-    AgentIdentifier(const QString &identifier, const QString &name, int index = -1)
-        : mIdentifier(identifier)
-        , mName(name)
-        , mIndex(index)
+    AgentIdentifier(const QString& identifier, const QString& name, int index = -1)
+        : mIdentifier(identifier), mName(name), mIndex(index)
     {
     }
 
@@ -32,22 +30,22 @@ class KActionMenuAccount : public KActionMenu
 {
     Q_OBJECT
 public:
-    explicit KActionMenuAccount(QObject *parent = nullptr);
+    explicit KActionMenuAccount(QObject* parent = nullptr);
     ~KActionMenuAccount() override;
 
-    void setAccountOrder(const QStringList &identifier);
+    void setAccountOrder(const QStringList& identifier);
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
-    void setAccountActivitiesAbstract(AccountActivities *activities);
+    void setAccountActivitiesAbstract(AccountActivities* activities);
 #endif
 private:
     void updateAccountMenu();
     void slotCheckTransportMenu();
-    void slotSelectAccount(QAction *act);
+    void slotSelectAccount(QAction* act);
     void forceUpdateAccountMenu();
 
     QStringList mOrderIdentifier;
     bool mInitialized = false;
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
-    AccountActivities *mAccountActivities = nullptr;
+    AccountActivities* mAccountActivities = nullptr;
 #endif
 };

@@ -5,16 +5,13 @@
 */
 
 #include "tagselectdialogtest.h"
-#include "tag/tagselectdialog.h"
 #include <KListWidgetSearchLine>
 #include <QListWidget>
 #include <QStandardPaths>
 #include <QTest>
+#include "tag/tagselectdialog.h"
 
-TagSelectDialogTest::TagSelectDialogTest(QObject *parent)
-    : QObject(parent)
-{
-}
+TagSelectDialogTest::TagSelectDialogTest(QObject* parent) : QObject(parent) {}
 
 TagSelectDialogTest::~TagSelectDialogTest() = default;
 
@@ -26,10 +23,10 @@ void TagSelectDialogTest::initTestCase()
 void TagSelectDialogTest::shouldHaveDefaultValue()
 {
     TagSelectDialog dlg(nullptr, 1, Akonadi::Item());
-    auto listWidget = dlg.findChild<QListWidget *>(QStringLiteral("listtag"));
+    auto listWidget = dlg.findChild<QListWidget*>(QStringLiteral("listtag"));
     QVERIFY(listWidget);
 
-    auto listWidgetSearchLine = dlg.findChild<KListWidgetSearchLine *>(QStringLiteral("searchline"));
+    auto listWidgetSearchLine = dlg.findChild<KListWidgetSearchLine*>(QStringLiteral("searchline"));
     QVERIFY(listWidgetSearchLine);
     QVERIFY(listWidgetSearchLine->isClearButtonEnabled());
 }

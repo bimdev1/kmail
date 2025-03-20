@@ -5,17 +5,14 @@
 */
 
 #include "newmessagejob.h"
-#include "kmkernel.h"
 #include <MessageComposer/ComposerJob>
+#include "kmkernel.h"
 
 #include <KMime/Message>
 #include <MessageComposer/MessageHelper>
 #include <TemplateParser/TemplateParserJob>
 
-NewMessageJob::NewMessageJob(QObject *parent)
-    : QObject(parent)
-{
-}
+NewMessageJob::NewMessageJob(QObject* parent) : QObject(parent) {}
 
 NewMessageJob::~NewMessageJob() = default;
 
@@ -48,7 +45,8 @@ void NewMessageJob::start()
 
 void NewMessageJob::slotOpenComposer()
 {
-    KMail::Composer *win = makeComposer(mMsg, false, false, KMail::Composer::TemplateContext::New, mNewMessageJobSettings.mIdentity);
+    KMail::Composer* win =
+        makeComposer(mMsg, false, false, KMail::Composer::TemplateContext::New, mNewMessageJobSettings.mIdentity);
 
     win->setCollectionForNewMessage(mCollection);
     // Add the attachment if we have one
@@ -68,7 +66,7 @@ void NewMessageJob::slotOpenComposer()
     deleteLater();
 }
 
-void NewMessageJob::setNewMessageJobSettings(const NewMessageJobSettings &newMessageJobSettings)
+void NewMessageJob::setNewMessageJobSettings(const NewMessageJobSettings& newMessageJobSettings)
 {
     mNewMessageJobSettings = newMessageJobSettings;
 }

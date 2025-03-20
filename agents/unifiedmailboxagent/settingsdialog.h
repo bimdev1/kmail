@@ -19,16 +19,17 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SettingsDialog(const KSharedConfigPtr &config, UnifiedMailboxManager &manager, WId windowId, QWidget *parent = nullptr);
+    explicit SettingsDialog(const KSharedConfigPtr& config, UnifiedMailboxManager& manager, WId windowId,
+                            QWidget* parent = nullptr);
     ~SettingsDialog() override;
 
 private:
     void loadBoxes();
-    void addBox(UnifiedMailbox *box);
+    void addBox(UnifiedMailbox* box);
     void readConfig();
     void writeConfig();
-    QStandardItemModel *const mBoxModel;
-    UnifiedMailboxManager &mBoxManager;
-    MailKernel *const mKernel;
+    QStandardItemModel* const mBoxModel;
+    UnifiedMailboxManager& mBoxManager;
+    MailKernel* const mKernel;
     const KSharedConfigPtr mConfig;
 };

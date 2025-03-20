@@ -19,12 +19,12 @@
 
 #include <KontactInterface/Core>
 
-#include "kmailplugin_debug.h"
 #include <KActionCollection>
 #include <KLocalizedString>
 #include <QAction>
 #include <QIcon>
 #include <QTemporaryFile>
+#include "kmailplugin_debug.h"
 
 #include <QDropEvent>
 #include <QStandardPaths>
@@ -35,23 +35,24 @@ using namespace Qt::Literals::StringLiterals;
 
 EXPORT_KONTACT_PLUGIN_WITH_JSON(KMailPlugin, "kmailplugin.json")
 
-KMailPlugin::KMailPlugin(KontactInterface::Core *core, const KPluginMetaData &data, const QVariantList &)
+KMailPlugin::KMailPlugin(KontactInterface::Core* core, const KPluginMetaData& data, const QVariantList&)
     : KontactInterface::Plugin(core, core, data, "kmail2")
 {
     setComponentName(QStringLiteral("kmail2"), i18n("KMail2"));
 
-    auto action = new QAction(QIcon::fromTheme(QStringLiteral("mail-message-new")), i18nc("@action:inmenu", "New Message…"), this);
+    auto action = new QAction(QIcon::fromTheme(QStringLiteral("mail-message-new")),
+                              i18nc("@action:inmenu", "New Message…"), this);
     actionCollection()->addAction(QStringLiteral("new_mail"), action);
     actionCollection()->setDefaultShortcut(action, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_M));
     // action->setHelpText(
     //            i18nc( "@info:status", "Create a new mail message" ) );
-    action->setWhatsThis(i18nc("@info:whatsthis",
-                               "You will be presented with a dialog where you can create "
-                               "and send a new email message."));
+    action->setWhatsThis(i18nc("@info:whatsthis", "You will be presented with a dialog where you can create "
+                                                  "and send a new email message."));
     connect(action, &QAction::triggered, this, &KMailPlugin::slotNewMail);
     insertNewAction(action);
 
-    auto syncAction = new QAction(QIcon::fromTheme(QStringLiteral("view-refresh")), i18nc("@action:inmenu", "Sync Mail"), this);
+    auto syncAction =
+        new QAction(QIcon::fromTheme(QStringLiteral("view-refresh")), i18nc("@action:inmenu", "Sync Mail"), this);
     // syncAction->setHelpText(
     //            i18nc( "@info:status", "Synchronize groupware mail" ) );
     syncAction->setWhatsThis(i18nc("@info:whatsthis", "Choose this option to synchronize your groupware email."));
@@ -59,17 +60,18 @@ KMailPlugin::KMailPlugin(KontactInterface::Core *core, const KPluginMetaData &da
     actionCollection()->addAction(QStringLiteral("sync_mail"), syncAction);
     insertSyncAction(syncAction);
 
-    mUniqueAppWatcher = new KontactInterface::UniqueAppWatcher(new KontactInterface::UniqueAppHandlerFactory<KMailUniqueAppHandler>(), this);
+    mUniqueAppWatcher = new KontactInterface::UniqueAppWatcher(
+        new KontactInterface::UniqueAppHandlerFactory<KMailUniqueAppHandler>(), this);
 }
 
-bool KMailPlugin::canDecodeMimeData(const QMimeData *mimeData) const
+bool KMailPlugin::canDecodeMimeData(const QMimeData* mimeData) const
 {
     return ICalDrag::canDecode(mimeData) || VCalDrag::canDecode(mimeData) || KContacts::VCardDrag::canDecode(mimeData);
 }
 
 void KMailPlugin::shortcutChanged()
 {
-    KParts::Part *localPart = part();
+    KParts::Part* localPart = part();
     if (localPart) {
         if (localPart->metaObject()->indexOfMethod("updateQuickSearchText()") == -1) {
             qCWarning(KMAILPLUGIN_LOG) << "KMailPart part is missing slot updateQuickSearchText()";
@@ -79,11 +81,11 @@ void KMailPlugin::shortcutChanged()
     }
 }
 
-void KMailPlugin::processDropEvent(QDropEvent *de)
+void KMailPlugin::processDropEvent(QDropEvent* de)
 {
     MemoryCalendar::Ptr cal(new MemoryCalendar(QTimeZone::utc()));
     KContacts::Addressee::List list;
-    const QMimeData *md = de->mimeData();
+    const QMimeData* md = de->mimeData();
 
     if (VCalDrag::fromMimeData(md, cal) || ICalDrag::fromMimeData(md, cal)) {
         QTemporaryFile tmp(QStringLiteral("incidences-kmail_XXXXXX.ics"));
@@ -98,29 +100,31 @@ void KMailPlugin::processDropEvent(QDropEvent *de)
     } else if (KContacts::VCardDrag::fromMimeData(md, list)) {
         QStringList to;
         to.reserve(list.count());
-        for (const auto &s : std::as_const(list)) {
+        for (const auto& s : std::as_const(list)) {
             to.append(s.fullEmail());
         }
         openComposer(to.join(", "_L1));
     }
 
-    qCWarning(KMAILPLUGIN_LOG) << QStringLiteral("Cannot handle drop events of type '%1'.").arg(de->mimeData()->formats().join(QLatin1Char(';')));
+    qCWarning(KMAILPLUGIN_LOG) << QStringLiteral("Cannot handle drop events of type '%1'.")
+                                      .arg(de->mimeData()->formats().join(QLatin1Char(';')));
 }
 
-void KMailPlugin::openComposer(const QUrl &attach)
+void KMailPlugin::openComposer(const QUrl& attach)
 {
     (void)part(); // ensure part is loaded
     Q_ASSERT(mInstance);
     if (mInstance) {
         if (attach.isValid()) {
-            mInstance->newMessage(QString(), QString(), QString(), false, true, QString(), attach.isLocalFile() ? attach.toLocalFile() : attach.path());
+            mInstance->newMessage(QString(), QString(), QString(), false, true, QString(),
+                                  attach.isLocalFile() ? attach.toLocalFile() : attach.path());
         } else {
             mInstance->newMessage(QString(), QString(), QString(), false, true, QString(), QString());
         }
     }
 }
 
-void KMailPlugin::openComposer(const QString &to)
+void KMailPlugin::openComposer(const QString& to)
 {
     (void)part(); // ensure part is loaded
     Q_ASSERT(mInstance);
@@ -136,10 +140,9 @@ void KMailPlugin::slotNewMail()
 
 void KMailPlugin::slotSyncFolders()
 {
-    QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.kmail"),
-                                                          QStringLiteral("/KMail"),
-                                                          QStringLiteral("org.kde.kmail.kmail"),
-                                                          QStringLiteral("checkMail"));
+    QDBusMessage message =
+        QDBusMessage::createMethodCall(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"),
+                                       QStringLiteral("org.kde.kmail.kmail"), QStringLiteral("checkMail"));
     QDBusConnection::sessionBus().send(message);
 }
 
@@ -149,14 +152,15 @@ KMailPlugin::~KMailPlugin()
     mInstance = nullptr;
 }
 
-KParts::Part *KMailPlugin::createPart()
+KParts::Part* KMailPlugin::createPart()
 {
-    KParts::Part *part = loadPart();
+    KParts::Part* part = loadPart();
     if (!part) {
         return nullptr;
     }
 
-    mInstance = new OrgKdeKmailKmailInterface(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"), QDBusConnection::sessionBus());
+    mInstance = new OrgKdeKmailKmailInterface(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"),
+                                              QDBusConnection::sessionBus());
 
     return part;
 }
@@ -171,7 +175,7 @@ bool KMailPlugin::isRunningStandalone() const
     return mUniqueAppWatcher->isRunningStandalone();
 }
 
-KontactInterface::Summary *KMailPlugin::createSummaryWidget(QWidget *parent)
+KontactInterface::Summary* KMailPlugin::createSummaryWidget(QWidget* parent)
 {
     return new SummaryWidget(this, parent);
 }
@@ -184,16 +188,17 @@ int KMailPlugin::weight() const
 ////
 
 #include "../../kmail_options.h"
-void KMailUniqueAppHandler::loadCommandLineOptions(QCommandLineParser *parser)
+void KMailUniqueAppHandler::loadCommandLineOptions(QCommandLineParser* parser)
 {
     kmail_options(parser);
 }
 
-int KMailUniqueAppHandler::activate(const QStringList &args, const QString &workingDir)
+int KMailUniqueAppHandler::activate(const QStringList& args, const QString& workingDir)
 {
     // Ensure part is loaded
     (void)plugin()->part();
-    org::kde::kmail::kmail kmail(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"), QDBusConnection::sessionBus());
+    org::kde::kmail::kmail kmail(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"),
+                                 QDBusConnection::sessionBus());
     QDBusReply<bool> reply = kmail.handleCommandLine(false, args, workingDir);
 
     if (reply.isValid()) {
@@ -207,7 +212,8 @@ int KMailUniqueAppHandler::activate(const QStringList &args, const QString &work
 
 bool KMailPlugin::queryClose() const
 {
-    org::kde::kmail::kmail kmail(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"), QDBusConnection::sessionBus());
+    org::kde::kmail::kmail kmail(QStringLiteral("org.kde.kmail"), QStringLiteral("/KMail"),
+                                 QDBusConnection::sessionBus());
     QDBusReply<bool> canClose = kmail.canQueryClose();
     return canClose;
 }

@@ -14,22 +14,22 @@ class RemoveCollectionJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit RemoveCollectionJob(QObject *parent = nullptr);
+    explicit RemoveCollectionJob(QObject* parent = nullptr);
     ~RemoveCollectionJob() override;
 
-    void setMainWidget(KMMainWidget *mainWidget);
+    void setMainWidget(KMMainWidget* mainWidget);
 
     void start();
 
-    void setCurrentFolder(const Akonadi::Collection &currentFolder);
+    void setCurrentFolder(const Akonadi::Collection& currentFolder);
 
 Q_SIGNALS:
     void clearCurrentFolder();
 
 private:
-    void slotDelayedRemoveFolder(KJob *job);
-    void slotDeletionCollectionResult(KJob *job);
+    void slotDelayedRemoveFolder(KJob* job);
+    void slotDeletionCollectionResult(KJob* job);
 
-    KMMainWidget *mMainWidget = nullptr;
+    KMMainWidget* mMainWidget = nullptr;
     Akonadi::Collection mCurrentCollection;
 };

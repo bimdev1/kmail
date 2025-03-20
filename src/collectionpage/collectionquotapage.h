@@ -18,14 +18,14 @@ class CollectionQuotaPage : public Akonadi::CollectionPropertiesPage
 {
     Q_OBJECT
 public:
-    explicit CollectionQuotaPage(QWidget *parent = nullptr);
-    void load(const Akonadi::Collection &col) override;
-    void save(Akonadi::Collection &col) override;
-    [[nodiscard]] bool canHandle(const Akonadi::Collection &collection) const override;
+    explicit CollectionQuotaPage(QWidget* parent = nullptr);
+    void load(const Akonadi::Collection& col) override;
+    void save(Akonadi::Collection& col) override;
+    [[nodiscard]] bool canHandle(const Akonadi::Collection& collection) const override;
 
 private:
     void init();
-    CollectionQuotaWidget *const mQuotaWidget;
+    CollectionQuotaWidget* const mQuotaWidget;
 };
 
 AKONADI_COLLECTION_PROPERTIES_PAGE_FACTORY(CollectionQuotaPageFactory, CollectionQuotaPage)

@@ -8,8 +8,7 @@
 
 using namespace KMail;
 
-IdentityInvalidFolder::IdentityInvalidFolder(QWidget *parent)
-    : KMessageWidget(parent)
+IdentityInvalidFolder::IdentityInvalidFolder(QWidget* parent) : KMessageWidget(parent)
 {
     setPosition(KMessageWidget::Header);
     setMessageType(KMessageWidget::Warning);
@@ -19,7 +18,7 @@ IdentityInvalidFolder::IdentityInvalidFolder(QWidget *parent)
 
 IdentityInvalidFolder::~IdentityInvalidFolder() = default;
 
-void IdentityInvalidFolder::setErrorMessage(const QString &msg)
+void IdentityInvalidFolder::setErrorMessage(const QString& msg)
 {
     animatedShow();
     setText(msg);

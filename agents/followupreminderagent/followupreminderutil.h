@@ -8,13 +8,11 @@
 
 #include <KSharedConfig>
 
-namespace FollowUpReminder
-{
+namespace FollowUpReminder {
 class FollowUpReminderInfo;
 
 /** Follow up reminder utilities. */
-namespace FollowUpReminderUtil
-{
+namespace FollowUpReminderUtil {
 [[nodiscard]] bool followupReminderAgentWasRegistered();
 
 [[nodiscard]] bool followupReminderAgentEnabled();
@@ -25,10 +23,12 @@ void forceReparseConfiguration();
 
 [[nodiscard]] KSharedConfig::Ptr defaultConfig();
 
-void writeFollowupReminderInfo(const KSharedConfig::Ptr &config, FollowUpReminder::FollowUpReminderInfo *info, bool forceReload);
+void writeFollowupReminderInfo(const KSharedConfig::Ptr& config, FollowUpReminder::FollowUpReminderInfo* info,
+                               bool forceReload);
 
-[[nodiscard]] bool removeFollowupReminderInfo(const KSharedConfig::Ptr &config, const QList<qint32> &listRemove, bool forceReload = false);
+[[nodiscard]] bool removeFollowupReminderInfo(const KSharedConfig::Ptr& config, const QList<qint32>& listRemove,
+                                              bool forceReload = false);
 
 [[nodiscard]] QString followUpReminderPattern();
-}
-}
+} // namespace FollowUpReminderUtil
+} // namespace FollowUpReminder

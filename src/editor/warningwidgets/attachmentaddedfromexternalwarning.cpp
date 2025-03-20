@@ -11,8 +11,7 @@
 #include <KLocalizedString>
 
 using namespace Qt::Literals::StringLiterals;
-AttachmentAddedFromExternalWarning::AttachmentAddedFromExternalWarning(QWidget *parent)
-    : KMessageWidget(parent)
+AttachmentAddedFromExternalWarning::AttachmentAddedFromExternalWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setPosition(KMessageWidget::Header);
     setVisible(false);
@@ -23,11 +22,11 @@ AttachmentAddedFromExternalWarning::AttachmentAddedFromExternalWarning(QWidget *
 
 AttachmentAddedFromExternalWarning::~AttachmentAddedFromExternalWarning() = default;
 
-void AttachmentAddedFromExternalWarning::setAttachmentNames(const QStringList &lst)
+void AttachmentAddedFromExternalWarning::setAttachmentNames(const QStringList& lst)
 {
     QStringList attachments;
 
-    for (const QString &item : lst) {
+    for (const QString& item : lst) {
         const QUrl url(item);
 
         if (url.isLocalFile()) {
@@ -38,9 +37,11 @@ void AttachmentAddedFromExternalWarning::setAttachmentNames(const QStringList &l
     }
 
     if (attachments.count() == 1) {
-        setText(i18n("This attachment: <ul><li>%1</li></ul> was added externally. Remove it if it's an error.", attachments.at(0)));
+        setText(i18n("This attachment: <ul><li>%1</li></ul> was added externally. Remove it if it's an error.",
+                     attachments.at(0)));
     } else {
-        setText(i18n("These attachments: <ul><li>%1</li></ul> were added externally. Remove them if it's an error.", attachments.join("</li><li>"_L1)));
+        setText(i18n("These attachments: <ul><li>%1</li></ul> were added externally. Remove them if it's an error.",
+                     attachments.join("</li><li>"_L1)));
     }
 }
 

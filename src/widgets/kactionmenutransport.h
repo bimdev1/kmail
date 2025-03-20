@@ -6,11 +6,10 @@
 
 #pragma once
 
+#include <KActionMenu>
 #include "config-kmail.h"
 #include "kmail_private_export.h"
-#include <KActionMenu>
-namespace MailTransport
-{
+namespace MailTransport {
 class Transport;
 }
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
@@ -20,22 +19,22 @@ class KMAILTESTS_TESTS_EXPORT KActionMenuTransport : public KActionMenu
 {
     Q_OBJECT
 public:
-    explicit KActionMenuTransport(QObject *parent = nullptr);
+    explicit KActionMenuTransport(QObject* parent = nullptr);
     ~KActionMenuTransport() override;
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
-    void setTransportActivitiesAbstract(TransportActivities *activities);
+    void setTransportActivitiesAbstract(TransportActivities* activities);
 #endif
 Q_SIGNALS:
-    void transportSelected(MailTransport::Transport *transport);
+    void transportSelected(MailTransport::Transport* transport);
 
 private:
     KMAIL_NO_EXPORT void updateTransportMenu();
     KMAIL_NO_EXPORT void slotCheckTransportMenu();
-    KMAIL_NO_EXPORT void slotSelectTransport(QAction *act);
+    KMAIL_NO_EXPORT void slotSelectTransport(QAction* act);
     KMAIL_NO_EXPORT void forceUpdateTransportMenu();
 
     bool mInitialized = false;
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
-    TransportActivities *mTransportActivities = nullptr;
+    TransportActivities* mTransportActivities = nullptr;
 #endif
 };

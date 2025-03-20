@@ -15,8 +15,7 @@
 
 #include <KCMultiDialog>
 
-namespace QGpgME
-{
+namespace QGpgME {
 class CryptoConfig;
 }
 
@@ -24,7 +23,7 @@ class SecurityPageGeneralTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit SecurityPageGeneralTab(QWidget *parent = nullptr);
+    explicit SecurityPageGeneralTab(QWidget* parent = nullptr);
     [[nodiscard]] QString helpAnchor() const;
 
     void save() override;
@@ -34,7 +33,7 @@ private:
 
 private:
     void slotOpenExternalReferenceExceptions();
-    void slotLinkClicked(const QString &link);
+    void slotLinkClicked(const QString& link);
     Ui_SecurityPageGeneralTab mSGTab;
 };
 
@@ -42,7 +41,7 @@ class SecurityPageMDNTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit SecurityPageMDNTab(QWidget *parent = nullptr);
+    explicit SecurityPageMDNTab(QWidget* parent = nullptr);
     [[nodiscard]] QString helpAnchor() const;
 
     void save() override;
@@ -51,9 +50,9 @@ private:
     void doLoadOther() override;
 
 private:
-    void slotLinkClicked(const QString &link);
-    QButtonGroup *mMDNGroup = nullptr;
-    QButtonGroup *mOrigQuoteGroup = nullptr;
+    void slotLinkClicked(const QString& link);
+    QButtonGroup* mMDNGroup = nullptr;
+    QButtonGroup* mOrigQuoteGroup = nullptr;
     Ui_SecurityPageMDNTab mUi;
 };
 
@@ -61,7 +60,7 @@ class SecurityPageEncryptionTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit SecurityPageEncryptionTab(QWidget *parent = nullptr);
+    explicit SecurityPageEncryptionTab(QWidget* parent = nullptr);
     ~SecurityPageEncryptionTab() override;
 
     [[nodiscard]] QString helpAnchor() const;
@@ -75,14 +74,14 @@ private:
     void doLoadOther() override;
 
 private:
-    Ui::SecurityPageEncryptionTab *const mWidget;
+    Ui::SecurityPageEncryptionTab* const mWidget;
 };
 
 class SecurityPageSMimeTab : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit SecurityPageSMimeTab(QWidget *parent = nullptr);
+    explicit SecurityPageSMimeTab(QWidget* parent = nullptr);
     ~SecurityPageSMimeTab() override;
 
     [[nodiscard]] QString helpAnchor() const;
@@ -94,15 +93,15 @@ private:
     void doLoadOther() override;
 
 private:
-    Ui::SMimeConfiguration *const mWidget;
-    QGpgME::CryptoConfig *mConfig = nullptr;
+    Ui::SMimeConfiguration* const mWidget;
+    QGpgME::CryptoConfig* mConfig = nullptr;
 };
 
 class GpgSettingsDialog : public KCMultiDialog
 {
     Q_OBJECT
 public:
-    explicit GpgSettingsDialog(QWidget *parent = nullptr);
+    explicit GpgSettingsDialog(QWidget* parent = nullptr);
     ~GpgSettingsDialog() override;
 
 private:
@@ -114,6 +113,6 @@ class KMAIL_EXPORT SecurityPage : public ConfigModuleWithTabs
 {
     Q_OBJECT
 public:
-    explicit SecurityPage(QObject *parent, const KPluginMetaData &data);
+    explicit SecurityPage(QObject* parent, const KPluginMetaData& data);
     [[nodiscard]] QString helpAnchor() const override;
 };

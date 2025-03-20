@@ -9,8 +9,7 @@
 #include <KLocalizedString>
 #include <QMenu>
 
-ListView::ListView(QWidget *parent)
-    : QTreeWidget(parent)
+ListView::ListView(QWidget* parent) : QTreeWidget(parent)
 {
     setAllColumnsShowFocus(true);
     setAlternatingRowColors(true);
@@ -20,13 +19,13 @@ ListView::ListView(QWidget *parent)
     connect(this, &ListView::customContextMenuRequested, this, &ListView::slotContextMenu);
 }
 
-void ListView::resizeEvent(QResizeEvent *e)
+void ListView::resizeEvent(QResizeEvent* e)
 {
     QTreeWidget::resizeEvent(e);
     resizeColums();
 }
 
-void ListView::showEvent(QShowEvent *e)
+void ListView::showEvent(QShowEvent* e)
 {
     QTreeWidget::showEvent(e);
     resizeColums();
@@ -54,7 +53,8 @@ void ListView::slotContextMenu(QPoint pos)
     QMenu menu(this);
     menu.addAction(QIcon::fromTheme(QStringLiteral("list-add")), i18nc("@action", "Add"), this, &ListView::addHeader);
     if (currentItem()) {
-        menu.addAction(QIcon::fromTheme(QStringLiteral("list-remove")), i18nc("@action", "Remove"), this, &ListView::removeHeader);
+        menu.addAction(QIcon::fromTheme(QStringLiteral("list-remove")), i18nc("@action", "Remove"), this,
+                       &ListView::removeHeader);
     }
     menu.exec(viewport()->mapToGlobal(pos));
 }

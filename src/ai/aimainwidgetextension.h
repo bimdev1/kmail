@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPointer>
+#include <Akonadi/Item>
 #include <KActionCollection>
 #include <KMime/Message>
-#include <Akonadi/Item>
+#include <QObject>
+#include <QPointer>
 
 class QAction;
 class KActionMenu;
@@ -24,7 +24,7 @@ class KMMessage;
 
 /**
  * @brief Extension for KMMainWidget that adds AI-powered features
- * 
+ *
  * This class extends KMMainWidget with AI-powered features such as
  * AI-generated reply drafts, email summarization, and task extraction.
  */
@@ -37,7 +37,7 @@ public:
      * Constructor
      * @param mainWidget The parent KMMainWidget
      */
-    explicit AIMainWidgetExtension(KMMainWidget *mainWidget);
+    explicit AIMainWidgetExtension(KMMainWidget* mainWidget);
 
     /**
      * Destructor
@@ -48,7 +48,7 @@ public:
      * Handle a new message
      * @param message The new message
      */
-    void handleNewMessage(KMMessage *message);
+    void handleNewMessage(KMMessage* message);
 
     /**
      * Update the AI actions
@@ -95,32 +95,32 @@ private:
     /**
      * The AI filter
      */
-    KMMainWidgetAIFilter *m_aiFilter;
+    KMMainWidgetAIFilter* m_aiFilter;
 
     /**
      * The AI menu
      */
-    KActionMenu *m_aiMenu;
+    KActionMenu* m_aiMenu;
 
     /**
      * The AI generate reply action
      */
-    QAction *m_generateReplyAction;
+    QAction* m_generateReplyAction;
 
     /**
      * The AI summarize action
      */
-    QAction *m_summarizeAction;
+    QAction* m_summarizeAction;
 
     /**
      * The AI prioritize action
      */
-    QAction *m_prioritizeAction;
+    QAction* m_prioritizeAction;
 
     /**
      * The AI extract tasks action
      */
-    QAction *m_extractTasksAction;
+    QAction* m_extractTasksAction;
 };
 
 } // namespace KMail

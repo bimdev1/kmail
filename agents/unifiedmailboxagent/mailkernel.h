@@ -9,14 +9,12 @@
 #include <MailCommon/MailInterfaces>
 #include <QObject>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class EntityTreeModel;
 class EntityMimeTypeFilterModel;
-}
+} // namespace Akonadi
 
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderCollectionMonitor;
 }
 
@@ -24,17 +22,17 @@ class MailKernel : public QObject, public MailCommon::IKernel, public MailCommon
 {
     Q_OBJECT
 public:
-    explicit MailKernel(const KSharedConfigPtr &config, QObject *parent = nullptr);
+    explicit MailKernel(const KSharedConfigPtr& config, QObject* parent = nullptr);
     ~MailKernel() override;
 
-    KIdentityManagementCore::IdentityManager *identityManager() override;
-    MessageComposer::MessageSender *msgSender() override;
+    KIdentityManagementCore::IdentityManager* identityManager() override;
+    MessageComposer::MessageSender* msgSender() override;
 
-    Akonadi::EntityMimeTypeFilterModel *collectionModel() const override;
+    Akonadi::EntityMimeTypeFilterModel* collectionModel() const override;
     KSharedConfig::Ptr config() override;
     void syncConfig() override;
-    MailCommon::JobScheduler *jobScheduler() const override;
-    Akonadi::ChangeRecorder *folderCollectionMonitor() const override;
+    MailCommon::JobScheduler* jobScheduler() const override;
+    Akonadi::ChangeRecorder* folderCollectionMonitor() const override;
     void updateSystemTray() override;
 
     [[nodiscard]] qreal closeToQuotaThreshold() override;
@@ -47,9 +45,9 @@ public:
 
 private:
     KSharedConfigPtr mConfig;
-    KIdentityManagementCore::IdentityManager *const mIdentityManager;
-    MessageComposer::MessageSender *const mMessageSender;
-    MailCommon::FolderCollectionMonitor *mFolderCollectionMonitor = nullptr;
-    Akonadi::EntityTreeModel *mEntityTreeModel = nullptr;
-    Akonadi::EntityMimeTypeFilterModel *mCollectionModel = nullptr;
+    KIdentityManagementCore::IdentityManager* const mIdentityManager;
+    MessageComposer::MessageSender* const mMessageSender;
+    MailCommon::FolderCollectionMonitor* mFolderCollectionMonitor = nullptr;
+    Akonadi::EntityTreeModel* mEntityTreeModel = nullptr;
+    Akonadi::EntityMimeTypeFilterModel* mCollectionModel = nullptr;
 };

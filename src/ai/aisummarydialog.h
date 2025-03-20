@@ -16,13 +16,13 @@ class AISummaryDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AISummaryDialog(KMMessage *message, QWidget *parent = nullptr);
+    explicit AISummaryDialog(KMMessage* message, QWidget* parent = nullptr);
     ~AISummaryDialog() override;
 
 private Q_SLOTS:
     void slotGenerateSummary();
-    void slotSummaryGenerated(const QString &summary);
-    void slotError(const QString &error);
+    void slotSummaryGenerated(const QString& summary);
+    void slotError(const QString& error);
     void slotCopyToClipboard();
 
 private:
@@ -30,13 +30,13 @@ private:
     void createConnections();
     QString extractEmailContent() const;
 
-    KMMessage *m_message;
-    LocalAIService *m_aiService;
-    
-    QTextEdit *m_summaryEdit;
-    QPushButton *m_generateButton;
-    QPushButton *m_copyButton;
-    QPushButton *m_closeButton;
-    QProgressBar *m_progressBar;
+    KMMessage* m_message;
+    LocalAIService* m_aiService;
+
+    QTextEdit* m_summaryEdit;
+    QPushButton* m_generateButton;
+    QPushButton* m_copyButton;
+    QPushButton* m_closeButton;
+    QProgressBar* m_progressBar;
     bool m_isGenerating;
 };

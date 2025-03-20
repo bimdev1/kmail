@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QPointer>
 #include <KMime/Message>
+#include <QPointer>
+#include <QWidget>
 
 class QLabel;
 class QTextEdit;
@@ -21,7 +21,7 @@ class AIServiceInterface;
 
 /**
  * @brief Widget for AI-generated reply drafts
- * 
+ *
  * This widget displays AI-generated reply drafts and allows the user to
  * insert them into the compose window.
  */
@@ -34,7 +34,7 @@ public:
      * Constructor
      * @param parent The parent widget
      */
-    explicit AIReplyDraftWidget(QWidget *parent = nullptr);
+    explicit AIReplyDraftWidget(QWidget* parent = nullptr);
 
     /**
      * Destructor
@@ -45,7 +45,7 @@ public:
      * Set the original message to generate a reply for
      * @param message The original message
      */
-    void setOriginalMessage(const KMime::Message::Ptr &message);
+    void setOriginalMessage(const KMime::Message::Ptr& message);
 
     /**
      * Get the generated reply text
@@ -58,7 +58,7 @@ Q_SIGNALS:
      * Emitted when the user clicks the "Insert" button
      * @param text The text to insert
      */
-    void insertReplyRequested(const QString &text);
+    void insertReplyRequested(const QString& text);
 
     /**
      * Emitted when the reply generation is complete
@@ -75,7 +75,7 @@ private Q_SLOTS:
      * Handle the generated reply
      * @param reply The generated reply
      */
-    void handleGeneratedReply(const QString &reply);
+    void handleGeneratedReply(const QString& reply);
 
     /**
      * Insert the generated reply into the compose window
@@ -97,7 +97,7 @@ private:
      * Get the AI service
      * @return The AI service
      */
-    AIServiceInterface *aiService() const;
+    AIServiceInterface* aiService() const;
 
     /**
      * Get a list of previous emails sent by the user
@@ -118,27 +118,27 @@ private:
     /**
      * The title label
      */
-    QLabel *m_titleLabel;
+    QLabel* m_titleLabel;
 
     /**
      * The reply text edit
      */
-    QTextEdit *m_replyTextEdit;
+    QTextEdit* m_replyTextEdit;
 
     /**
      * The insert button
      */
-    QPushButton *m_insertButton;
+    QPushButton* m_insertButton;
 
     /**
      * The regenerate button
      */
-    QPushButton *m_regenerateButton;
+    QPushButton* m_regenerateButton;
 
     /**
      * The progress bar
      */
-    QProgressBar *m_progressBar;
+    QProgressBar* m_progressBar;
 
     /**
      * Flag indicating whether a reply is being generated

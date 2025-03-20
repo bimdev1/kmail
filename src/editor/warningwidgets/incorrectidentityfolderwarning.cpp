@@ -7,15 +7,15 @@
 #include "incorrectidentityfolderwarning.h"
 #include <KLocalizedString>
 
-IncorrectIdentityFolderWarning::IncorrectIdentityFolderWarning(QWidget *parent)
-    : KMessageWidget(parent)
+IncorrectIdentityFolderWarning::IncorrectIdentityFolderWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setPosition(KMessageWidget::Header);
     setVisible(false);
     setCloseButtonVisible(true);
     setMessageType(Warning);
     setWordWrap(true);
-    connect(this, &IncorrectIdentityFolderWarning::hideAnimationFinished, this, &IncorrectIdentityFolderWarning::slotHideAnnimationFinished);
+    connect(this, &IncorrectIdentityFolderWarning::hideAnimationFinished, this,
+            &IncorrectIdentityFolderWarning::slotHideAnnimationFinished);
 }
 
 IncorrectIdentityFolderWarning::~IncorrectIdentityFolderWarning() = default;
@@ -52,7 +52,7 @@ void IncorrectIdentityFolderWarning::clearFccInvalid()
     }
 }
 
-void IncorrectIdentityFolderWarning::addNewLine(QString &str)
+void IncorrectIdentityFolderWarning::addNewLine(QString& str)
 {
     if (!str.isEmpty()) {
         str += QLatin1Char('\n');

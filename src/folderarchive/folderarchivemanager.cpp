@@ -14,16 +14,15 @@
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 
-#include "kmail_debug.h"
 #include <KLocalizedString>
 #include <KNotification>
 #include <KSharedConfig>
+#include "kmail_debug.h"
 
 #include <QRegularExpression>
 
-FolderArchiveManager::FolderArchiveManager(QObject *parent)
-    : QObject(parent)
-    , mFolderArchiveCache(new FolderArchiveCache(this))
+FolderArchiveManager::FolderArchiveManager(QObject* parent)
+    : QObject(parent), mFolderArchiveCache(new FolderArchiveCache(this))
 {
     load();
 }
@@ -36,23 +35,24 @@ FolderArchiveManager::~FolderArchiveManager()
     delete mCurrentJob;
 }
 
-void FolderArchiveManager::slotCollectionRemoved(const Akonadi::Collection &collection)
+void FolderArchiveManager::slotCollectionRemoved(const Akonadi::Collection& collection)
 {
     KConfig config(FolderArchive::FolderArchiveUtil::configFileName());
     mFolderArchiveCache->clearCacheWithContainsCollection(collection.id());
-    for (FolderArchiveAccountInfo *info : std::as_const(mListAccountInfo)) {
+    for (FolderArchiveAccountInfo* info : std::as_const(mListAccountInfo)) {
         if (info->archiveTopLevel() == collection.id()) {
             info->setArchiveTopLevel(-1);
-            KConfigGroup group = config.group(FolderArchive::FolderArchiveUtil::groupConfigPattern() + info->instanceName());
+            KConfigGroup group =
+                config.group(FolderArchive::FolderArchiveUtil::groupConfigPattern() + info->instanceName());
             info->writeConfig(group);
         }
     }
     load();
 }
 
-FolderArchiveAccountInfo *FolderArchiveManager::infoFromInstanceName(const QString &instanceName) const
+FolderArchiveAccountInfo* FolderArchiveManager::infoFromInstanceName(const QString& instanceName) const
 {
-    for (FolderArchiveAccountInfo *info : std::as_const(mListAccountInfo)) {
+    for (FolderArchiveAccountInfo* info : std::as_const(mListAccountInfo)) {
         if (info->instanceName() == instanceName) {
             return info;
         }
@@ -68,33 +68,34 @@ void FolderArchiveManager::setArchiveItem(qlonglong itemId)
     connect(job, &Akonadi::ItemFetchJob::result, this, &FolderArchiveManager::slotFetchParentCollection);
 }
 
-void FolderArchiveManager::slotFetchParentCollection(KJob *job)
+void FolderArchiveManager::slotFetchParentCollection(KJob* job)
 {
     if (job->error()) {
         moveFailed(i18n("Unable to fetch folder. Error reported: %1", job->errorString()));
         qCDebug(KMAIL_LOG) << "Unable to fetch folder:" << job->errorString();
         return;
     }
-    const Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
+    const Akonadi::ItemFetchJob* fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
     const Akonadi::Item::List items = fetchJob->items();
     if (items.isEmpty()) {
         moveFailed(i18n("No folder returned."));
         qCDebug(KMAIL_LOG) << "Fetch list is empty";
     } else {
-        auto jobCol = new Akonadi::CollectionFetchJob(Akonadi::Collection(items.first().parentCollection().id()), Akonadi::CollectionFetchJob::Base, this);
+        auto jobCol = new Akonadi::CollectionFetchJob(Akonadi::Collection(items.first().parentCollection().id()),
+                                                      Akonadi::CollectionFetchJob::Base, this);
         jobCol->setProperty("itemId", items.first().id());
         connect(jobCol, &Akonadi::CollectionFetchJob::result, this, &FolderArchiveManager::slotFetchCollection);
     }
 }
 
-void FolderArchiveManager::slotFetchCollection(KJob *job)
+void FolderArchiveManager::slotFetchCollection(KJob* job)
 {
     if (job->error()) {
         moveFailed(i18n("Unable to fetch parent folder. Error reported: %1", job->errorString()));
         qCDebug(KMAIL_LOG) << "cannot fetch collection " << job->errorString();
         return;
     }
-    auto jobCol = qobject_cast<Akonadi::CollectionFetchJob *>(job);
+    auto jobCol = qobject_cast<Akonadi::CollectionFetchJob*>(job);
     if (jobCol->collections().isEmpty()) {
         moveFailed(i18n("Unable to return list of folders."));
         qCDebug(KMAIL_LOG) << "List of folder is empty";
@@ -105,9 +106,9 @@ void FolderArchiveManager::slotFetchCollection(KJob *job)
     setArchiveItems(itemIds, jobCol->collections().constFirst().resource());
 }
 
-void FolderArchiveManager::setArchiveItems(const Akonadi::Item::List &items, const QString &instanceName)
+void FolderArchiveManager::setArchiveItems(const Akonadi::Item::List& items, const QString& instanceName)
 {
-    FolderArchiveAccountInfo *info = infoFromInstanceName(instanceName);
+    FolderArchiveAccountInfo* info = infoFromInstanceName(instanceName);
     if (info) {
         auto job = new FolderArchiveAgentJob(this, info, items);
         if (mCurrentJob) {
@@ -119,10 +120,10 @@ void FolderArchiveManager::setArchiveItems(const Akonadi::Item::List &items, con
     }
 }
 
-void FolderArchiveManager::slotInstanceRemoved(const Akonadi::AgentInstance &instance)
+void FolderArchiveManager::slotInstanceRemoved(const Akonadi::AgentInstance& instance)
 {
     const QString instanceName = instance.name();
-    for (FolderArchiveAccountInfo *info : std::as_const(mListAccountInfo)) {
+    for (FolderArchiveAccountInfo* info : std::as_const(mListAccountInfo)) {
         if (info->instanceName() == instanceName) {
             mListAccountInfo.removeAll(info);
             removeInfo(instanceName);
@@ -131,12 +132,12 @@ void FolderArchiveManager::slotInstanceRemoved(const Akonadi::AgentInstance &ins
     }
 }
 
-void FolderArchiveManager::removeInfo(const QString &instanceName)
+void FolderArchiveManager::removeInfo(const QString& resourceId)
 {
-    KConfig config(FolderArchive::FolderArchiveUtil::configFileName());
-    KConfigGroup group = config.group(FolderArchive::FolderArchiveUtil::groupConfigPattern() + instanceName);
-    group.deleteGroup(QLatin1StringView());
-    config.sync();
+    KConfigGroup group = KSharedConfig::openConfig()->group(resourceId);
+    group.deleteGroup(QLatin1String(""));
+    group.sync();
+    mFolderArchiveCache->clearCache();
 }
 
 void FolderArchiveManager::load()
@@ -147,8 +148,9 @@ void FolderArchiveManager::load()
     mFolderArchiveCache->clearCache();
 
     KConfig config(FolderArchive::FolderArchiveUtil::configFileName());
-    const QStringList accountList = config.groupList().filter(QRegularExpression(FolderArchive::FolderArchiveUtil::groupConfigPattern()));
-    for (const QString &account : accountList) {
+    const QStringList accountList =
+        config.groupList().filter(QRegularExpression(FolderArchive::FolderArchiveUtil::groupConfigPattern()));
+    for (const QString& account : accountList) {
         KConfigGroup group = config.group(account);
         auto info = new FolderArchiveAccountInfo(group);
         if (info->enabled()) {
@@ -161,23 +163,15 @@ void FolderArchiveManager::load()
 
 void FolderArchiveManager::moveDone()
 {
-    KNotification::event(QStringLiteral("folderarchivedone"),
-                         QString(),
-                         i18n("Messages archived"),
-                         QStringLiteral("kmail"),
-                         KNotification::CloseOnTimeout,
-                         QStringLiteral("kmail2"));
+    KNotification::event(QStringLiteral("folderarchivedone"), QString(), i18n("Messages archived"),
+                         QStringLiteral("kmail"), nullptr, KNotification::CloseOnTimeout, QStringLiteral("kmail2"));
     nextJob();
 }
 
-void FolderArchiveManager::moveFailed(const QString &msg)
+void FolderArchiveManager::moveFailed(const QString& msg)
 {
-    KNotification::event(QStringLiteral("folderarchiveerror"),
-                         QString(),
-                         msg,
-                         QStringLiteral("kmail"),
-                         KNotification::CloseOnTimeout,
-                         QStringLiteral("kmail2"));
+    KNotification::event(QStringLiteral("folderarchiveerror"), QString(), msg, QStringLiteral("kmail"), nullptr,
+                         KNotification::CloseOnTimeout, QStringLiteral("kmail2"));
     nextJob();
 }
 
@@ -192,7 +186,7 @@ void FolderArchiveManager::nextJob()
     }
 }
 
-FolderArchiveCache *FolderArchiveManager::folderArchiveCache() const
+FolderArchiveCache* FolderArchiveManager::folderArchiveCache() const
 {
     return mFolderArchiveCache;
 }

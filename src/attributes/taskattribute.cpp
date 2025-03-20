@@ -10,25 +10,18 @@
 #include <QDataStream>
 #include <QIODevice>
 
-TaskAttribute::TaskAttribute()
-    : Akonadi::Attribute()
-{
-}
+TaskAttribute::TaskAttribute() : Akonadi::Attribute() {}
 
-TaskAttribute::TaskAttribute(Akonadi::Item::Id id)
-    : Akonadi::Attribute()
-    , mId(id)
-{
-}
+TaskAttribute::TaskAttribute(Akonadi::Item::Id id) : Akonadi::Attribute(), mId(id) {}
 
 TaskAttribute::~TaskAttribute() = default;
 
-TaskAttribute *TaskAttribute::clone() const
+TaskAttribute* TaskAttribute::clone() const
 {
     return new TaskAttribute(taskId());
 }
 
-void TaskAttribute::deserialize(const QByteArray &data)
+void TaskAttribute::deserialize(const QByteArray& data)
 {
     QDataStream s(data);
     s >> mId;

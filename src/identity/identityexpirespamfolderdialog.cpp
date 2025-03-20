@@ -11,9 +11,8 @@
 #include <QVBoxLayout>
 
 using namespace Qt::Literals::StringLiterals;
-IdentityExpireSpamFolderDialog::IdentityExpireSpamFolderDialog(QWidget *parent)
-    : QDialog(parent)
-    , mCollectionExpiryWidget(new MailCommon::CollectionExpiryWidget(this))
+IdentityExpireSpamFolderDialog::IdentityExpireSpamFolderDialog(QWidget* parent)
+    : QDialog(parent), mCollectionExpiryWidget(new MailCommon::CollectionExpiryWidget(this))
 {
     setWindowTitle(i18nc("@title:window", "Expire Spam Folder"));
     auto mainLayout = new QVBoxLayout(this);
@@ -22,8 +21,10 @@ IdentityExpireSpamFolderDialog::IdentityExpireSpamFolderDialog(QWidget *parent)
     mCollectionExpiryWidget->setObjectName("mCollectionExpiryWidget"_L1);
     mainLayout->addWidget(mCollectionExpiryWidget);
 
-    connect(mCollectionExpiryWidget, &MailCommon::CollectionExpiryWidget::saveAndExpireRequested, this, &IdentityExpireSpamFolderDialog::slotSaveAndExpire);
-    connect(mCollectionExpiryWidget, &MailCommon::CollectionExpiryWidget::configChanged, this, &IdentityExpireSpamFolderDialog::slotConfigChanged);
+    connect(mCollectionExpiryWidget, &MailCommon::CollectionExpiryWidget::saveAndExpireRequested, this,
+            &IdentityExpireSpamFolderDialog::slotSaveAndExpire);
+    connect(mCollectionExpiryWidget, &MailCommon::CollectionExpiryWidget::configChanged, this,
+            &IdentityExpireSpamFolderDialog::slotConfigChanged);
 
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     buttonBox->setObjectName("buttonBox"_L1);
@@ -39,10 +40,10 @@ IdentityExpireSpamFolderDialog::~IdentityExpireSpamFolderDialog()
     }
 }
 
-void IdentityExpireSpamFolderDialog::load(const Akonadi::Collection &collection)
+void IdentityExpireSpamFolderDialog::load(const Akonadi::Collection& collection)
 {
     mCollection = collection;
-    const auto *attr = collection.attribute<MailCommon::ExpireCollectionAttribute>();
+    const auto* attr = collection.attribute<MailCommon::ExpireCollectionAttribute>();
     if (attr) {
         MailCommon::CollectionExpirySettings settings;
         settings.convertFromExpireCollectionAttribute(attr);
@@ -63,7 +64,7 @@ void IdentityExpireSpamFolderDialog::slotChanged()
     mChanged = true;
 }
 
-void IdentityExpireSpamFolderDialog::saveAndExpire(Akonadi::Collection &collection, bool saveSettings, bool expireNow)
+void IdentityExpireSpamFolderDialog::saveAndExpire(Akonadi::Collection& collection, bool saveSettings, bool expireNow)
 {
     mCollectionExpiryWidget->save(collection, saveSettings, expireNow);
     mChanged = false;

@@ -11,14 +11,11 @@
 
 #include <KLocalizedString>
 #include <KNotification>
-#include <QTimer>
 #include <chrono>
+#include <QTimer>
 using namespace std::chrono_literals;
 
-UndoSendCreateJob::UndoSendCreateJob(QObject *parent)
-    : QObject(parent)
-{
-}
+UndoSendCreateJob::UndoSendCreateJob(QObject* parent) : QObject(parent) {}
 
 UndoSendCreateJob::~UndoSendCreateJob() = default;
 
@@ -79,7 +76,7 @@ QString UndoSendCreateJob::subject() const
     return mSubject;
 }
 
-void UndoSendCreateJob::setMessageInfoText(const QString &subject)
+void UndoSendCreateJob::setMessageInfoText(const QString& subject)
 {
     mSubject = subject;
 }

@@ -6,15 +6,15 @@
 
 #pragma once
 
-#include "../aiserviceinterface.h"
-#include <QWidget>
 #include <QLabel>
+#include <QWidget>
+#include "../aiserviceinterface.h"
 
 namespace KMail {
 
 /**
  * @brief Widget that displays the AI category of an email
- * 
+ *
  * This widget displays the AI category of an email as a colored label.
  */
 class AICategoryIndicatorWidget : public QWidget
@@ -26,7 +26,7 @@ public:
      * Constructor
      * @param parent The parent widget
      */
-    explicit AICategoryIndicatorWidget(QWidget *parent = nullptr);
+    explicit AICategoryIndicatorWidget(QWidget* parent = nullptr);
 
     /**
      * Destructor
@@ -59,7 +59,7 @@ private:
     /**
      * The label that displays the category
      */
-    QLabel *m_label;
+    QLabel* m_label;
 };
 
 } // namespace KMail

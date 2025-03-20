@@ -12,18 +12,18 @@ class ArchiveMailRangeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ArchiveMailRangeWidget(QWidget *parent = nullptr);
+    explicit ArchiveMailRangeWidget(QWidget* parent = nullptr);
     ~ArchiveMailRangeWidget() override;
 
     [[nodiscard]] bool isRangeEnabled() const;
     void setRangeEnabled(bool isEnabled);
 
     [[nodiscard]] QList<int> range() const;
-    void setRange(const QList<int> &hours);
+    void setRange(const QList<int>& hours);
 
 private:
     void changeRangeState(bool enabled);
-    HourComboBox *const mStartRange;
-    HourComboBox *const mEndRange;
-    QCheckBox *const mRangeEnabled;
+    HourComboBox* const mStartRange;
+    HourComboBox* const mEndRange;
+    QCheckBox* const mRangeEnabled;
 };

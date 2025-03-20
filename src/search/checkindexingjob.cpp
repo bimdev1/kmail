@@ -5,8 +5,8 @@
 */
 
 #include "checkindexingjob.h"
-#include "kmail_debug.h"
 #include <PIM/indexeditems.h>
+#include "kmail_debug.h"
 
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/CollectionFetchScope>
@@ -14,9 +14,8 @@
 
 #include <PimCommon/PimUtil>
 
-CheckIndexingJob::CheckIndexingJob(Akonadi::Search::PIM::IndexedItems *indexedItems, QObject *parent)
-    : QObject(parent)
-    , mIndexedItems(indexedItems)
+CheckIndexingJob::CheckIndexingJob(Akonadi::Search::PIM::IndexedItems* indexedItems, QObject* parent)
+    : QObject(parent), mIndexedItems(indexedItems)
 {
 }
 
@@ -28,7 +27,7 @@ void CheckIndexingJob::askForNextCheck(quint64 id, bool needToReindex)
     deleteLater();
 }
 
-void CheckIndexingJob::setCollection(const Akonadi::Collection &col)
+void CheckIndexingJob::setCollection(const Akonadi::Collection& col)
 {
     mCollection = col;
 }
@@ -45,9 +44,9 @@ void CheckIndexingJob::start()
     }
 }
 
-void CheckIndexingJob::slotCollectionPropertiesFinished(KJob *job)
+void CheckIndexingJob::slotCollectionPropertiesFinished(KJob* job)
 {
-    auto fetch = qobject_cast<Akonadi::CollectionFetchJob *>(job);
+    auto fetch = qobject_cast<Akonadi::CollectionFetchJob*>(job);
     Q_ASSERT(fetch);
     if (fetch->collections().isEmpty()) {
         qCWarning(KMAIL_LOG) << "No collection fetched";
@@ -58,8 +57,8 @@ void CheckIndexingJob::slotCollectionPropertiesFinished(KJob *job)
     mCollection = fetch->collections().constFirst();
     const qlonglong result = mIndexedItems->indexedItems(mCollection.id());
     bool needToReindex = false;
-    qCDebug(KMAIL_LOG) << "name :" << mCollection.name() << " mCollection.statistics().count() " << mCollection.statistics().count()
-                       << "stats.value(mCollection.id())" << result;
+    qCDebug(KMAIL_LOG) << "name :" << mCollection.name() << " mCollection.statistics().count() "
+                       << mCollection.statistics().count() << "stats.value(mCollection.id())" << result;
     if (mCollection.statistics().count() != result) {
         needToReindex = true;
         qCDebug(KMAIL_LOG) << "Reindex collection :"

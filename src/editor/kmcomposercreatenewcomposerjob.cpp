@@ -12,10 +12,7 @@
 #include <MessageComposer/MessageHelper>
 #include <TemplateParser/TemplateParserJob>
 
-KMComposerCreateNewComposerJob::KMComposerCreateNewComposerJob(QObject *parent)
-    : QObject(parent)
-{
-}
+KMComposerCreateNewComposerJob::KMComposerCreateNewComposerJob(QObject* parent) : QObject(parent) {}
 
 KMComposerCreateNewComposerJob::~KMComposerCreateNewComposerJob() = default;
 
@@ -25,14 +22,16 @@ void KMComposerCreateNewComposerJob::start()
 
     MessageHelper::initHeader(mMsg, KMKernel::self()->identityManager(), mCurrentIdentity);
     auto parser = new TemplateParser::TemplateParserJob(mMsg, TemplateParser::TemplateParserJob::NewMessage, this);
-    connect(parser, &TemplateParser::TemplateParserJob::parsingDone, this, &KMComposerCreateNewComposerJob::slotCreateNewComposer);
+    connect(parser, &TemplateParser::TemplateParserJob::parsingDone, this,
+            &KMComposerCreateNewComposerJob::slotCreateNewComposer);
     parser->setIdentityManager(KMKernel::self()->identityManager());
     parser->process(mMsg, mCollectionForNewMessage.id());
 }
 
 void KMComposerCreateNewComposerJob::slotCreateNewComposer(bool forceCursorPosition)
 {
-    KMail::Composer *win = KMComposerWin::create(mMsg, false, false, KMail::Composer::TemplateContext::New, mCurrentIdentity);
+    KMail::Composer* win =
+        KMComposerWin::create(mMsg, false, false, KMail::Composer::TemplateContext::New, mCurrentIdentity);
     win->setCollectionForNewMessage(mCollectionForNewMessage);
     if (forceCursorPosition) {
         win->setFocusToEditor();
@@ -46,7 +45,7 @@ void KMComposerCreateNewComposerJob::setCurrentIdentity(uint currentIdentity)
     mCurrentIdentity = currentIdentity;
 }
 
-void KMComposerCreateNewComposerJob::setCollectionForNewMessage(const Akonadi::Collection &collectionForNewMessage)
+void KMComposerCreateNewComposerJob::setCollectionForNewMessage(const Akonadi::Collection& collectionForNewMessage)
 {
     mCollectionForNewMessage = collectionForNewMessage;
 }

@@ -12,18 +12,18 @@ class SaveAsFileJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit SaveAsFileJob(QObject *parent = nullptr);
+    explicit SaveAsFileJob(QObject* parent = nullptr);
     ~SaveAsFileJob() override;
     void start();
 
     void setHtmlMode(bool htmlMode);
 
-    void setTextDocument(QTextDocument *textDocument);
+    void setTextDocument(QTextDocument* textDocument);
 
-    void setParentWidget(QWidget *parentWidget);
+    void setParentWidget(QWidget* parentWidget);
 
 private:
     bool mHtmlMode = false;
-    QTextDocument *mTextDocument = nullptr;
-    QWidget *mParentWidget = nullptr;
+    QTextDocument* mTextDocument = nullptr;
+    QWidget* mParentWidget = nullptr;
 };

@@ -28,46 +28,40 @@ public:
     using FinishedCallback = std::function<void()>;
     using Entry = std::pair<const QString, std::unique_ptr<UnifiedMailbox>>;
 
-    explicit UnifiedMailboxManager(const KSharedConfigPtr &config, QObject *parent = nullptr);
+    explicit UnifiedMailboxManager(const KSharedConfigPtr& config, QObject* parent = nullptr);
     ~UnifiedMailboxManager() override;
 
-    void loadBoxes(FinishedCallback &&cb = {});
+    void loadBoxes(FinishedCallback&& cb = {});
     void saveBoxes();
-    void discoverBoxCollections(FinishedCallback &&cb = {});
+    void discoverBoxCollections(FinishedCallback&& cb = {});
 
     void insertBox(std::unique_ptr<UnifiedMailbox> box);
-    void removeBox(const QString &id);
+    void removeBox(const QString& id);
 
-    [[nodiscard]] UnifiedMailbox *unifiedMailboxForSource(qint64 source) const;
-    [[nodiscard]] UnifiedMailbox *unifiedMailboxFromCollection(const Akonadi::Collection &col) const;
+    [[nodiscard]] UnifiedMailbox* unifiedMailboxForSource(qint64 source) const;
+    [[nodiscard]] UnifiedMailbox* unifiedMailboxFromCollection(const Akonadi::Collection& col) const;
 
-    inline auto begin() const
-    {
-        return mMailboxes.begin();
-    }
+    inline auto begin() const { return mMailboxes.begin(); }
 
-    inline auto end() const
-    {
-        return mMailboxes.end();
-    }
+    inline auto end() const { return mMailboxes.end(); }
 
-    [[nodiscard]] static bool isUnifiedMailbox(const Akonadi::Collection &col);
+    [[nodiscard]] static bool isUnifiedMailbox(const Akonadi::Collection& col);
 
     // Internal change recorder, for unittests
-    Akonadi::ChangeRecorder &changeRecorder();
+    Akonadi::ChangeRecorder& changeRecorder();
 Q_SIGNALS:
-    void updateBox(const UnifiedMailbox *box);
+    void updateBox(const UnifiedMailbox* box);
 
 private:
-    void createDefaultBoxes(FinishedCallback &&cb);
+    void createDefaultBoxes(FinishedCallback&& cb);
 
-    const UnifiedMailbox *unregisterSpecialSourceCollection(qint64 colId);
-    const UnifiedMailbox *registerSpecialSourceCollection(const Akonadi::Collection &col);
+    const UnifiedMailbox* unregisterSpecialSourceCollection(qint64 colId);
+    const UnifiedMailbox* registerSpecialSourceCollection(const Akonadi::Collection& col);
 
     // Using std::unique_ptr because QScopedPointer is not movable
     // Using std::unordered_map because Qt containers do not support movable-only types,
     std::unordered_map<QString, std::unique_ptr<UnifiedMailbox>> mMailboxes;
-    std::unordered_map<qint64, UnifiedMailbox *> mSourceToBoxMap;
+    std::unordered_map<qint64, UnifiedMailbox*> mSourceToBoxMap;
 
     Akonadi::ChangeRecorder mMonitor;
     QSettings mMonitorSettings;

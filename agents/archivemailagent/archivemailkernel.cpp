@@ -15,8 +15,7 @@
 #include <MailCommon/FolderCollectionMonitor>
 #include <MailCommon/JobScheduler>
 
-ArchiveMailKernel::ArchiveMailKernel(QObject *parent)
-    : QObject(parent)
+ArchiveMailKernel::ArchiveMailKernel(QObject* parent) : QObject(parent)
 {
     mIdentityManager = new KIdentityManagementCore::IdentityManager(true, this);
     auto session = new Akonadi::Session("Archive Mail Kernel ETM", this);
@@ -36,23 +35,23 @@ ArchiveMailKernel::ArchiveMailKernel(QObject *parent)
     mJobScheduler = new MailCommon::JobScheduler(this);
 }
 
-ArchiveMailKernel *ArchiveMailKernel::self()
+ArchiveMailKernel* ArchiveMailKernel::self()
 {
     static ArchiveMailKernel s_self;
     return &s_self;
 }
 
-KIdentityManagementCore::IdentityManager *ArchiveMailKernel::identityManager()
+KIdentityManagementCore::IdentityManager* ArchiveMailKernel::identityManager()
 {
     return mIdentityManager;
 }
 
-MessageComposer::MessageSender *ArchiveMailKernel::msgSender()
+MessageComposer::MessageSender* ArchiveMailKernel::msgSender()
 {
     return nullptr;
 }
 
-Akonadi::EntityMimeTypeFilterModel *ArchiveMailKernel::collectionModel() const
+Akonadi::EntityMimeTypeFilterModel* ArchiveMailKernel::collectionModel() const
 {
     return mCollectionModel;
 }
@@ -67,12 +66,12 @@ void ArchiveMailKernel::syncConfig()
     Q_ASSERT(false);
 }
 
-MailCommon::JobScheduler *ArchiveMailKernel::jobScheduler() const
+MailCommon::JobScheduler* ArchiveMailKernel::jobScheduler() const
 {
     return mJobScheduler;
 }
 
-Akonadi::ChangeRecorder *ArchiveMailKernel::folderCollectionMonitor() const
+Akonadi::ChangeRecorder* ArchiveMailKernel::folderCollectionMonitor() const
 {
     return mFolderCollectionMonitor->monitor();
 }

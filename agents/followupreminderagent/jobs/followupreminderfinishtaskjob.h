@@ -13,7 +13,7 @@ class FollowUpReminderFinishTaskJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit FollowUpReminderFinishTaskJob(Akonadi::Item::Id id, QObject *parent = nullptr);
+    explicit FollowUpReminderFinishTaskJob(Akonadi::Item::Id id, QObject* parent = nullptr);
     ~FollowUpReminderFinishTaskJob() override;
 
     void start();
@@ -23,8 +23,8 @@ Q_SIGNALS:
     void finishTaskFailed();
 
 private:
-    void slotItemFetchJobDone(KJob *job);
-    void slotItemModifiedResult(KJob *job);
+    void slotItemFetchJobDone(KJob* job);
+    void slotItemModifiedResult(KJob* job);
     void closeTodo();
     const Akonadi::Item::Id mTodoId;
 };

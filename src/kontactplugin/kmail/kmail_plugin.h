@@ -14,8 +14,7 @@
 #include <QUrl>
 class OrgKdeKmailKmailInterface;
 
-namespace KontactInterface
-{
+namespace KontactInterface {
 class UniqueAppWatcher;
 }
 
@@ -23,13 +22,10 @@ class KMailUniqueAppHandler : public KontactInterface::UniqueAppHandler
 {
     Q_OBJECT
 public:
-    explicit KMailUniqueAppHandler(KontactInterface::Plugin *plugin)
-        : KontactInterface::UniqueAppHandler(plugin)
-    {
-    }
+    explicit KMailUniqueAppHandler(KontactInterface::Plugin* plugin) : KontactInterface::UniqueAppHandler(plugin) {}
 
-    void loadCommandLineOptions(QCommandLineParser *parser) override;
-    [[nodiscard]] int activate(const QStringList &args, const QString &workingDir) override;
+    void loadCommandLineOptions(QCommandLineParser* parser) override;
+    [[nodiscard]] int activate(const QStringList& args, const QString& workingDir) override;
 };
 
 class KMailPlugin : public KontactInterface::Plugin
@@ -37,11 +33,11 @@ class KMailPlugin : public KontactInterface::Plugin
     Q_OBJECT
 
 public:
-    KMailPlugin(KontactInterface::Core *core, const KPluginMetaData &data, const QVariantList &);
+    KMailPlugin(KontactInterface::Core* core, const KPluginMetaData& data, const QVariantList&);
     ~KMailPlugin() override;
 
     [[nodiscard]] bool isRunningStandalone() const override;
-    [[nodiscard]] KontactInterface::Summary *createSummaryWidget(QWidget *parent) override;
+    [[nodiscard]] KontactInterface::Summary* createSummaryWidget(QWidget* parent) override;
     [[nodiscard]] int weight() const override;
 
     [[nodiscard]] QStringList invisibleToolbarActions() const override;
@@ -50,17 +46,17 @@ public:
     void shortcutChanged() override;
 
 protected:
-    KParts::Part *createPart() override;
-    void openComposer(const QUrl &attach = QUrl());
-    void openComposer(const QString &to);
-    [[nodiscard]] bool canDecodeMimeData(const QMimeData *) const override;
-    void processDropEvent(QDropEvent *) override;
+    KParts::Part* createPart() override;
+    void openComposer(const QUrl& attach = QUrl());
+    void openComposer(const QString& to);
+    [[nodiscard]] bool canDecodeMimeData(const QMimeData*) const override;
+    void processDropEvent(QDropEvent*) override;
 
 protected Q_SLOTS:
     void slotNewMail();
     void slotSyncFolders();
 
 private:
-    OrgKdeKmailKmailInterface *mInstance = nullptr;
-    KontactInterface::UniqueAppWatcher *mUniqueAppWatcher = nullptr;
+    OrgKdeKmailKmailInterface* mInstance = nullptr;
+    KontactInterface::UniqueAppWatcher* mUniqueAppWatcher = nullptr;
 };

@@ -9,11 +9,10 @@
 
 #pragma once
 
-#include "kmail_export.h"
 #include <KAboutData>
+#include "kmail_export.h"
 
-namespace KMail
-{
+namespace KMail {
 class KMAIL_EXPORT AboutData : public KAboutData
 {
 public:

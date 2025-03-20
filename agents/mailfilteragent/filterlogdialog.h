@@ -8,8 +8,8 @@
 
 #include <QDialog>
 
-#include "mailfilteragentprivate_export.h"
 #include <TextCustomEditor/PlainTextEditor>
+#include "mailfilteragentprivate_export.h"
 
 class QCheckBox;
 class QSpinBox;
@@ -22,8 +22,7 @@ class QPushButton;
   The filter log dialog allows a continued observation of the
   filter log of MailFilterAgent.
 */
-namespace TextCustomEditor
-{
+namespace TextCustomEditor {
 class PlainTextEditorWidget;
 }
 
@@ -31,11 +30,11 @@ class FilterLogTextEdit : public TextCustomEditor::PlainTextEditor
 {
     Q_OBJECT
 public:
-    explicit FilterLogTextEdit(QWidget *parent = nullptr);
+    explicit FilterLogTextEdit(QWidget* parent = nullptr);
     ~FilterLogTextEdit() override = default;
 
 protected:
-    void addExtraMenuEntry(QMenu *menu, QPoint pos) override;
+    void addExtraMenuEntry(QMenu* menu, QPoint pos) override;
 };
 
 class MAILFILTERAGENTPRIVATE_EXPORT FilterLogDialog : public QDialog
@@ -44,12 +43,12 @@ class MAILFILTERAGENTPRIVATE_EXPORT FilterLogDialog : public QDialog
 
 public:
     /** constructor */
-    explicit FilterLogDialog(QWidget *parent);
+    explicit FilterLogDialog(QWidget* parent);
     ~FilterLogDialog() override;
 
 private:
     MAILFILTERAGENTPRIVATE_NO_EXPORT void slotTextChanged();
-    MAILFILTERAGENTPRIVATE_NO_EXPORT void slotLogEntryAdded(const QString &logEntry);
+    MAILFILTERAGENTPRIVATE_NO_EXPORT void slotLogEntryAdded(const QString& logEntry);
     MAILFILTERAGENTPRIVATE_NO_EXPORT void slotLogShrinked();
     MAILFILTERAGENTPRIVATE_NO_EXPORT void slotLogStateChanged();
     MAILFILTERAGENTPRIVATE_NO_EXPORT void slotChangeLogDetail();
@@ -62,16 +61,16 @@ private:
     MAILFILTERAGENTPRIVATE_NO_EXPORT void readConfig();
     MAILFILTERAGENTPRIVATE_NO_EXPORT void writeConfig();
 
-    TextCustomEditor::PlainTextEditorWidget *mTextEdit = nullptr;
-    QCheckBox *mLogActiveBox = nullptr;
-    QGroupBox *mLogDetailsBox = nullptr;
-    QCheckBox *mLogPatternDescBox = nullptr;
-    QCheckBox *mLogRuleEvaluationBox = nullptr;
-    QCheckBox *mLogPatternResultBox = nullptr;
-    QCheckBox *mLogFilterActionBox = nullptr;
-    QSpinBox *mLogMemLimitSpin = nullptr;
-    QPushButton *const mUser1Button;
-    QPushButton *const mUser2Button;
+    TextCustomEditor::PlainTextEditorWidget* mTextEdit = nullptr;
+    QCheckBox* mLogActiveBox = nullptr;
+    QGroupBox* mLogDetailsBox = nullptr;
+    QCheckBox* mLogPatternDescBox = nullptr;
+    QCheckBox* mLogRuleEvaluationBox = nullptr;
+    QCheckBox* mLogPatternResultBox = nullptr;
+    QCheckBox* mLogFilterActionBox = nullptr;
+    QSpinBox* mLogMemLimitSpin = nullptr;
+    QPushButton* const mUser1Button;
+    QPushButton* const mUser2Button;
 
     bool mIsInitialized = false;
 };

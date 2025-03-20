@@ -5,16 +5,16 @@
 */
 
 #include "commandlineinfo.h"
+#include <QCommandLineParser>
 #include "kmail_debug.h"
 #include "kmail_options.h"
 #include "messagecore/stringutil.h"
-#include <QCommandLineParser>
 using namespace Qt::Literals::StringLiterals;
 CommandLineInfo::CommandLineInfo() = default;
 
 CommandLineInfo::~CommandLineInfo() = default;
 
-QDebug operator<<(QDebug d, const CommandLineInfo &t)
+QDebug operator<<(QDebug d, const CommandLineInfo& t)
 {
     d << "mCustomHeaders " << t.customHeaders();
     d << "mAttachURLs " << t.attachURLs();
@@ -36,26 +36,27 @@ QDebug operator<<(QDebug d, const CommandLineInfo &t)
     return d;
 }
 
-static QUrl makeAbsoluteUrl(const QString &str, const QString &cwd)
+static QUrl makeAbsoluteUrl(const QString& str, const QString& cwd)
 {
     return QUrl::fromUserInput(str, cwd, QUrl::AssumeLocalFile);
 }
 
-void CommandLineInfo::parseCommandLine(const QStringList &args, const QString &workingDir)
+void CommandLineInfo::parseCommandLine(const QStringList& args, const QString& workingDir)
 {
     // process args:
     QCommandLineParser parser;
     kmail_options(&parser);
     QStringList newargs;
     bool addAttachmentAttribute = false;
-    for (const QString &argument : std::as_const(args)) {
+    for (const QString& argument : std::as_const(args)) {
         if (argument == "--attach"_L1) {
             addAttachmentAttribute = true;
         } else {
             if (argument.startsWith("--"_L1)) {
                 addAttachmentAttribute = false;
             }
-            if (argument.contains(QLatin1Char('@')) || argument.startsWith("mailto:"_L1)) { // address mustn't be trade as a attachment
+            if (argument.contains(QLatin1Char('@')) ||
+                argument.startsWith("mailto:"_L1)) { // address mustn't be trade as a attachment
                 addAttachmentAttribute = false;
             }
             if (addAttachmentAttribute) {
@@ -122,7 +123,7 @@ void CommandLineInfo::parseCommandLine(const QStringList &args, const QString &w
     const QStringList attachList = parser.values(QStringLiteral("attach"));
     if (!attachList.isEmpty()) {
         mMailto = true;
-        for (const QString &attach : attachList) {
+        for (const QString& attach : attachList) {
             if (!attach.isEmpty()) {
                 mAttachURLs.append(makeAbsoluteUrl(attach, workingDir));
             }
@@ -157,7 +158,7 @@ void CommandLineInfo::parseCommandLine(const QStringList &args, const QString &w
         // only read additional command line arguments if kmail/kontact is
         // not called with "-session foo"
         const QStringList lstPositionalArguments = parser.positionalArguments();
-        for (const QString &arg : lstPositionalArguments) {
+        for (const QString& arg : lstPositionalArguments) {
             if (arg.startsWith("mailto:"_L1, Qt::CaseInsensitive)) {
                 const QUrl urlDecoded(QUrl::fromPercentEncoding(arg.toUtf8()));
                 const QList<QPair<QString, QString>> values = MessageCore::StringUtil::parseMailtoUrl(urlDecoded);
@@ -302,65 +303,67 @@ bool CommandLineInfo::calledWithSession() const
     return mCalledWithSession;
 }
 
-bool CommandLineInfo::operator==(const CommandLineInfo &other) const
+bool CommandLineInfo::operator==(const CommandLineInfo& other) const
 {
-    return mCustomHeaders == other.mCustomHeaders && mAttachURLs == other.mAttachURLs && mTo == other.mTo && mCc == other.mCc && mBcc == other.mBcc
-        && mSubject == other.mSubject && mBody == other.mBody && mInReplyTo == other.mInReplyTo && mReplyTo == other.mReplyTo && mIdentity == other.mIdentity
-        && mMessageFile == other.mMessageFile && mStartInTray == other.mStartInTray && mMailto == other.mMailto && mCheckMail == other.mCheckMail
-        && mViewOnly == other.mViewOnly && mCalledWithSession == other.mCalledWithSession && mHtmlBody == other.mHtmlBody;
+    return mCustomHeaders == other.mCustomHeaders && mAttachURLs == other.mAttachURLs && mTo == other.mTo &&
+           mCc == other.mCc && mBcc == other.mBcc && mSubject == other.mSubject && mBody == other.mBody &&
+           mInReplyTo == other.mInReplyTo && mReplyTo == other.mReplyTo && mIdentity == other.mIdentity &&
+           mMessageFile == other.mMessageFile && mStartInTray == other.mStartInTray && mMailto == other.mMailto &&
+           mCheckMail == other.mCheckMail && mViewOnly == other.mViewOnly &&
+           mCalledWithSession == other.mCalledWithSession && mHtmlBody == other.mHtmlBody;
 }
 
-void CommandLineInfo::setCustomHeaders(const QStringList &newCustomHeaders)
+void CommandLineInfo::setCustomHeaders(const QStringList& newCustomHeaders)
 {
     mCustomHeaders = newCustomHeaders;
 }
 
-void CommandLineInfo::setAttachURLs(const QList<QUrl> &newAttachURLs)
+void CommandLineInfo::setAttachURLs(const QList<QUrl>& newAttachURLs)
 {
     mAttachURLs = newAttachURLs;
 }
 
-void CommandLineInfo::setTo(const QString &newTo)
+void CommandLineInfo::setTo(const QString& newTo)
 {
     mTo = newTo;
 }
 
-void CommandLineInfo::setCc(const QString &newCc)
+void CommandLineInfo::setCc(const QString& newCc)
 {
     mCc = newCc;
 }
 
-void CommandLineInfo::setBcc(const QString &newBcc)
+void CommandLineInfo::setBcc(const QString& newBcc)
 {
     mBcc = newBcc;
 }
 
-void CommandLineInfo::setSubject(const QString &newSubject)
+void CommandLineInfo::setSubject(const QString& newSubject)
 {
     mSubject = newSubject;
 }
 
-void CommandLineInfo::setBody(const QString &newBody)
+void CommandLineInfo::setBody(const QString& newBody)
 {
     mBody = newBody;
 }
 
-void CommandLineInfo::setInReplyTo(const QString &newInReplyTo)
+void CommandLineInfo::setInReplyTo(const QString& newInReplyTo)
 {
     mInReplyTo = newInReplyTo;
 }
 
-void CommandLineInfo::setReplyTo(const QString &newReplyTo)
+void CommandLineInfo::setReplyTo(const QString& newReplyTo)
 {
     mReplyTo = newReplyTo;
 }
 
-void CommandLineInfo::setIdentity(const QString &newIdentity)
+void CommandLineInfo::setIdentity(const QString& newIdentity)
 {
     mIdentity = newIdentity;
 }
 
-void CommandLineInfo::setMessageFile(const QUrl &newMessageFile)
+void CommandLineInfo::setMessageFile(const QUrl& newMessageFile)
 {
     mMessageFile = newMessageFile;
 }

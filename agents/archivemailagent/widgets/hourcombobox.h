@@ -12,7 +12,7 @@ class HourComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    explicit HourComboBox(QWidget *parent = nullptr);
+    explicit HourComboBox(QWidget* parent = nullptr);
     ~HourComboBox() override;
 
     void setHour(int hour);

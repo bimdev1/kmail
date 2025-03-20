@@ -17,12 +17,12 @@ class KMMainWidget;
  * @param mainWidget The KMMainWidget to initialize
  * @param actionCollection The action collection to add actions to
  */
-void initializeAIExtension(KMMainWidget *mainWidget, KActionCollection *actionCollection);
+void initializeAIExtension(KMMainWidget* mainWidget, KActionCollection* actionCollection);
 
 /**
  * Clean up AI extension in KMMainWidget destructor
  * @param mainWidget The KMMainWidget to clean up
  */
-void cleanupAIExtension(KMMainWidget *mainWidget);
+void cleanupAIExtension(KMMainWidget* mainWidget);
 
 } // namespace KMail

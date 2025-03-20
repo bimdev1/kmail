@@ -5,22 +5,21 @@
 */
 
 #include "configurepluginpage.h"
-#include "configureplugins/configurepluginslistwidget.h"
 #include <PimCommon/ConfigurePluginsWidget>
+#include "configureplugins/configurepluginslistwidget.h"
 
 #include <QHBoxLayout>
 
-ConfigurePluginPage::ConfigurePluginPage(QObject *parent, const KPluginMetaData &data)
-    : ConfigModule(parent, data)
-    , mConfigurePlugins(new PimCommon::ConfigurePluginsWidget(new ConfigurePluginsListWidget(widget()), widget()))
+ConfigurePluginPage::ConfigurePluginPage(QObject* parent, const KPluginMetaData& data)
+    : ConfigModule(parent, data),
+      mConfigurePlugins(new PimCommon::ConfigurePluginsWidget(new ConfigurePluginsListWidget(widget()), widget()))
 {
     auto l = new QHBoxLayout(widget());
     l->setContentsMargins({});
     l->addWidget(mConfigurePlugins);
 
-    connect(mConfigurePlugins, &PimCommon::ConfigurePluginsWidget::wasChanged, this, [this](bool state) {
-        setNeedsSave(state);
-    });
+    connect(mConfigurePlugins, &PimCommon::ConfigurePluginsWidget::wasChanged, this,
+            [this](bool state) { setNeedsSave(state); });
 }
 
 ConfigurePluginPage::~ConfigurePluginPage() = default;

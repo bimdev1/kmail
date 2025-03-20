@@ -14,8 +14,6 @@
 
 #include <QVBoxLayout>
 
-#include "foldershortcutactionmanager.h"
-#include "tag/tagactionmanager.h"
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/Collection>
 #include <Akonadi/EntityDisplayAttribute>
@@ -26,13 +24,15 @@
 #include <kmailpartadaptor.h>
 #include <kparts/mainwindow.h>
 #include <kparts/statusbarextension.h>
+#include "foldershortcutactionmanager.h"
+#include "tag/tagactionmanager.h"
 
 using namespace Qt::Literals::StringLiterals;
 K_PLUGIN_FACTORY(KMailFactory, registerPlugin<KMailPart>();)
 
 using namespace KMail;
 
-KMailPart::KMailPart(QWidget *parentWidget, QObject *parent, const KPluginMetaData &data, const QVariantList &)
+KMailPart::KMailPart(QWidget* parentWidget, QObject* parent, const KPluginMetaData& data, const QVariantList&)
     : KParts::ReadOnlyPart(parent, data)
 {
     setComponentName(QStringLiteral("kmail2"), i18n("KMail2"));
@@ -93,7 +93,7 @@ bool KMailPart::openFile()
 
 //-----------------------------------------------------------------------------
 
-void KMailPart::guiActivateEvent(KParts::GUIActivateEvent *e)
+void KMailPart::guiActivateEvent(KParts::GUIActivateEvent* e)
 {
     KParts::ReadOnlyPart::guiActivateEvent(e);
     if (e->activated()) {

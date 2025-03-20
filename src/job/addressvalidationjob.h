@@ -17,19 +17,19 @@ class AddressValidationJob : public KJob
     Q_OBJECT
 
 public:
-    explicit AddressValidationJob(const QString &emailAddresses, QWidget *parentWidget, QObject *parent = nullptr);
+    explicit AddressValidationJob(const QString& emailAddresses, QWidget* parentWidget, QObject* parent = nullptr);
     ~AddressValidationJob() override;
 
     void start() override;
 
     [[nodiscard]] bool isValid() const;
 
-    void setDefaultDomain(const QString &domainName);
+    void setDefaultDomain(const QString& domainName);
 
 private:
-    void slotAliasExpansionDone(KJob *);
+    void slotAliasExpansionDone(KJob*);
     const QString mEmailAddresses;
     QString mDomainDefaultName;
     bool mIsValid = false;
-    QWidget *const mParentWidget;
+    QWidget* const mParentWidget;
 };

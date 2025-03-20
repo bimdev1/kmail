@@ -16,11 +16,9 @@
 
 #include <KLocalizedString>
 
-FolderArchiveAgentJob::FolderArchiveAgentJob(FolderArchiveManager *manager, FolderArchiveAccountInfo *info, const Akonadi::Item::List &lstItem, QObject *parent)
-    : QObject(parent)
-    , mListItem(lstItem)
-    , mManager(manager)
-    , mInfo(info)
+FolderArchiveAgentJob::FolderArchiveAgentJob(FolderArchiveManager* manager, FolderArchiveAccountInfo* info,
+                                             const Akonadi::Item::List& lstItem, QObject* parent)
+    : QObject(parent), mListItem(lstItem), mManager(manager), mInfo(info)
 {
 }
 
@@ -38,34 +36,40 @@ void FolderArchiveAgentJob::start()
     }
 
     if (mInfo->folderArchiveType() == FolderArchiveAccountInfo::FolderArchiveType::UniqueFolder) {
-        auto fetchCollection = new Akonadi::CollectionFetchJob(Akonadi::Collection(mInfo->archiveTopLevel()), Akonadi::CollectionFetchJob::Base);
-        connect(fetchCollection, &Akonadi::CollectionFetchJob::result, this, &FolderArchiveAgentJob::slotFetchCollection);
+        auto fetchCollection = new Akonadi::CollectionFetchJob(Akonadi::Collection(mInfo->archiveTopLevel()),
+                                                               Akonadi::CollectionFetchJob::Base);
+        connect(fetchCollection, &Akonadi::CollectionFetchJob::result, this,
+                &FolderArchiveAgentJob::slotFetchCollection);
     } else {
         const Akonadi::Collection::Id id = mManager->folderArchiveCache()->collectionId(mInfo);
         if (id != -1) {
-            auto fetchCollection = new Akonadi::CollectionFetchJob(Akonadi::Collection(id), Akonadi::CollectionFetchJob::Base);
-            connect(fetchCollection, &Akonadi::CollectionFetchJob::result, this, &FolderArchiveAgentJob::slotFetchCollection);
+            auto fetchCollection =
+                new Akonadi::CollectionFetchJob(Akonadi::Collection(id), Akonadi::CollectionFetchJob::Base);
+            connect(fetchCollection, &Akonadi::CollectionFetchJob::result, this,
+                    &FolderArchiveAgentJob::slotFetchCollection);
         } else {
             auto checkCol = new FolderArchiveAgentCheckCollection(mInfo, this);
-            connect(checkCol, &FolderArchiveAgentCheckCollection::collectionIdFound, this, &FolderArchiveAgentJob::slotCollectionIdFound);
-            connect(checkCol, &FolderArchiveAgentCheckCollection::checkFailed, this, &FolderArchiveAgentJob::slotCheckFailed);
+            connect(checkCol, &FolderArchiveAgentCheckCollection::collectionIdFound, this,
+                    &FolderArchiveAgentJob::slotCollectionIdFound);
+            connect(checkCol, &FolderArchiveAgentCheckCollection::checkFailed, this,
+                    &FolderArchiveAgentJob::slotCheckFailed);
             checkCol->start();
         }
     }
 }
 
-void FolderArchiveAgentJob::slotCheckFailed(const QString &message)
+void FolderArchiveAgentJob::slotCheckFailed(const QString& message)
 {
     sendError(i18n("Cannot fetch collection. %1", message));
 }
 
-void FolderArchiveAgentJob::slotFetchCollection(KJob *job)
+void FolderArchiveAgentJob::slotFetchCollection(KJob* job)
 {
     if (job->error()) {
         sendError(i18n("Cannot fetch collection. %1", job->errorString()));
         return;
     }
-    auto fetchCollectionJob = static_cast<Akonadi::CollectionFetchJob *>(job);
+    auto fetchCollectionJob = static_cast<Akonadi::CollectionFetchJob*>(job);
     Akonadi::Collection::List collections = fetchCollectionJob->collections();
     if (collections.isEmpty()) {
         sendError(i18n("List of collections is empty. %1", job->errorString()));
@@ -74,29 +78,30 @@ void FolderArchiveAgentJob::slotFetchCollection(KJob *job)
     sloMoveMailsToCollection(collections.at(0));
 }
 
-void FolderArchiveAgentJob::slotCollectionIdFound(const Akonadi::Collection &col)
+void FolderArchiveAgentJob::slotCollectionIdFound(const Akonadi::Collection& col)
 {
     mManager->folderArchiveCache()->addToCache(mInfo->instanceName(), col.id());
     sloMoveMailsToCollection(col);
 }
 
-void FolderArchiveAgentJob::sloMoveMailsToCollection(const Akonadi::Collection &col)
+void FolderArchiveAgentJob::sloMoveMailsToCollection(const Akonadi::Collection& col)
 {
     if (Akonadi::Collection::CanCreateItem & col.rights()) {
         auto command = new KMMoveCommand(col, mListItem, -1);
         connect(command, &KMMoveCommand::moveDone, this, &FolderArchiveAgentJob::slotMoveMessages);
         command->start();
     } else {
-        sendError(i18n("This folder %1 is read only. Please verify the configuration of account %2", col.name(), mInfo->instanceName()));
+        sendError(i18n("This folder %1 is read only. Please verify the configuration of account %2", col.name(),
+                       mInfo->instanceName()));
     }
 }
 
-void FolderArchiveAgentJob::sendError(const QString &error)
+void FolderArchiveAgentJob::sendError(const QString& error)
 {
     mManager->moveFailed(error);
 }
 
-void FolderArchiveAgentJob::slotMoveMessages(KMMoveCommand *command)
+void FolderArchiveAgentJob::slotMoveMessages(KMMoveCommand* command)
 {
     if (command->result() == KMCommand::Failed) {
         sendError(i18n("Cannot move messages."));

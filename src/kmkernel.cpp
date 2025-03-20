@@ -1,12 +1,12 @@
 /*   */
 
 #include "kmkernel.h"
+#include <PimCommon/BroadcastStatus>
+#include <PimCommonAkonadi/ProgressManagerAkonadi>
 #include "job/fillcomposerjob.h"
 #include "job/newmessagejob.h"
 #include "job/opencomposerhiddenjob.h"
 #include "job/opencomposerjob.h"
-#include <PimCommon/BroadcastStatus>
-#include <PimCommonAkonadi/ProgressManagerAkonadi>
 using PimCommon::BroadcastStatus;
 #include "commandlineinfo.h"
 #include "editor/composer.h"
@@ -16,17 +16,11 @@ using PimCommon::BroadcastStatus;
 #include "undostack.h"
 
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
-#include "search/checkindexingmanager.h"
 #include <PIM/indexeditems.h>
+#include "search/checkindexingmanager.h"
 #endif
 #include <PimCommonAkonadi/RecentAddresses>
 using PimCommon::RecentAddresses;
-#include "configuredialog/configuredialog.h"
-#include "folderarchive/folderarchivemanager.h"
-#include "kmcommands.h"
-#include "mailfilteragentinterface.h"
-#include "sieveimapinterface/kmailsieveimapinstanceinterface.h"
-#include "unityservicemanager.h"
 #include <MailCommon/FolderTreeView>
 #include <MailCommon/KMFilterDialog>
 #include <MailCommon/MailUtil>
@@ -34,6 +28,12 @@ using PimCommon::RecentAddresses;
 #include <PimCommon/PimUtil>
 #include <mailcommon/mailcommonsettings_base.h>
 #include <mailcommon/pop3settings.h>
+#include "configuredialog/configuredialog.h"
+#include "folderarchive/folderarchivemanager.h"
+#include "kmcommands.h"
+#include "mailfilteragentinterface.h"
+#include "sieveimapinterface/kmailsieveimapinstanceinterface.h"
+#include "unityservicemanager.h"
 
 #include <Akonadi/DispatcherInterface>
 #include <KIdentityManagementCore/Identity>
@@ -41,8 +41,8 @@ using PimCommon::RecentAddresses;
 #include <MailTransport/Transport>
 #include <MailTransport/TransportManager>
 
-#include "mailserviceimpl.h"
 #include <KSieveCore/SieveImapInstanceInterfaceManager>
+#include "mailserviceimpl.h"
 using KMail::MailServiceImpl;
 #include <MailCommon/JobScheduler>
 
@@ -66,12 +66,12 @@ using KMail::MailServiceImpl;
 #include <KMessageBox>
 #include <KNotification>
 
-#include "kmail_debug.h"
 #include <KConfig>
 #include <KConfigGroup>
 #include <KCrash>
 #include <KIO/JobUiDelegate>
 #include <KMessageBox>
+#include "kmail_debug.h"
 
 #include <Akonadi/AgentManager>
 #include <Akonadi/AttributeFactory>
@@ -100,9 +100,9 @@ using KMail::MailServiceImpl;
 #include <KLocalizedString>
 #include <MailCommon/FolderCollectionMonitor>
 #include <MailCommon/MailKernel>
-#include <QStandardPaths>
 #include <kmailadaptor.h>
 #include <pimcommon/imapresourcesettings.h>
+#include <QStandardPaths>
 
 #include "kmail_options.h"
 #include "searchdialog/searchdescriptionattribute.h"
@@ -110,8 +110,8 @@ using KMail::MailServiceImpl;
 #include "activities/activitiesmanager.h"
 #endif
 #if KMAIL_WITH_KUSERFEEDBACK
-#include "userfeedback/kmailuserfeedbackprovider.h"
 #include <KUserFeedback/Provider>
+#include "userfeedback/kmailuserfeedbackprovider.h"
 #endif
 #include <chrono>
 using namespace Qt::Literals::StringLiterals;
@@ -119,18 +119,17 @@ using namespace std::chrono_literals;
 // #define DEBUG_SCHEDULER 1
 using namespace MailCommon;
 
-static KMKernel *mySelf = nullptr;
+static KMKernel* mySelf = nullptr;
 static bool s_askingToGoOnline = false;
 /********************************************************************/
 /*                     Constructor and destructor                   */
 /********************************************************************/
-KMKernel::KMKernel(QObject *parent)
-    : QObject(parent)
-    , mJobScheduler(new JobScheduler(this))
-    , mFolderArchiveManager(new FolderArchiveManager(this))
+KMKernel::KMKernel(QObject* parent)
+    : QObject(parent), mJobScheduler(new JobScheduler(this)), mFolderArchiveManager(new FolderArchiveManager(this))
 {
     // Initialize kmail sieveimap interface
-    KSieveCore::SieveImapInstanceInterfaceManager::self()->setSieveImapInstanceInterface(new KMailSieveImapInstanceInterface);
+    KSieveCore::SieveImapInstanceInterfaceManager::self()->setSieveImapInstanceInterface(
+        new KMailSieveImapInstanceInterface);
     mDebug = !qEnvironmentVariableIsEmpty("KDEPIM_DEBUGGING");
 
 #if KMAIL_WITH_KUSERFEEDBACK
@@ -158,14 +157,14 @@ KMKernel::KMKernel(QObject *parent)
 
     mFolderCollectionMonitor = new FolderCollectionMonitor(session, this);
 
-    connect(mFolderCollectionMonitor->monitor(), &Akonadi::Monitor::collectionRemoved, this, &KMKernel::slotCollectionRemoved);
+    connect(mFolderCollectionMonitor->monitor(), &Akonadi::Monitor::collectionRemoved, this,
+            &KMKernel::slotCollectionRemoved);
 
     mEntityTreeModel = new Akonadi::EntityTreeModel(folderCollectionMonitor(), this);
     mEntityTreeModel->setListFilter(Akonadi::CollectionFetchScope::Enabled);
     mEntityTreeModel->setItemPopulationStrategy(Akonadi::EntityTreeModel::LazyPopulation);
-    connect(mEntityTreeModel, &Akonadi::EntityTreeModel::errorOccurred, this, [this](const QString &message) {
-        KMessageBox::error(getKMMainWidget(), message);
-    });
+    connect(mEntityTreeModel, &Akonadi::EntityTreeModel::errorOccurred, this,
+            [this](const QString& message) { KMessageBox::error(getKMMainWidget(), message); });
 
     mCollectionModel = new Akonadi::EntityMimeTypeFilterModel(this);
     mCollectionModel->setSourceModel(mEntityTreeModel);
@@ -174,33 +173,37 @@ KMKernel::KMKernel(QObject *parent)
     mCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 
     connect(folderCollectionMonitor(),
-            qOverload<const Akonadi::Collection &, const QSet<QByteArray> &>(&Akonadi::ChangeRecorder::collectionChanged),
-            this,
-            &KMKernel::slotCollectionChanged);
+            qOverload<const Akonadi::Collection&, const QSet<QByteArray>&>(&Akonadi::ChangeRecorder::collectionChanged),
+            this, &KMKernel::slotCollectionChanged);
 
-    connect(MailTransport::TransportManager::self(), &MailTransport::TransportManager::transportRemoved, this, &KMKernel::transportRemoved);
-    connect(MailTransport::TransportManager::self(), &MailTransport::TransportManager::transportRenamed, this, &KMKernel::transportRenamed);
+    connect(MailTransport::TransportManager::self(), &MailTransport::TransportManager::transportRemoved, this,
+            &KMKernel::transportRemoved);
+    connect(MailTransport::TransportManager::self(), &MailTransport::TransportManager::transportRenamed, this,
+            &KMKernel::transportRenamed);
 
-    QDBusConnection::sessionBus().connect(QString(),
-                                          QStringLiteral("/MailDispatcherAgent"),
+    QDBusConnection::sessionBus().connect(QString(), QStringLiteral("/MailDispatcherAgent"),
                                           QStringLiteral("org.freedesktop.Akonadi.MailDispatcherAgent"),
-                                          QStringLiteral("itemDispatchStarted"),
-                                          this,
-                                          SLOT(itemDispatchStarted()));
-    connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceStatusChanged, this, &KMKernel::instanceStatusChanged);
+                                          QStringLiteral("itemDispatchStarted"), this, SLOT(itemDispatchStarted()));
+    connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceStatusChanged, this,
+            &KMKernel::instanceStatusChanged);
 
     connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceError, this, &KMKernel::slotInstanceError);
 
-    connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceWarning, this, &KMKernel::slotInstanceWarning);
+    connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceWarning, this,
+            &KMKernel::slotInstanceWarning);
 
-    connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceRemoved, this, &KMKernel::slotInstanceRemoved);
+    connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceRemoved, this,
+            &KMKernel::slotInstanceRemoved);
 
     connect(Akonadi::AgentManager::self(), &Akonadi::AgentManager::instanceAdded, this, &KMKernel::slotInstanceAdded);
 
-    connect(PimCommon::NetworkManager::self(), &PimCommon::NetworkManager::networkStatusChanged, this, &KMKernel::slotSystemNetworkStatusChanged);
+    connect(PimCommon::NetworkManager::self(), &PimCommon::NetworkManager::networkStatusChanged, this,
+            &KMKernel::slotSystemNetworkStatusChanged);
 
-    connect(KPIM::ProgressManager::instance(), &KPIM::ProgressManager::progressItemCompleted, this, &KMKernel::slotProgressItemCompletedOrCanceled);
-    connect(KPIM::ProgressManager::instance(), &KPIM::ProgressManager::progressItemCanceled, this, &KMKernel::slotProgressItemCompletedOrCanceled);
+    connect(KPIM::ProgressManager::instance(), &KPIM::ProgressManager::progressItemCompleted, this,
+            &KMKernel::slotProgressItemCompletedOrCanceled);
+    connect(KPIM::ProgressManager::instance(), &KPIM::ProgressManager::progressItemCanceled, this,
+            &KMKernel::slotProgressItemCompletedOrCanceled);
     connect(identityManager(), &KIdentityManagementCore::IdentityManager::deleted, this, &KMKernel::slotDeleteIdentity);
     CommonKernel->registerKernelIf(this);
     CommonKernel->registerSettingsIf(this);
@@ -230,17 +233,17 @@ KMKernel::~KMKernel()
     mySelf = nullptr;
 }
 
-Akonadi::ChangeRecorder *KMKernel::folderCollectionMonitor() const
+Akonadi::ChangeRecorder* KMKernel::folderCollectionMonitor() const
 {
     return mFolderCollectionMonitor->monitor();
 }
 
-Akonadi::EntityTreeModel *KMKernel::entityTreeModel() const
+Akonadi::EntityTreeModel* KMKernel::entityTreeModel() const
 {
     return mEntityTreeModel;
 }
 
-Akonadi::EntityMimeTypeFilterModel *KMKernel::collectionModel() const
+Akonadi::EntityMimeTypeFilterModel* KMKernel::collectionModel() const
 {
     return mCollectionModel;
 }
@@ -252,7 +255,7 @@ void KMKernel::setupDBus()
     mMailService = new MailServiceImpl();
 }
 
-bool KMKernel::handleCommandLine(bool noArgsOpensReader, const QStringList &args, const QString &workingDir)
+bool KMKernel::handleCommandLine(bool noArgsOpensReader, const QStringList& args, const QString& workingDir)
 {
     // qDebug() << " args " << args;
     CommandLineInfo commandLineInfo;
@@ -262,28 +265,19 @@ bool KMKernel::handleCommandLine(bool noArgsOpensReader, const QStringList &args
         KMailSettings::self()->setSystemTrayEnabled(true);
     }
 
-    if (!noArgsOpensReader && !commandLineInfo.mailto() && !commandLineInfo.checkMail() && !commandLineInfo.viewOnly()) {
+    if (!noArgsOpensReader && !commandLineInfo.mailto() && !commandLineInfo.checkMail() &&
+        !commandLineInfo.viewOnly()) {
         return false;
     }
 
     if (commandLineInfo.viewOnly()) {
         viewMessage(commandLineInfo.messageFile());
     } else {
-        action(commandLineInfo.mailto(),
-               commandLineInfo.checkMail(),
-               commandLineInfo.startInTray(),
-               commandLineInfo.htmlBody(),
-               commandLineInfo.to(),
-               commandLineInfo.cc(),
-               commandLineInfo.bcc(),
-               commandLineInfo.subject(),
-               commandLineInfo.body(),
-               commandLineInfo.messageFile(),
-               commandLineInfo.attachURLs(),
-               commandLineInfo.customHeaders(),
-               commandLineInfo.replyTo(),
-               commandLineInfo.inReplyTo(),
-               commandLineInfo.identity());
+        action(commandLineInfo.mailto(), commandLineInfo.checkMail(), commandLineInfo.startInTray(),
+               commandLineInfo.htmlBody(), commandLineInfo.to(), commandLineInfo.cc(), commandLineInfo.bcc(),
+               commandLineInfo.subject(), commandLineInfo.body(), commandLineInfo.messageFile(),
+               commandLineInfo.attachURLs(), commandLineInfo.customHeaders(), commandLineInfo.replyTo(),
+               commandLineInfo.inReplyTo(), commandLineInfo.identity());
     }
     return true;
 }
@@ -330,7 +324,7 @@ QStringList KMKernel::accounts() const
     QStringList accountLst;
     const Akonadi::AgentInstance::List lst = MailCommon::Util::agentInstances();
     accountLst.reserve(lst.count());
-    for (const Akonadi::AgentInstance &type : lst) {
+    for (const Akonadi::AgentInstance& type : lst) {
         // Explicitly make a copy, as we're not changing values of the list but only
         // the local copy which is passed to action.
         accountLst << type.identifier();
@@ -338,7 +332,7 @@ QStringList KMKernel::accounts() const
     return accountLst;
 }
 
-void KMKernel::checkAccount(const QString &account) // might create a new reader but won't show!!
+void KMKernel::checkAccount(const QString& account) // might create a new reader but won't show!!
 {
     if (account.isEmpty()) {
         checkMail();
@@ -354,11 +348,11 @@ void KMKernel::checkAccount(const QString &account) // might create a new reader
 
 void KMKernel::openReader(bool onlyCheck, bool startInTray)
 {
-    KMainWindow *ktmw = nullptr;
+    KMainWindow* ktmw = nullptr;
 
     const auto lst = KMainWindow::memberList();
-    for (KMainWindow *window : lst) {
-        if (::qobject_cast<KMMainWin *>(window)) {
+    for (KMainWindow* window : lst) {
+        if (::qobject_cast<KMMainWin*>(window)) {
             ktmw = window;
             break;
         }
@@ -366,7 +360,7 @@ void KMKernel::openReader(bool onlyCheck, bool startInTray)
 
     bool activate;
     if (ktmw) {
-        auto win = static_cast<KMMainWin *>(ktmw);
+        auto win = static_cast<KMMainWin*>(ktmw);
         activate = !onlyCheck; // existing window: only activate if not --check
         if (activate) {
             win->showAndActivateWindow();
@@ -380,145 +374,57 @@ void KMKernel::openReader(bool onlyCheck, bool startInTray)
     }
 }
 
-void KMKernel::openComposer(const QString &to,
-                            const QString &cc,
-                            const QString &bcc,
-                            const QString &subject,
-                            const QString &body,
-                            bool hidden,
-                            const QString &messageFile,
-                            const QStringList &attachmentPaths,
-                            const QStringList &customHeaders,
-                            const QString &replyTo,
-                            const QString &inReplyTo,
-                            const QString &identity,
-                            bool htmlBody)
+void KMKernel::openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                            const QString& body, bool hidden, const QString& messageFile,
+                            const QStringList& attachmentPaths, const QStringList& customHeaders,
+                            const QString& replyTo, const QString& inReplyTo, const QString& identity, bool htmlBody)
 {
-    const OpenComposerSettings
-        settings(to, cc, bcc, subject, body, hidden, messageFile, attachmentPaths, customHeaders, replyTo, inReplyTo, identity, htmlBody);
+    const OpenComposerSettings settings(to, cc, bcc, subject, body, hidden, messageFile, attachmentPaths, customHeaders,
+                                        replyTo, inReplyTo, identity, htmlBody);
     auto job = new OpenComposerJob(this);
     job->setOpenComposerSettings(std::move(settings));
     job->start();
 }
 
-void KMKernel::openComposer(const QString &to,
-                            const QString &cc,
-                            const QString &bcc,
-                            const QString &subject,
-                            const QString &body,
-                            bool hidden,
-                            const QString &attachName,
-                            const QByteArray &attachCte,
-                            const QByteArray &attachData,
-                            const QByteArray &attachType,
-                            const QByteArray &attachSubType,
-                            const QByteArray &attachParamAttr,
-                            const QString &attachParamValue,
-                            const QByteArray &attachContDisp,
-                            const QByteArray &attachCharset,
-                            unsigned int identity,
+void KMKernel::openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                            const QString& body, bool hidden, const QString& attachName, const QByteArray& attachCte,
+                            const QByteArray& attachData, const QByteArray& attachType, const QByteArray& attachSubType,
+                            const QByteArray& attachParamAttr, const QString& attachParamValue,
+                            const QByteArray& attachContDisp, const QByteArray& attachCharset, unsigned int identity,
                             bool htmlBody)
 {
-    fillComposer(hidden,
-                 to,
-                 cc,
-                 bcc,
-                 subject,
-                 body,
-                 attachName,
-                 attachCte,
-                 attachData,
-                 attachType,
-                 attachSubType,
-                 attachParamAttr,
-                 attachParamValue,
-                 attachContDisp,
-                 attachCharset,
-                 identity,
-                 false,
-                 htmlBody);
+    fillComposer(hidden, to, cc, bcc, subject, body, attachName, attachCte, attachData, attachType, attachSubType,
+                 attachParamAttr, attachParamValue, attachContDisp, attachCharset, identity, false, htmlBody);
 }
 
-void KMKernel::openComposer(const QString &to,
-                            const QString &cc,
-                            const QString &bcc,
-                            const QString &subject,
-                            const QString &body,
-                            const QString &attachName,
-                            const QByteArray &attachCte,
-                            const QByteArray &attachData,
-                            const QByteArray &attachType,
-                            const QByteArray &attachSubType,
-                            const QByteArray &attachParamAttr,
-                            const QString &attachParamValue,
-                            const QByteArray &attachContDisp,
-                            const QByteArray &attachCharset,
-                            unsigned int identity,
+void KMKernel::openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                            const QString& body, const QString& attachName, const QByteArray& attachCte,
+                            const QByteArray& attachData, const QByteArray& attachType, const QByteArray& attachSubType,
+                            const QByteArray& attachParamAttr, const QString& attachParamValue,
+                            const QByteArray& attachContDisp, const QByteArray& attachCharset, unsigned int identity,
                             bool htmlBody)
 {
-    fillComposer(false,
-                 to,
-                 cc,
-                 bcc,
-                 subject,
-                 body,
-                 attachName,
-                 attachCte,
-                 attachData,
-                 attachType,
-                 attachSubType,
-                 attachParamAttr,
-                 attachParamValue,
-                 attachContDisp,
-                 attachCharset,
-                 identity,
-                 true,
-                 htmlBody);
+    fillComposer(false, to, cc, bcc, subject, body, attachName, attachCte, attachData, attachType, attachSubType,
+                 attachParamAttr, attachParamValue, attachContDisp, attachCharset, identity, true, htmlBody);
 }
 
-void KMKernel::fillComposer(bool hidden,
-                            const QString &to,
-                            const QString &cc,
-                            const QString &bcc,
-                            const QString &subject,
-                            const QString &body,
-                            const QString &attachName,
-                            const QByteArray &attachCte,
-                            const QByteArray &attachData,
-                            const QByteArray &attachType,
-                            const QByteArray &attachSubType,
-                            const QByteArray &attachParamAttr,
-                            const QString &attachParamValue,
-                            const QByteArray &attachContDisp,
-                            const QByteArray &attachCharset,
-                            unsigned int identity,
-                            bool forceShowWindow,
-                            bool htmlBody)
+void KMKernel::fillComposer(bool hidden, const QString& to, const QString& cc, const QString& bcc,
+                            const QString& subject, const QString& body, const QString& attachName,
+                            const QByteArray& attachCte, const QByteArray& attachData, const QByteArray& attachType,
+                            const QByteArray& attachSubType, const QByteArray& attachParamAttr,
+                            const QString& attachParamValue, const QByteArray& attachContDisp,
+                            const QByteArray& attachCharset, unsigned int identity, bool forceShowWindow, bool htmlBody)
 {
-    const FillComposerJobSettings settings(hidden,
-                                           to,
-                                           cc,
-                                           bcc,
-                                           subject,
-                                           body,
-                                           attachName,
-                                           attachCte,
-                                           attachData,
-                                           attachType,
-                                           attachSubType,
-                                           attachParamAttr,
-                                           attachParamValue,
-                                           attachContDisp,
-                                           attachCharset,
-                                           identity,
-                                           forceShowWindow,
-                                           htmlBody);
+    const FillComposerJobSettings settings(hidden, to, cc, bcc, subject, body, attachName, attachCte, attachData,
+                                           attachType, attachSubType, attachParamAttr, attachParamValue, attachContDisp,
+                                           attachCharset, identity, forceShowWindow, htmlBody);
     auto job = new FillComposerJob;
     job->setSettings(std::move(settings));
     job->start();
 }
 
-void KMKernel::openComposer(const QString &to, const QString &cc, const QString &bcc, const QString &subject, const QString &body, bool hidden)
+void KMKernel::openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                            const QString& body, bool hidden)
 {
     const OpenComposerHiddenJobSettings settings(to, cc, bcc, subject, body, hidden);
     auto job = new OpenComposerHiddenJob(this);
@@ -526,13 +432,8 @@ void KMKernel::openComposer(const QString &to, const QString &cc, const QString 
     job->start();
 }
 
-void KMKernel::newMessage(const QString &to,
-                          const QString &cc,
-                          const QString &bcc,
-                          bool hidden,
-                          bool useFolderId,
-                          const QString & /*messageFile*/,
-                          const QString &_attachURL)
+void KMKernel::newMessage(const QString& to, const QString& cc, const QString& bcc, bool hidden, bool useFolderId,
+                          const QString& /*messageFile*/, const QString& _attachURL)
 {
     QSharedPointer<FolderSettings> folder;
     Akonadi::Collection col;
@@ -551,14 +452,14 @@ void KMKernel::newMessage(const QString &to,
     job->start();
 }
 
-void KMKernel::viewMessage(const QUrl &url)
+void KMKernel::viewMessage(const QUrl& url)
 {
     auto openCommand = new KMOpenMsgCommand(nullptr, url);
 
     openCommand->start();
 }
 
-int KMKernel::viewMessage(const QString &messageFile)
+int KMKernel::viewMessage(const QString& messageFile)
 {
     auto openCommand = new KMOpenMsgCommand(nullptr, QUrl::fromLocalFile(messageFile));
 
@@ -568,10 +469,8 @@ int KMKernel::viewMessage(const QString &messageFile)
 
 void KMKernel::raise()
 {
-    QDBusInterface iface(QStringLiteral("org.kde.kmail"),
-                         QStringLiteral("/MainApplication"),
-                         QStringLiteral("org.kde.PIMUniqueApplication"),
-                         QDBusConnection::sessionBus());
+    QDBusInterface iface(QStringLiteral("org.kde.kmail"), QStringLiteral("/MainApplication"),
+                         QStringLiteral("org.kde.PIMUniqueApplication"), QDBusConnection::sessionBus());
     QDBusReply<int> reply;
     if (!iface.isValid() || !(reply = iface.call(QStringLiteral("newInstance"))).isValid()) {
         QDBusError err = iface.lastError();
@@ -582,13 +481,13 @@ void KMKernel::raise()
 
 bool KMKernel::showMail(qint64 serialNumber)
 {
-    KMMainWidget *mainWidget = nullptr;
+    KMMainWidget* mainWidget = nullptr;
 
     // First look for a KMainWindow.
     const auto lst = KMainWindow::memberList();
-    for (KMainWindow *window : lst) {
+    for (KMainWindow* window : lst) {
         // Then look for a KMMainWidget.
-        QList<KMMainWidget *> l = window->findChildren<KMMainWidget *>();
+        QList<KMMainWidget*> l = window->findChildren<KMMainWidget*>();
         if (!l.isEmpty() && l.first()) {
             mainWidget = l.first();
             if (window->isActiveWindow()) {
@@ -604,7 +503,8 @@ bool KMKernel::showMail(qint64 serialNumber)
             if (job->items().count() >= 1) {
                 auto win = new KMReaderMainWin(MessageViewer::Viewer::UseGlobalSetting, false);
                 const auto item = job->items().at(0);
-                win->showMessage(MessageCore::MessageCoreSettings::self()->overrideCharacterEncoding(), item, item.parentCollection());
+                win->showMessage(MessageCore::MessageCoreSettings::self()->overrideCharacterEncoding(), item,
+                                 item.parentCollection());
                 win->showAndActivateWindow();
                 return true;
             }
@@ -643,8 +543,9 @@ void KMKernel::setAccountStatus(bool goOnline)
     const Akonadi::AgentInstance::List lst = MailCommon::Util::agentInstances(false);
     for (Akonadi::AgentInstance type : lst) {
         const QString identifier(type.identifier());
-        if (PimCommon::Util::isImapResource(identifier) || identifier.contains(POP3_RESOURCE_IDENTIFIER)
-            || identifier.contains("akonadi_maildispatcher_agent"_L1) || type.type().capabilities().contains("NeedsNetwork"_L1)) {
+        if (PimCommon::Util::isImapResource(identifier) || identifier.contains(POP3_RESOURCE_IDENTIFIER) ||
+            identifier.contains("akonadi_maildispatcher_agent"_L1) ||
+            type.type().capabilities().contains("NeedsNetwork"_L1)) {
             type.setIsOnline(goOnline);
         }
     }
@@ -653,10 +554,8 @@ void KMKernel::setAccountStatus(bool goOnline)
         const qint64 nbMsgOutboxCollection = col.statistics().count();
         if (nbMsgOutboxCollection > 0) {
             if (!kmkernel->msgSender()->sendQueued()) {
-                KNotification::event(QStringLiteral("sent-mail-error"),
-                                     i18n("Send Email"),
-                                     i18n("Impossible to send email"),
-                                     QStringLiteral("kmail"),
+                KNotification::event(QStringLiteral("sent-mail-error"), i18n("Send Email"),
+                                     i18n("Impossible to send email"), QStringLiteral("kmail"),
                                      KNotification::CloseOnTimeout);
             }
         }
@@ -668,12 +567,12 @@ const QString KMKernel::xmlGuiInstanceName() const
     return mXmlGuiInstance;
 }
 
-void KMKernel::setXmlGuiInstanceName(const QString &instance)
+void KMKernel::setXmlGuiInstanceName(const QString& instance)
 {
     mXmlGuiInstance = instance;
 }
 
-KMail::UndoStack *KMKernel::undoStack() const
+KMail::UndoStack* KMKernel::undoStack() const
 {
     return the_undoStack;
 }
@@ -688,11 +587,12 @@ void KMKernel::resumeNetworkJobs()
         setAccountStatus(true);
         BroadcastStatus::instance()->setStatusMsg(i18n("KMail is set to be online; all network jobs resumed"));
     } else {
-        BroadcastStatus::instance()->setStatusMsg(i18n("KMail is set to be online; all network jobs will resume when a network connection is detected"));
+        BroadcastStatus::instance()->setStatusMsg(
+            i18n("KMail is set to be online; all network jobs will resume when a network connection is detected"));
     }
     KMailSettings::setNetworkState(KMailSettings::EnumNetworkState::Online);
     Q_EMIT onlineStatusChanged((KMailSettings::EnumNetworkState::type)KMailSettings::networkState());
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     if (widget) {
         widget->refreshMessageListSelection();
     }
@@ -700,7 +600,8 @@ void KMKernel::resumeNetworkJobs()
 
 bool KMKernel::isOffline()
 {
-    if ((KMailSettings::self()->networkState() == KMailSettings::EnumNetworkState::Offline) || !PimCommon::NetworkManager::self()->isOnline()) {
+    if ((KMailSettings::self()->networkState() == KMailSettings::EnumNetworkState::Offline) ||
+        !PimCommon::NetworkManager::self()->isOnline()) {
         return true;
     } else {
         return false;
@@ -745,7 +646,8 @@ void KMKernel::checkMailOnStartup()
     }
 
     if (Akonadi::ServerManager::state() != Akonadi::ServerManager::Running) {
-        connect(Akonadi::ServerManager::self(), &Akonadi::ServerManager::stateChanged, this, &KMKernel::slotCheckAccount);
+        connect(Akonadi::ServerManager::self(), &Akonadi::ServerManager::stateChanged, this,
+                &KMKernel::slotCheckAccount);
     } else {
         verifyAccount();
     }
@@ -792,7 +694,8 @@ void KMKernel::slotSystemNetworkStatusChanged(bool isOnline)
         BroadcastStatus::instance()->setStatusMsg(i18n("Network connection detected, all network jobs resumed"));
         kmkernel->setAccountStatus(true);
     } else {
-        BroadcastStatus::instance()->setStatusMsg(i18n("No network connection detected, all network jobs are suspended"));
+        BroadcastStatus::instance()->setStatusMsg(
+            i18n("No network connection detected, all network jobs are suspended"));
         kmkernel->setAccountStatus(false);
     }
 }
@@ -865,7 +768,7 @@ void KMKernel::recoverDeadLetters()
 
     dir.cd(pathName + "autosave"_L1);
     const QFileInfoList autoSaveFiles = dir.entryInfoList();
-    for (const QFileInfo &file : autoSaveFiles) {
+    for (const QFileInfo& file : autoSaveFiles) {
         // Disregard the '.' and '..' folders
         const QString filename = file.fileName();
         if (filename == QLatin1Char('.') || filename == ".."_L1 || file.isDir()) {
@@ -880,14 +783,15 @@ void KMKernel::recoverDeadLetters()
             autoSaveMessage->parse();
 
             // Show the a new composer dialog for the message
-            KMail::Composer *autoSaveWin = KMail::makeComposer();
+            KMail::Composer* autoSaveWin = KMail::makeComposer();
             autoSaveWin->setMessage(autoSaveMessage, false, false, false);
             autoSaveWin->setAutoSaveFileName(filename);
             autoSaveWin->show();
             autoSaveFile.close();
         } else {
             KMessageBox::error(nullptr,
-                               i18n("Failed to open autosave file at %1.\nReason: %2", file.absoluteFilePath(), autoSaveFile.errorString()),
+                               i18n("Failed to open autosave file at %1.\nReason: %2", file.absoluteFilePath(),
+                                    autoSaveFile.errorString()),
                                i18nc("@title:window", "Opening Autosave File Failed"));
         }
     }
@@ -914,8 +818,7 @@ static void kmCrashHandler(int sigId)
     }
 }
 
-namespace
-{
+namespace {
 auto initKeyCache()
 {
     using namespace Kleo;
@@ -930,7 +833,7 @@ auto initKeyCache()
 
     return KeyCache::instance();
 }
-}
+} // namespace
 
 void KMKernel::init()
 {
@@ -963,7 +866,8 @@ void KMKernel::init()
         CommonKernel->initFolders();
     }
 
-    connect(Akonadi::ServerManager::self(), &Akonadi::ServerManager::stateChanged, this, &KMKernel::akonadiStateChanged);
+    connect(Akonadi::ServerManager::self(), &Akonadi::ServerManager::stateChanged, this,
+            &KMKernel::akonadiStateChanged);
 }
 
 void KMKernel::doSessionManagement()
@@ -994,8 +898,8 @@ void KMKernel::setFirstInstance(bool value)
 void KMKernel::closeAllKMailWindows()
 {
     const auto lst = KMainWindow::memberList();
-    for (KMainWindow *window : lst) {
-        if (::qobject_cast<KMMainWin *>(window) || ::qobject_cast<KMail::SecondaryWindow *>(window)) {
+    for (KMainWindow* window : lst) {
+        if (::qobject_cast<KMMainWin*>(window) || ::qobject_cast<KMail::SecondaryWindow*>(window)) {
             // close and delete the window
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->close();
@@ -1040,8 +944,10 @@ void KMKernel::cleanup()
     Akonadi::Collection trashCollection = CommonKernel->trashCollectionFolder();
     if (trashCollection.isValid()) {
         if (KMailSettings::self()->emptyTrashOnExit()) {
-            const auto service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_mailfilter_agent"));
-            OrgFreedesktopAkonadiMailFilterAgentInterface mailFilterInterface(service, QStringLiteral("/MailFilterAgent"), QDBusConnection::sessionBus(), this);
+            const auto service = Akonadi::ServerManager::self()->agentServiceName(
+                Akonadi::ServerManager::Agent, QStringLiteral("akonadi_mailfilter_agent"));
+            OrgFreedesktopAkonadiMailFilterAgentInterface mailFilterInterface(
+                service, QStringLiteral("/MailFilterAgent"), QDBusConnection::sessionBus(), this);
             if (mailFilterInterface.isValid()) {
                 mailFilterInterface.expunge(static_cast<qlonglong>(trashCollection.id()));
             } else {
@@ -1059,8 +965,8 @@ void KMKernel::dumpDeadLetters()
 
     // make all composer windows autosave their contents
     const auto lst = KMainWindow::memberList();
-    for (KMainWindow *window : lst) {
-        if (auto win = ::qobject_cast<KMail::Composer *>(window)) {
+    for (KMainWindow* window : lst) {
+        if (auto win = ::qobject_cast<KMail::Composer*>(window)) {
             win->autoSaveMessage(true);
 
             while (win->isComposing()) {
@@ -1071,36 +977,14 @@ void KMKernel::dumpDeadLetters()
     }
 }
 
-void KMKernel::action(bool mailto,
-                      bool check,
-                      bool startInTray,
-                      bool htmlBody,
-                      const QString &to,
-                      const QString &cc,
-                      const QString &bcc,
-                      const QString &subj,
-                      const QString &body,
-                      const QUrl &messageFile,
-                      const QList<QUrl> &attachURLs,
-                      const QStringList &customHeaders,
-                      const QString &replyTo,
-                      const QString &inReplyTo,
-                      const QString &identity)
+void KMKernel::action(bool mailto, bool check, bool startInTray, bool htmlBody, const QString& to, const QString& cc,
+                      const QString& bcc, const QString& subj, const QString& body, const QUrl& messageFile,
+                      const QList<QUrl>& attachURLs, const QStringList& customHeaders, const QString& replyTo,
+                      const QString& inReplyTo, const QString& identity)
 {
     if (mailto) {
-        openComposer(to,
-                     cc,
-                     bcc,
-                     subj,
-                     body,
-                     false,
-                     messageFile.toLocalFile(),
-                     QUrl::toStringList(attachURLs),
-                     customHeaders,
-                     replyTo,
-                     inReplyTo,
-                     identity,
-                     htmlBody);
+        openComposer(to, cc, bcc, subj, body, false, messageFile.toLocalFile(), QUrl::toStringList(attachURLs),
+                     customHeaders, replyTo, inReplyTo, identity, htmlBody);
     } else {
         openReader(check, startInTray);
     }
@@ -1192,7 +1076,7 @@ bool KMKernel::haveSystemTrayApplet() const
     return mUnityServiceManager->haveSystemTrayApplet();
 }
 
-void KMKernel::setSystemTryAssociatedWindow(QWindow *window)
+void KMKernel::setSystemTryAssociatedWindow(QWindow* window)
 {
     mUnityServiceManager->setSystemTryAssociatedWindow(window);
 }
@@ -1204,22 +1088,22 @@ void KMKernel::updateSystemTray()
     }
 }
 
-KIdentityManagementCore::IdentityManager *KMKernel::identityManager()
+KIdentityManagementCore::IdentityManager* KMKernel::identityManager()
 {
     return KIdentityManagementCore::IdentityManager::self();
 }
 
-JobScheduler *KMKernel::jobScheduler() const
+JobScheduler* KMKernel::jobScheduler() const
 {
     return mJobScheduler;
 }
 
-KMainWindow *KMKernel::mainWin()
+KMainWindow* KMKernel::mainWin()
 {
     // First look for a KMMainWin.
     const auto lst = KMainWindow::memberList();
-    for (KMainWindow *window : lst) {
-        if (::qobject_cast<KMMainWin *>(window)) {
+    for (KMainWindow* window : lst) {
+        if (::qobject_cast<KMMainWin*>(window)) {
             return window;
         }
     }
@@ -1228,7 +1112,7 @@ KMainWindow *KMKernel::mainWin()
     // case we are running inside Kontact) because we anyway only need
     // it for modal message boxes and for KNotify events.
     if (!KMainWindow::memberList().isEmpty()) {
-        KMainWindow *kmWin = KMainWindow::memberList().constFirst();
+        KMainWindow* kmWin = KMainWindow::memberList().constFirst();
         if (kmWin) {
             return kmWin;
         }
@@ -1241,7 +1125,7 @@ KMainWindow *KMKernel::mainWin()
     return new KMMainWin;
 }
 
-KMKernel *KMKernel::self()
+KMKernel* KMKernel::self()
 {
     return mySelf;
 }
@@ -1282,7 +1166,7 @@ void KMKernel::syncConfig()
 
 void KMKernel::selectCollectionFromId(Akonadi::Collection::Id id)
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     Q_ASSERT(widget);
     if (!widget) {
         return;
@@ -1295,9 +1179,9 @@ void KMKernel::selectCollectionFromId(Akonadi::Collection::Id id)
     }
 }
 
-bool KMKernel::selectFolder(const QString &folder)
+bool KMKernel::selectFolder(const QString& folder)
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     Q_ASSERT(widget);
     if (!widget) {
         return false;
@@ -1312,13 +1196,13 @@ bool KMKernel::selectFolder(const QString &folder)
     return false;
 }
 
-KMMainWidget *KMKernel::getKMMainWidget() const
+KMMainWidget* KMKernel::getKMMainWidget() const
 {
     // This could definitely use a speadup
     const QWidgetList l = QApplication::topLevelWidgets();
 
-    for (QWidget *wid : l) {
-        QList<KMMainWidget *> l2 = wid->window()->findChildren<KMMainWidget *>();
+    for (QWidget* wid : l) {
+        QList<KMMainWidget*> l2 = wid->window()->findChildren<KMMainWidget*>();
         if (!l2.isEmpty() && l2.first()) {
             return l2.first();
         }
@@ -1345,7 +1229,7 @@ void KMKernel::slotRunBackgroundTasks() // called regularly by timer
 #endif
 }
 
-static Akonadi::Collection::List collect_collections(const QAbstractItemModel *model, const QModelIndex &parent)
+static Akonadi::Collection::List collect_collections(const QAbstractItemModel* model, const QModelIndex& parent)
 {
     Akonadi::Collection::List collections;
     QStack<QModelIndex> stack;
@@ -1368,9 +1252,10 @@ Akonadi::Collection::List KMKernel::allFolders() const
     return collect_collections(collectionModel(), QModelIndex());
 }
 
-Akonadi::Collection::List KMKernel::subfolders(const Akonadi::Collection &col) const
+Akonadi::Collection::List KMKernel::subfolders(const Akonadi::Collection& col) const
 {
-    const auto idx = collectionModel()->match({}, Akonadi::EntityTreeModel::CollectionRole, QVariant::fromValue(col), 1, Qt::MatchExactly);
+    const auto idx = collectionModel()->match({}, Akonadi::EntityTreeModel::CollectionRole, QVariant::fromValue(col), 1,
+                                              Qt::MatchExactly);
     if (!idx.isEmpty()) {
         return collect_collections(collectionModel(), idx[0]);
     }
@@ -1393,7 +1278,7 @@ bool KMKernel::canQueryClose()
 
 Akonadi::Collection KMKernel::currentCollection() const
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     Akonadi::Collection col;
     if (widget) {
         col = widget->currentCollection();
@@ -1403,7 +1288,7 @@ Akonadi::Collection KMKernel::currentCollection() const
 
 QSharedPointer<FolderSettings> KMKernel::currentFolderCollection()
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     QSharedPointer<FolderSettings> folder;
     if (widget) {
         folder = widget->currentFolder();
@@ -1411,31 +1296,31 @@ QSharedPointer<FolderSettings> KMKernel::currentFolderCollection()
     return folder;
 }
 
-MailCommon::MailCommonSettings *KMKernel::mailCommonSettings() const
+MailCommon::MailCommonSettings* KMKernel::mailCommonSettings() const
 {
     return mMailCommonSettings;
 }
 
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
-Akonadi::Search::PIM::IndexedItems *KMKernel::indexedItems() const
+Akonadi::Search::PIM::IndexedItems* KMKernel::indexedItems() const
 {
     return mIndexedItems;
 }
 #endif
 // can't be inline, since KMSender isn't known to implement
 // KMail::MessageSender outside this .cpp file
-MessageComposer::MessageSender *KMKernel::msgSender()
+MessageComposer::MessageSender* KMKernel::msgSender()
 {
     return the_msgSender;
 }
 
-void KMKernel::transportRemoved(int id, const QString &name)
+void KMKernel::transportRemoved(int id, const QString& name)
 {
     Q_UNUSED(id)
 
     // reset all identities using the deleted transport
     QStringList changedIdents;
-    KIdentityManagementCore::IdentityManager *im = identityManager();
+    KIdentityManagementCore::IdentityManager* im = identityManager();
     KIdentityManagementCore::IdentityManager::Iterator end = im->modifyEnd();
     for (KIdentityManagementCore::IdentityManager::Iterator it = im->modifyBegin(); it != end; ++it) {
         if (name == (*it).transport()) {
@@ -1445,27 +1330,27 @@ void KMKernel::transportRemoved(int id, const QString &name)
     }
 
     // if the deleted transport is the currently used transport reset it to default
-    const QString &currentTransport = KMailSettings::self()->currentTransport();
+    const QString& currentTransport = KMailSettings::self()->currentTransport();
     if (name == currentTransport) {
         KMailSettings::self()->setCurrentTransport(QString());
     }
 
     if (!changedIdents.isEmpty()) {
-        QString information = i18np("This identity has been changed to use the default transport:",
-                                    "These %1 identities have been changed to use the default transport:",
-                                    changedIdents.count());
+        QString information =
+            i18np("This identity has been changed to use the default transport:",
+                  "These %1 identities have been changed to use the default transport:", changedIdents.count());
         // Don't set parent otherwise we will switch to current KMail and we configure it. So not good
         KMessageBox::informationList(nullptr, information, changedIdents);
         im->commit();
     }
 }
 
-void KMKernel::transportRenamed(int id, const QString &oldName, const QString &newName)
+void KMKernel::transportRenamed(int id, const QString& oldName, const QString& newName)
 {
     Q_UNUSED(id)
 
     QStringList changedIdents;
-    KIdentityManagementCore::IdentityManager *im = identityManager();
+    KIdentityManagementCore::IdentityManager* im = identityManager();
     KIdentityManagementCore::IdentityManager::Iterator end = im->modifyEnd();
     for (KIdentityManagementCore::IdentityManager::Iterator it = im->modifyBegin(); it != end; ++it) {
         if (oldName == (*it).transport()) {
@@ -1475,9 +1360,9 @@ void KMKernel::transportRenamed(int id, const QString &oldName, const QString &n
     }
 
     if (!changedIdents.isEmpty()) {
-        const QString information = i18np("This identity has been changed to use the modified transport:",
-                                          "These %1 identities have been changed to use the modified transport:",
-                                          changedIdents.count());
+        const QString information =
+            i18np("This identity has been changed to use the modified transport:",
+                  "These %1 identities have been changed to use the modified transport:", changedIdents.count());
         // Don't set parent otherwise we will switch to current KMail and we configure it. So not good
         KMessageBox::informationList(nullptr, information, changedIdents);
         im->commit();
@@ -1487,27 +1372,19 @@ void KMKernel::transportRenamed(int id, const QString &oldName, const QString &n
 void KMKernel::itemDispatchStarted()
 {
     // Watch progress of the MDA.
-    PimCommon::ProgressManagerAkonadi::createProgressItem(nullptr,
-                                                          Akonadi::DispatcherInterface().dispatcherInstance(),
-                                                          QStringLiteral("Sender"),
-                                                          i18n("Sending messages"),
-                                                          i18n("Initiating sending process…"),
-                                                          true,
-                                                          KPIM::ProgressItem::Unknown);
+    PimCommon::ProgressManagerAkonadi::createProgressItem(
+        nullptr, Akonadi::DispatcherInterface().dispatcherInstance(), QStringLiteral("Sender"),
+        i18n("Sending messages"), i18n("Initiating sending process…"), true, KPIM::ProgressItem::Unknown);
 }
 
-void KMKernel::instanceStatusChanged(const Akonadi::AgentInstance &instance)
+void KMKernel::instanceStatusChanged(const Akonadi::AgentInstance& instance)
 {
     if (instance.identifier() == "akonadi_mailfilter_agent"_L1) {
         // Creating a progress item twice is ok, it will simply return the already existing
         // item
-        KPIM::ProgressItem *progress = PimCommon::ProgressManagerAkonadi::createProgressItem(nullptr,
-                                                                                             instance,
-                                                                                             instance.identifier(),
-                                                                                             instance.name(),
-                                                                                             instance.statusMessage(),
-                                                                                             false,
-                                                                                             KPIM::ProgressItem::Encrypted);
+        KPIM::ProgressItem* progress = PimCommon::ProgressManagerAkonadi::createProgressItem(
+            nullptr, instance, instance.identifier(), instance.name(), instance.statusMessage(), false,
+            KPIM::ProgressItem::Encrypted);
         progress->setProperty("AgentIdentifier", instance.identifier());
         return;
     }
@@ -1544,7 +1421,8 @@ void KMKernel::instanceStatusChanged(const Akonadi::AgentInstance &instance)
                     MailCommon::ResourceReadConfigFile resourceFile(identifier);
                     const KConfigGroup grp = resourceFile.group(QStringLiteral("General"));
                     if (grp.isValid()) {
-                        if (grp.readEntry(QStringLiteral("useSSL"), false) || grp.readEntry(QStringLiteral("useTLS"), false)) {
+                        if (grp.readEntry(QStringLiteral("useSSL"), false) ||
+                            grp.readEntry(QStringLiteral("useTLS"), false)) {
                             cryptoStatus = KPIM::ProgressItem::Encrypted;
                         }
                         mResourceCryptoSettingCache.insert(identifier, cryptoStatus);
@@ -1554,13 +1432,9 @@ void KMKernel::instanceStatusChanged(const Akonadi::AgentInstance &instance)
 
             // Creating a progress item twice is ok, it will simply return the already existing
             // item
-            KPIM::ProgressItem *progress = PimCommon::ProgressManagerAkonadi::createProgressItem(nullptr,
-                                                                                                 instance,
-                                                                                                 instance.identifier(),
-                                                                                                 instance.name(),
-                                                                                                 instance.statusMessage(),
-                                                                                                 true,
-                                                                                                 cryptoStatus);
+            KPIM::ProgressItem* progress = PimCommon::ProgressManagerAkonadi::createProgressItem(
+                nullptr, instance, instance.identifier(), instance.name(), instance.statusMessage(), true,
+                cryptoStatus);
             progress->setProperty("AgentIdentifier", instance.identifier());
         } else if (instance.status() == Akonadi::AgentInstance::Broken) {
             agentInstanceBroken(instance);
@@ -1568,13 +1442,14 @@ void KMKernel::instanceStatusChanged(const Akonadi::AgentInstance &instance)
     }
 }
 
-void KMKernel::agentInstanceBroken(const Akonadi::AgentInstance &instance)
+void KMKernel::agentInstanceBroken(const Akonadi::AgentInstance& instance)
 {
     const QString summary = i18n("Resource %1 is broken.\n%2", instance.name(), instance.statusMessage());
-    KNotification::event(QStringLiteral("akonadi-resource-broken"), QString(), summary, QStringLiteral("kmail"), KNotification::CloseOnTimeout);
+    KNotification::event(QStringLiteral("akonadi-resource-broken"), QString(), summary, QStringLiteral("kmail"),
+                         KNotification::CloseOnTimeout);
 }
 
-void KMKernel::slotProgressItemCompletedOrCanceled(KPIM::ProgressItem *item)
+void KMKernel::slotProgressItemCompletedOrCanceled(KPIM::ProgressItem* item)
 {
     const QString identifier = item->property("AgentIdentifier").toString();
     const Akonadi::AgentInstance agent = Akonadi::AgentManager::self()->instance(identifier);
@@ -1597,7 +1472,7 @@ void KMKernel::cleanupTemporaryFiles()
     QDir dir(QDir::tempPath());
     const QStringList lst = dir.entryList(QStringList{QStringLiteral("messageviewer_*")});
     qCDebug(KMAIL_LOG) << " list file to delete " << lst;
-    for (const QString &file : lst) {
+    for (const QString& file : lst) {
         QFile tempFile(QDir::tempPath() + QLatin1Char('/') + file);
         if (!tempFile.remove()) {
             fprintf(stderr, "%s was not removed .\n", qPrintable(tempFile.fileName()));
@@ -1607,7 +1482,7 @@ void KMKernel::cleanupTemporaryFiles()
     }
     const QStringList lstRepo = dir.entryList(QStringList{QStringLiteral("messageviewer_*.index.*")});
     qCDebug(KMAIL_LOG) << " list repo to delete " << lstRepo;
-    for (const QString &file : lstRepo) {
+    for (const QString& file : lstRepo) {
         QDir tempDir(QDir::tempPath() + QLatin1Char('/') + file);
         if (!tempDir.removeRecursively()) {
             fprintf(stderr, "%s was not removed .\n", qPrintable(tempDir.path()));
@@ -1633,7 +1508,7 @@ void KMKernel::stopAgentInstance()
     }
 }
 
-void KMKernel::slotCollectionRemoved(const Akonadi::Collection &col)
+void KMKernel::slotCollectionRemoved(const Akonadi::Collection& col)
 {
     KConfigGroup group(KMKernel::config(), MailCommon::FolderSettings::configGroupName(col));
     group.deleteGroup();
@@ -1681,7 +1556,8 @@ QStringList KMKernel::customTemplates()
 void KMKernel::openFilterDialog(bool createDummyFilter)
 {
     if (!mFilterEditDialog) {
-        mFilterEditDialog = new MailCommon::KMFilterDialog(getKMMainWidget()->actionCollections(), nullptr, createDummyFilter);
+        mFilterEditDialog =
+            new MailCommon::KMFilterDialog(getKMMainWidget()->actionCollections(), nullptr, createDummyFilter);
         mFilterEditDialog->setObjectName("filterdialog"_L1);
     }
     mFilterEditDialog->show();
@@ -1689,24 +1565,24 @@ void KMKernel::openFilterDialog(bool createDummyFilter)
     mFilterEditDialog->activateWindow();
 }
 
-void KMKernel::createFilter(const QByteArray &field, const QString &value)
+void KMKernel::createFilter(const QByteArray& field, const QString& value)
 {
     mFilterEditDialog->createFilter(field, value);
 }
 
-void KMKernel::checkFolderFromResources(const Akonadi::Collection::List &collectionList)
+void KMKernel::checkFolderFromResources(const Akonadi::Collection::List& collectionList)
 {
     const Akonadi::AgentInstance::List lst = MailCommon::Util::agentInstances();
-    for (const Akonadi::AgentInstance &type : lst) {
+    for (const Akonadi::AgentInstance& type : lst) {
         if (type.status() == Akonadi::AgentInstance::Broken) {
             continue;
         }
         const QString typeIdentifier(type.identifier());
         if (PimCommon::Util::isImapResource(typeIdentifier)) {
-            OrgKdeAkonadiImapSettingsInterface *iface = PimCommon::Util::createImapSettingsInterface(typeIdentifier);
+            OrgKdeAkonadiImapSettingsInterface* iface = PimCommon::Util::createImapSettingsInterface(typeIdentifier);
             if (iface && iface->isValid()) {
                 const Akonadi::Collection::Id imapTrashId = iface->trashCollection();
-                for (const Akonadi::Collection &collection : collectionList) {
+                for (const Akonadi::Collection& collection : collectionList) {
                     const Akonadi::Collection::Id collectionId = collection.id();
                     if (imapTrashId == collectionId) {
                         // Use default trash
@@ -1718,9 +1594,9 @@ void KMKernel::checkFolderFromResources(const Akonadi::Collection::List &collect
             }
             delete iface;
         } else if (typeIdentifier.contains(POP3_RESOURCE_IDENTIFIER)) {
-            OrgKdeAkonadiPOP3SettingsInterface *iface = MailCommon::Util::createPop3SettingsInterface(typeIdentifier);
+            OrgKdeAkonadiPOP3SettingsInterface* iface = MailCommon::Util::createPop3SettingsInterface(typeIdentifier);
             if (iface->isValid()) {
-                for (const Akonadi::Collection &collection : std::as_const(collectionList)) {
+                for (const Akonadi::Collection& collection : std::as_const(collectionList)) {
                     const Akonadi::Collection::Id collectionId = collection.id();
                     if (iface->targetCollection() == collectionId) {
                         // Use default inbox
@@ -1735,7 +1611,7 @@ void KMKernel::checkFolderFromResources(const Akonadi::Collection::List &collect
     }
 }
 
-const QAbstractItemModel *KMKernel::treeviewModelSelection()
+const QAbstractItemModel* KMKernel::treeviewModelSelection()
 {
     if (getKMMainWidget()) {
         return getKMMainWidget()->folderTreeView()->selectionModel()->model();
@@ -1744,19 +1620,21 @@ const QAbstractItemModel *KMKernel::treeviewModelSelection()
     }
 }
 
-void KMKernel::slotInstanceWarning(const Akonadi::AgentInstance &instance, const QString &message)
+void KMKernel::slotInstanceWarning(const Akonadi::AgentInstance& instance, const QString& message)
 {
     const QString summary = i18nc("<source>: <error message>", "%1: %2", instance.name(), message);
-    KNotification::event(QStringLiteral("akonadi-instance-warning"), QString(), summary, QStringLiteral("kmail"), KNotification::CloseOnTimeout);
+    KNotification::event(QStringLiteral("akonadi-instance-warning"), QString(), summary, QStringLiteral("kmail"),
+                         KNotification::CloseOnTimeout);
 }
 
-void KMKernel::slotInstanceError(const Akonadi::AgentInstance &instance, const QString &message)
+void KMKernel::slotInstanceError(const Akonadi::AgentInstance& instance, const QString& message)
 {
     const QString summary = i18nc("<source>: <error message>", "%1: %2", instance.name(), message);
-    KNotification::event(QStringLiteral("akonadi-instance-error"), QString(), summary, QStringLiteral("kmail"), KNotification::CloseOnTimeout);
+    KNotification::event(QStringLiteral("akonadi-instance-error"), QString(), summary, QStringLiteral("kmail"),
+                         KNotification::CloseOnTimeout);
 }
 
-void KMKernel::slotInstanceRemoved(const Akonadi::AgentInstance &instance)
+void KMKernel::slotInstanceRemoved(const Akonadi::AgentInstance& instance)
 {
     const QString identifier(instance.identifier());
     const QString resourceGroup = QStringLiteral("Resource %1").arg(identifier);
@@ -1775,7 +1653,7 @@ void KMKernel::slotInstanceRemoved(const Akonadi::AgentInstance &instance)
     }
 }
 
-void KMKernel::slotInstanceAdded(const Akonadi::AgentInstance &instance)
+void KMKernel::slotInstanceAdded(const Akonadi::AgentInstance& instance)
 {
     if (MailCommon::Util::isMailAgent(instance)) {
         Q_EMIT incomingAccountsChanged();
@@ -1784,7 +1662,7 @@ void KMKernel::slotInstanceAdded(const Akonadi::AgentInstance &instance)
 
 void KMKernel::savePaneSelection()
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     if (widget) {
         widget->savePaneSelection();
     }
@@ -1792,7 +1670,7 @@ void KMKernel::savePaneSelection()
 
 void KMKernel::updatePaneTagComboBox()
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     if (widget) {
         widget->updatePaneTagComboBox();
     }
@@ -1800,7 +1678,7 @@ void KMKernel::updatePaneTagComboBox()
 
 void KMKernel::resourceGoOnLine()
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     if (widget) {
         if (widget->currentCollection().isValid()) {
             Akonadi::Collection collection = widget->currentCollection();
@@ -1822,20 +1700,20 @@ void KMKernel::makeResourceOnline(MessageViewer::Viewer::ResourceOnlineMode mode
         break;
     }
 }
-TextAutoCorrectionCore::AutoCorrection *KMKernel::composerAutoCorrection()
+TextAutoCorrectionCore::AutoCorrection* KMKernel::composerAutoCorrection()
 {
     return mAutoCorrection;
 }
 
 void KMKernel::toggleSystemTray()
 {
-    KMMainWidget *widget = getKMMainWidget();
+    KMMainWidget* widget = getKMMainWidget();
     if (widget) {
         mUnityServiceManager->toggleSystemTray(widget);
     }
 }
 
-void KMKernel::showFolder(const QString &collectionId)
+void KMKernel::showFolder(const QString& collectionId)
 {
     if (!collectionId.isEmpty()) {
         const Akonadi::Collection::Id id = collectionId.toLongLong();
@@ -1850,13 +1728,13 @@ void KMKernel::reloadFolderArchiveConfig()
 
 bool KMKernel::replyMail(qint64 serialNumber, bool replyToAll)
 {
-    KMMainWidget *mainWidget = nullptr;
+    KMMainWidget* mainWidget = nullptr;
 
     // First look for a KMainWindow.
     const auto lst = KMainWindow::memberList();
-    for (KMainWindow *window : lst) {
+    for (KMainWindow* window : lst) {
         // Then look for a KMMainWidget.
-        QList<KMMainWidget *> l = window->findChildren<KMMainWidget *>();
+        QList<KMMainWidget*> l = window->findChildren<KMMainWidget*>();
         if (!l.isEmpty() && l.first()) {
             mainWidget = l.first();
             if (window->isActiveWindow()) {
@@ -1879,14 +1757,14 @@ bool KMKernel::replyMail(qint64 serialNumber, bool replyToAll)
     return false;
 }
 
-void KMKernel::slotCollectionChanged(const Akonadi::Collection &, const QSet<QByteArray> &set)
+void KMKernel::slotCollectionChanged(const Akonadi::Collection&, const QSet<QByteArray>& set)
 {
     if (set.contains("newmailnotifierattribute")) {
         mUnityServiceManager->initListOfCollection();
     }
 }
 
-FolderArchiveManager *KMKernel::folderArchiveManager() const
+FolderArchiveManager* KMKernel::folderArchiveManager() const
 {
     return mFolderArchiveManager;
 }
@@ -1918,7 +1796,7 @@ void KMKernel::expunge(Akonadi::Collection::Id col, bool sync)
 }
 
 #if KMAIL_WITH_KUSERFEEDBACK
-KUserFeedback::Provider *KMKernel::userFeedbackProvider() const
+KUserFeedback::Provider* KMKernel::userFeedbackProvider() const
 {
     return mUserFeedbackProvider;
 }

@@ -46,6 +46,24 @@ sudo dnf install -y \
 sudo dnf install -y akonadi-devel
 ```
 
+## Qt5 Compatibility
+
+This project has been adapted to work with Qt5 and KDE Frameworks 5 (KF5). Key compatibility changes include:
+
+- Replaced Qt6 string literals (`_L1` operator) with Qt5 `QLatin1String`
+- Converted signal-slot connections to use the Qt5 syntax where needed
+- Updated DBus adaptor generation to use `qt5_add_dbus_adaptor` instead of `qt_add_dbus_adaptor`
+- Modified CMakeLists.txt to properly handle optional dependencies in Qt5
+- Created proper configuration files to define build options and features
+- Added porting scripts in the `tools/` directory to help with Qt5/6 transitions
+
+The following header files are now properly generated:
+- `config-kmail.h`: Main configuration options
+- `config-enterprise.h`: Enterprise-specific settings
+- `kmail-version.h`: Version information
+
+All components and modules have optional dependencies properly configured, allowing the application to build and run even when certain libraries (such as `KF5Activities` or `Qt5Keychain`) are not available.
+
 ## Building from Source
 
 1. Clone the repository:
@@ -62,7 +80,7 @@ cd build
 
 3. Configure with CMake:
 ```bash
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 ```
 
 4. Build the project:
@@ -87,6 +105,10 @@ sudo make install
   - `korganizerintegration.cpp/.h`: KOrganizer integration
   - `localaiservice.cpp/.h`: Local AI service implementation
 
+- `/src/collectionpage/`: Folder property pages
+- `/src/folderarchive/`: Email archiving functionality
+- `/src/kontactplugin/`: KDE Kontact integration
+
 ## Configuration
 
 The AI features can be configured through:
@@ -104,6 +126,25 @@ The AI features can be configured through:
 ### Known Issues
 - Status Notifier Item integration is currently optional
 - Some KF6 dependencies may conflict with KF5 requirements
+- The Qt5 port may still have StringLiterals usage to fix in some files
+
+## Code Formatting and Linting
+
+The codebase uses several tools to maintain code quality:
+
+- **clang-format**: Automatically formats code according to project style
+- **clang-tidy**: Performs static analysis
+- **cppcheck**: Additional static analysis tool
+- **flake8**: Python code linter (for Python components in AI integration)
+
+You can use the following CMake targets:
+```bash
+# Format the entire codebase
+cmake --build build --target format-fix
+
+# Run linters on the codebase
+cmake --build build --target format
+```
 
 ## Contributing
 

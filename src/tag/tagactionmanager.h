@@ -6,23 +6,21 @@
 */
 #pragma once
 
-#include "kmail_export.h"
-#include "mailcommon/tag.h"
 #include <Akonadi/Item>
 #include <QList>
 #include <QMap>
+#include "kmail_export.h"
+#include "mailcommon/tag.h"
 class KActionCollection;
 class KXMLGUIClient;
 class KToggleAction;
 class QAction;
-namespace Akonadi
-{
+namespace Akonadi {
 class Item;
 class Tag;
-}
+} // namespace Akonadi
 
-namespace KMail
-{
+namespace KMail {
 class MessageActions;
 
 /**
@@ -48,7 +46,8 @@ public:
      * @param messageActions: Each action is added to the message status menu
      * @param guiClient: The action list with the toolbar action is plugged here
      */
-    TagActionManager(QObject *parent, KActionCollection *actionCollection, MessageActions *messageActions, KXMLGUIClient *guiClient);
+    TagActionManager(QObject* parent, KActionCollection* actionCollection, MessageActions* messageActions,
+                     KXMLGUIClient* guiClient);
 
     ~TagActionManager() override;
 
@@ -72,7 +71,7 @@ public:
      * @param numberOfSelectedMessages The number of selected messages
      * @param selectedItem if exactly one item is selected, it should be passed here
      */
-    void updateActionStates(int numberOfSelectedMessages, const Akonadi::Item &selectedItem);
+    void updateActionStates(int numberOfSelectedMessages, const Akonadi::Item& selectedItem);
 
 Q_SIGNALS:
 
@@ -80,7 +79,7 @@ Q_SIGNALS:
      * Emitted when one of the tagging actions was triggered. The user of this class
      * should connect to this signal and change the tags of the messages
      */
-    void tagActionTriggered(const Akonadi::Tag &tag);
+    void tagActionTriggered(const Akonadi::Tag& tag);
     /**
      * Emitted when we want to select more action
      */
@@ -88,30 +87,30 @@ Q_SIGNALS:
 
 private:
     KMAIL_NO_EXPORT void newTagActionClicked();
-    KMAIL_NO_EXPORT void onSignalMapped(const QString &tag);
+    KMAIL_NO_EXPORT void onSignalMapped(const QString& tag);
 
     KMAIL_NO_EXPORT void fillTagList();
-    KMAIL_NO_EXPORT void createTagAction(const MailCommon::Tag::Ptr &tag, bool addToMenu);
-    KMAIL_NO_EXPORT void createTagActions(const QList<MailCommon::Tag::Ptr> &);
-    KMAIL_NO_EXPORT void checkTags(const QList<qint64> &tags);
+    KMAIL_NO_EXPORT void createTagAction(const MailCommon::Tag::Ptr& tag, bool addToMenu);
+    KMAIL_NO_EXPORT void createTagActions(const QList<MailCommon::Tag::Ptr>&);
+    KMAIL_NO_EXPORT void checkTags(const QList<qint64>& tags);
     [[nodiscard]] KMAIL_NO_EXPORT QList<qint64> checkedTags() const;
 
-    KActionCollection *const mActionCollection;
-    MessageActions *const mMessageActions;
-    KXMLGUIClient *const mGUIClient;
+    KActionCollection* const mActionCollection;
+    MessageActions* const mMessageActions;
+    KXMLGUIClient* const mGUIClient;
 
-    QAction *mSeparatorMoreAction = nullptr;
-    QAction *mSeparatorNewTagAction = nullptr;
-    QAction *mMoreAction = nullptr;
-    QAction *mNewTagAction = nullptr;
+    QAction* mSeparatorMoreAction = nullptr;
+    QAction* mSeparatorNewTagAction = nullptr;
+    QAction* mMoreAction = nullptr;
+    QAction* mNewTagAction = nullptr;
     // Maps the id of a tag to the action of a tag.
     // Contains all existing tags
-    QMap<qint64, KToggleAction *> mTagActions;
+    QMap<qint64, KToggleAction*> mTagActions;
 
     // The actions of all tags that are in the toolbar
-    QList<QAction *> mToolbarActions;
+    QList<QAction*> mToolbarActions;
 
     // Uri of a newly created tag
     qint64 mNewTagId = -1;
 };
-}
+} // namespace KMail

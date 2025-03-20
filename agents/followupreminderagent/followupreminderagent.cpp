@@ -16,23 +16,23 @@
 #include <Akonadi/ItemFetchScope>
 #include <QDBusConnection>
 
-#include "followupreminderagent_debug.h"
 #include <Akonadi/CollectionFetchScope>
 #include <Akonadi/ServerManager>
 #include <Akonadi/Session>
-#include <QTimer>
 #include <chrono>
+#include <QTimer>
+#include "followupreminderagent_debug.h"
 
 using namespace std::chrono_literals;
 
-FollowUpReminderAgent::FollowUpReminderAgent(const QString &id)
-    : Akonadi::AgentWidgetBase(id)
-    , mManager(new FollowUpReminderManager(this))
-    , mTimer(new QTimer(this))
+FollowUpReminderAgent::FollowUpReminderAgent(const QString& id)
+    : Akonadi::AgentWidgetBase(id), mManager(new FollowUpReminderManager(this)), mTimer(new QTimer(this))
 {
     new FollowUpReminderAgentAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/FollowUpReminder"), this, QDBusConnection::ExportAdaptors);
-    const QString service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_followupreminder_agent"));
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/FollowUpReminder"), this,
+                                                 QDBusConnection::ExportAdaptors);
+    const QString service = Akonadi::ServerManager::self()->agentServiceName(
+        Akonadi::ServerManager::Agent, QStringLiteral("akonadi_followupreminder_agent"));
     QDBusConnection::sessionBus().registerService(service);
     setNeedsNetwork(true);
 
@@ -77,7 +77,7 @@ bool FollowUpReminderAgent::enabledAgent() const
     return FollowUpReminderAgentSettings::self()->enabled();
 }
 
-void FollowUpReminderAgent::itemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
+void FollowUpReminderAgent::itemAdded(const Akonadi::Item& item, const Akonadi::Collection& collection)
 {
     if (!enabledAgent()) {
         return;
@@ -98,12 +98,8 @@ void FollowUpReminderAgent::reload()
     }
 }
 
-void FollowUpReminderAgent::addReminder(const QString &messageId,
-                                        Akonadi::Item::Id messageItemId,
-                                        const QString &to,
-                                        const QString &subject,
-                                        QDate followupDate,
-                                        Akonadi::Item::Id todoId)
+void FollowUpReminderAgent::addReminder(const QString& messageId, Akonadi::Item::Id messageItemId, const QString& to,
+                                        const QString& subject, QDate followupDate, Akonadi::Item::Id todoId)
 {
     auto info = new FollowUpReminder::FollowUpReminderInfo();
     info->setMessageId(messageId);

@@ -21,14 +21,12 @@ class KActionCollection;
 class QAction;
 class KToggleAction;
 class QMenu;
-namespace MessageViewer
-{
+namespace MessageViewer {
 class CSSHelper;
 class DKIMViewerMenu;
-}
+} // namespace MessageViewer
 
-namespace MimeTreeParser
-{
+namespace MimeTreeParser {
 class AttachmentStrategy;
 }
 
@@ -44,32 +42,32 @@ class KMAIL_EXPORT KMReaderWin : public QWidget
     Q_OBJECT
 
 public:
-    explicit KMReaderWin(QWidget *parent, QWidget *mainWindow, KActionCollection *actionCollection);
+    explicit KMReaderWin(QWidget* parent, QWidget* mainWindow, KActionCollection* actionCollection);
     ~KMReaderWin() override;
 
     /** Read settings from app's config file. */
     void readConfig();
 
     /** Get/set the message attachment strategy. */
-    const MessageViewer::AttachmentStrategy *attachmentStrategy() const;
+    const MessageViewer::AttachmentStrategy* attachmentStrategy() const;
 
-    void setAttachmentStrategy(const MessageViewer::AttachmentStrategy *strategy);
+    void setAttachmentStrategy(const MessageViewer::AttachmentStrategy* strategy);
 
     /** Get selected override character encoding.
       @return The encoding selected by the user or an empty string if auto-detection
       is selected. */
     [[nodiscard]] QString overrideEncoding() const;
     /** Set the override character encoding. */
-    void setOverrideEncoding(const QString &encoding);
+    void setOverrideEncoding(const QString& encoding);
     void setPrinting(bool enable);
 
-    void setMessage(const Akonadi::Item &item, MimeTreeParser::UpdateMode updateMode = MimeTreeParser::Delayed);
+    void setMessage(const Akonadi::Item& item, MimeTreeParser::UpdateMode updateMode = MimeTreeParser::Delayed);
 
-    void setMessage(const KMime::Message::Ptr &message);
+    void setMessage(const KMime::Message::Ptr& message);
 
     /** Instead of settings a message to be shown sets a message part
       to be shown */
-    void setMsgPart(KMime::Content *aMsgPart);
+    void setMsgPart(KMime::Content* aMsgPart);
 
     /** Clear the reader and discard the current message. */
     void clear(bool force = false);
@@ -98,7 +96,7 @@ public:
     [[nodiscard]] static QString newFeaturesMD5();
 
     /** Display a generic HTML splash page instead of a message */
-    void displaySplashPage(const QString &templateName, const QVariantHash &data);
+    void displaySplashPage(const QString& templateName, const QVariantHash& data);
 
     /** Display the about page instead of a message */
     void displayAboutPage();
@@ -112,58 +110,59 @@ public:
 
     [[nodiscard]] bool isFixedFont() const;
     void setUseFixedFont(bool useFixedFont);
-    [[nodiscard]] MessageViewer::Viewer *viewer() const;
-    [[nodiscard]] KToggleAction *toggleFixFontAction() const;
-    [[nodiscard]] QAction *mailToComposeAction() const;
-    [[nodiscard]] QAction *mailToReplyAction() const;
-    [[nodiscard]] QAction *mailToForwardAction() const;
-    [[nodiscard]] QAction *addAddrBookAction() const;
-    [[nodiscard]] QAction *openAddrBookAction() const;
-    [[nodiscard]] QAction *copyAction() const;
-    [[nodiscard]] QAction *selectAllAction() const;
-    [[nodiscard]] QAction *copyURLAction() const;
-    [[nodiscard]] QAction *copyImageLocation() const;
-    [[nodiscard]] QAction *urlOpenAction() const;
-    [[nodiscard]] QAction *urlSaveAsAction() const;
-    [[nodiscard]] QAction *addUrlToBookmarkAction() const;
-    [[nodiscard]] QAction *toggleMimePartTreeAction() const;
-    [[nodiscard]] QAction *speakTextAction() const;
-    [[nodiscard]] QAction *downloadImageToDiskAction() const;
-    [[nodiscard]] QAction *viewSourceAction() const;
-    [[nodiscard]] QAction *findInMessageAction() const;
-    [[nodiscard]] QAction *saveAsAction() const;
-    [[nodiscard]] QAction *saveMessageDisplayFormatAction() const;
-    [[nodiscard]] QAction *resetMessageDisplayFormatAction() const;
-    [[nodiscard]] QAction *editContactAction() const;
-    [[nodiscard]] QAction *developmentToolsAction() const;
-    [[nodiscard]] QAction *shareTextAction() const;
+    [[nodiscard]] MessageViewer::Viewer* viewer() const;
+    [[nodiscard]] KToggleAction* toggleFixFontAction() const;
+    [[nodiscard]] QAction* mailToComposeAction() const;
+    [[nodiscard]] QAction* mailToReplyAction() const;
+    [[nodiscard]] QAction* mailToForwardAction() const;
+    [[nodiscard]] QAction* addAddrBookAction() const;
+    [[nodiscard]] QAction* openAddrBookAction() const;
+    [[nodiscard]] QAction* copyAction() const;
+    [[nodiscard]] QAction* selectAllAction() const;
+    [[nodiscard]] QAction* copyURLAction() const;
+    [[nodiscard]] QAction* copyImageLocation() const;
+    [[nodiscard]] QAction* urlOpenAction() const;
+    [[nodiscard]] QAction* urlSaveAsAction() const;
+    [[nodiscard]] QAction* addUrlToBookmarkAction() const;
+    [[nodiscard]] QAction* toggleMimePartTreeAction() const;
+    [[nodiscard]] QAction* speakTextAction() const;
+    [[nodiscard]] QAction* downloadImageToDiskAction() const;
+    [[nodiscard]] QAction* viewSourceAction() const;
+    [[nodiscard]] QAction* findInMessageAction() const;
+    [[nodiscard]] QAction* saveAsAction() const;
+    [[nodiscard]] QAction* saveMessageDisplayFormatAction() const;
+    [[nodiscard]] QAction* resetMessageDisplayFormatAction() const;
+    [[nodiscard]] QAction* editContactAction() const;
+    [[nodiscard]] QAction* developmentToolsAction() const;
+    [[nodiscard]] QAction* shareTextAction() const;
 
-    [[nodiscard]] QMenu *viewHtmlOption() const;
-    [[nodiscard]] QAction *shareImage() const;
+    [[nodiscard]] QMenu* viewHtmlOption() const;
+    [[nodiscard]] QAction* shareImage() const;
 
-    [[nodiscard]] QAction *addToExistingContactAction() const;
+    [[nodiscard]] QAction* addToExistingContactAction() const;
 
     [[nodiscard]] Akonadi::Item messageItem() const;
 
-    [[nodiscard]] QWidget *mainWindow() const;
-    [[nodiscard]] QAction *openImageAction() const;
+    [[nodiscard]] QWidget* mainWindow() const;
+    [[nodiscard]] QAction* openImageAction() const;
 
     /** Enforce message decryption. */
     void setDecryptMessageOverwrite(bool overwrite = true);
 
-    [[nodiscard]] MessageViewer::CSSHelper *cssHelper() const;
+    [[nodiscard]] MessageViewer::CSSHelper* cssHelper() const;
 
     [[nodiscard]] bool printSelectedText(bool preview);
 
-    void setContactItem(const Akonadi::Item &contact, const KContacts::Addressee &address);
+    void setContactItem(const Akonadi::Item& contact, const KContacts::Addressee& address);
     void clearContactItem();
 
     [[nodiscard]] bool mimePartTreeIsEmpty() const;
-    [[nodiscard]] KActionMenu *shareServiceUrlMenu() const;
-    [[nodiscard]] MessageViewer::DKIMViewerMenu *dkimViewerMenu() const;
-    [[nodiscard]] QList<QAction *> viewerPluginActionList(MessageViewer::ViewerPluginInterface::SpecificFeatureTypes features);
+    [[nodiscard]] KActionMenu* shareServiceUrlMenu() const;
+    [[nodiscard]] MessageViewer::DKIMViewerMenu* dkimViewerMenu() const;
+    [[nodiscard]] QList<QAction*>
+    viewerPluginActionList(MessageViewer::ViewerPluginInterface::SpecificFeatureTypes features);
 
-    [[nodiscard]] QList<QAction *> interceptorUrlActions(const WebEngineViewer::WebHitTestResult &result) const;
+    [[nodiscard]] QList<QAction*> interceptorUrlActions(const WebEngineViewer::WebHitTestResult& result) const;
 
     void setPrintElementBackground(bool printElementBackground);
     /** Force update even if message is the same */
@@ -172,10 +171,10 @@ public:
     void hasMultiMessages(bool multi);
 
     void updateShowMultiMessagesButton(bool enablePreviousButton, bool enableNextButton);
-    [[nodiscard]] MessageViewer::RemoteContentMenu *remoteContentMenu() const;
-    void addImageMenuActions(QMenu *menu);
+    [[nodiscard]] MessageViewer::RemoteContentMenu* remoteContentMenu() const;
+    void addImageMenuActions(QMenu* menu);
 Q_SIGNALS:
-    void showStatusBarMessage(const QString &message);
+    void showStatusBarMessage(const QString& message);
     void zoomChanged(qreal factor);
     void showPreviousMessage();
     void showNextMessage();
@@ -195,16 +194,16 @@ public Q_SLOTS:
     /** Save the page to a file */
     void slotUrlSave();
     void slotAddUrlToBookmark();
-    void slotUrlClicked(const Akonadi::Item &, const QUrl &);
-    void slotShowReader(KMime::Content *, bool html, const QString &);
-    void slotShowMessage(const KMime::Message::Ptr &message, const QString &encoding);
-    void slotDeleteMessage(const Akonadi::Item &);
+    void slotUrlClicked(const Akonadi::Item&, const QUrl&);
+    void slotShowReader(KMime::Content*, bool html, const QString&);
+    void slotShowMessage(const KMime::Message::Ptr& message, const QString& encoding);
+    void slotDeleteMessage(const Akonadi::Item&);
     void slotSaveImageOnDisk();
 
-    void slotPrintComposeResult(KJob *job);
+    void slotPrintComposeResult(KJob* job);
     void slotEditContact();
-    void contactStored(const Akonadi::Item &item);
-    void slotContactEditorError(const QString &error);
+    void contactStored(const Akonadi::Item& item);
+    void slotContactEditorError(const QString& error);
 
     void slotContactHtmlOptions();
     void slotShareImage();
@@ -218,34 +217,36 @@ protected:
 private:
     KMAIL_NO_EXPORT void createActions();
     KMAIL_NO_EXPORT void updateHtmlActions();
-    KMAIL_NO_EXPORT void slotContactHtmlPreferencesUpdated(const Akonadi::Item &contact, Akonadi::Item::Id id, bool showAsHTML, bool remoteContent);
-    KMAIL_NO_EXPORT void slotSendMdnResponse(MessageViewer::MDNWarningWidget::ResponseType type, KMime::MDN::SendingMode sendingMode);
-    KMAIL_NO_EXPORT void sendMdnInfo(const Akonadi::Item &item);
-    KMAIL_NO_EXPORT void slotShowMdnInfo(const QPair<QString, bool> &mdnInfo);
-    KMAIL_NO_EXPORT void slotItemModified(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers);
+    KMAIL_NO_EXPORT void slotContactHtmlPreferencesUpdated(const Akonadi::Item& contact, Akonadi::Item::Id id,
+                                                           bool showAsHTML, bool remoteContent);
+    KMAIL_NO_EXPORT void slotSendMdnResponse(MessageViewer::MDNWarningWidget::ResponseType type,
+                                             KMime::MDN::SendingMode sendingMode);
+    KMAIL_NO_EXPORT void sendMdnInfo(const Akonadi::Item& item);
+    KMAIL_NO_EXPORT void slotShowMdnInfo(const QPair<QString, bool>& mdnInfo);
+    KMAIL_NO_EXPORT void slotItemModified(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers);
     KMAIL_NO_EXPORT void slotOpenImage();
 
     KContacts::Addressee mSearchedAddress;
     Akonadi::Item mSearchedContact;
-    QWidget *const mMainWindow;
-    KActionCollection *const mActionCollection;
+    QWidget* const mMainWindow;
+    KActionCollection* const mActionCollection;
 
-    QAction *mMailToComposeAction = nullptr;
-    QAction *mMailToReplyAction = nullptr;
-    QAction *mMailToForwardAction = nullptr;
-    QAction *mAddAddrBookAction = nullptr;
-    QAction *mOpenAddrBookAction = nullptr;
-    QAction *mUrlSaveAsAction = nullptr;
-    QAction *mAddUrlToBookmarkAction = nullptr;
-    QAction *mImageUrlSaveAsAction = nullptr;
-    QAction *mOpenImageAction = nullptr;
-    QAction *mEditContactAction = nullptr;
-    QAction *mViewAsHtml = nullptr;
-    QAction *mLoadExternalReference = nullptr;
-    QAction *mShareImage = nullptr;
-    QAction *mAddEmailToExistingContactAction = nullptr;
+    QAction* mMailToComposeAction = nullptr;
+    QAction* mMailToReplyAction = nullptr;
+    QAction* mMailToForwardAction = nullptr;
+    QAction* mAddAddrBookAction = nullptr;
+    QAction* mOpenAddrBookAction = nullptr;
+    QAction* mUrlSaveAsAction = nullptr;
+    QAction* mAddUrlToBookmarkAction = nullptr;
+    QAction* mImageUrlSaveAsAction = nullptr;
+    QAction* mOpenImageAction = nullptr;
+    QAction* mEditContactAction = nullptr;
+    QAction* mViewAsHtml = nullptr;
+    QAction* mLoadExternalReference = nullptr;
+    QAction* mShareImage = nullptr;
+    QAction* mAddEmailToExistingContactAction = nullptr;
 
-    QMenu *mViewHtmlOptions = nullptr;
+    QMenu* mViewHtmlOptions = nullptr;
 
-    MessageViewer::Viewer *mViewer = nullptr;
+    MessageViewer::Viewer* mViewer = nullptr;
 };

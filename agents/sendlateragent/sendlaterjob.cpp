@@ -20,14 +20,12 @@
 #include <Akonadi/ItemDeleteJob>
 #include <Akonadi/ItemFetchJob>
 
-#include "sendlateragent_debug.h"
 #include <KLocalizedString>
 #include <KNotification>
+#include "sendlateragent_debug.h"
 
-SendLaterJob::SendLaterJob(SendLaterManager *manager, MessageComposer::SendLaterInfo *info, QObject *parent)
-    : QObject(parent)
-    , mManager(manager)
-    , mInfo(info)
+SendLaterJob::SendLaterJob(SendLaterManager* manager, MessageComposer::SendLaterInfo* info, QObject* parent)
+    : QObject(parent), mManager(manager), mInfo(info)
 {
     qCDebug(SENDLATERAGENT_LOG) << " SendLaterJob::SendLaterJob" << this;
 }
@@ -61,7 +59,7 @@ void SendLaterJob::start()
     }
 }
 
-void SendLaterJob::slotMessageTransfered(const Akonadi::Item::List &items)
+void SendLaterJob::slotMessageTransfered(const Akonadi::Item::List& items)
 {
     if (items.isEmpty()) {
         sendError(i18n("No message found."), SendLaterManager::ItemNotFound);
@@ -76,13 +74,14 @@ void SendLaterJob::slotMessageTransfered(const Akonadi::Item::List &items)
     sendError(i18n("Error during fetching message."), SendLaterManager::TooManyItemFound);
 }
 
-void SendLaterJob::slotJobFinished(KJob *job)
+void SendLaterJob::slotJobFinished(KJob* job)
 {
     if (job->error()) {
         sendError(i18n("Cannot fetch message. %1", job->errorString()), SendLaterManager::CanNotFetchItem);
         return;
     }
-    if (!MailTransport::TransportManager::self()->showTransportCreationDialog(nullptr, MailTransport::TransportManager::IfNoTransportExists)) {
+    if (!MailTransport::TransportManager::self()->showTransportCreationDialog(
+            nullptr, MailTransport::TransportManager::IfNoTransportExists)) {
         qCDebug(SENDLATERAGENT_LOG) << " we can't create transport ";
         sendError(i18n("We can't create transport"), SendLaterManager::CanNotCreateTransport);
         return;
@@ -110,14 +109,14 @@ void SendLaterJob::slotJobFinished(KJob *job)
     }
 }
 
-void SendLaterJob::updateAndCleanMessageBeforeSending(const KMime::Message::Ptr &msg)
+void SendLaterJob::updateAndCleanMessageBeforeSending(const KMime::Message::Ptr& msg)
 {
     msg->date()->setDateTime(QDateTime::currentDateTime());
     MessageComposer::removeDraftCryptoHeaders(msg);
     msg->assemble();
 }
 
-void SendLaterJob::slotDeleteItem(KJob *job)
+void SendLaterJob::slotDeleteItem(KJob* job)
 {
     if (job->error()) {
         qCDebug(SENDLATERAGENT_LOG) << " void SendLaterJob::slotDeleteItem( KJob *job ) :" << job->errorString();
@@ -127,24 +126,16 @@ void SendLaterJob::slotDeleteItem(KJob *job)
 
 void SendLaterJob::sendDone()
 {
-    KNotification::event(QStringLiteral("mailsend"),
-                         QString(),
-                         i18n("Message sent"),
-                         QStringLiteral("kmail"),
-                         KNotification::CloseOnTimeout,
-                         QStringLiteral("akonadi_sendlater_agent"));
+    KNotification::event(QStringLiteral("mailsend"), QString(), i18n("Message sent"), QStringLiteral("kmail"),
+                         KNotification::CloseOnTimeout, QStringLiteral("akonadi_sendlater_agent"));
     mManager->sendDone(mInfo);
     deleteLater();
 }
 
-void SendLaterJob::sendError(const QString &error, SendLaterManager::ErrorType type)
+void SendLaterJob::sendError(const QString& error, SendLaterManager::ErrorType type)
 {
-    KNotification::event(QStringLiteral("mailsendfailed"),
-                         QString(),
-                         error,
-                         QStringLiteral("kmail"),
-                         KNotification::CloseOnTimeout,
-                         QStringLiteral("akonadi_sendlater_agent"));
+    KNotification::event(QStringLiteral("mailsendfailed"), QString(), error, QStringLiteral("kmail"),
+                         KNotification::CloseOnTimeout, QStringLiteral("akonadi_sendlater_agent"));
     mManager->sendError(mInfo, type);
     deleteLater();
 }

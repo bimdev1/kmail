@@ -7,7 +7,6 @@
 
 #include "potentialphishingdetaildialog.h"
 
-#include "potentialphishingdetailwidget.h"
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KSharedConfig>
@@ -16,15 +15,14 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWindow>
+#include "potentialphishingdetailwidget.h"
 
 using namespace Qt::Literals::StringLiterals;
-namespace
-{
+namespace {
 static const char myPotentialPhishingDetailDialogGroupName[] = "PotentialPhishingDetailDialog";
 }
-PotentialPhishingDetailDialog::PotentialPhishingDetailDialog(QWidget *parent)
-    : QDialog(parent)
-    , mPotentialPhishingDetailWidget(new PotentialPhishingDetailWidget(this))
+PotentialPhishingDetailDialog::PotentialPhishingDetailDialog(QWidget* parent)
+    : QDialog(parent), mPotentialPhishingDetailWidget(new PotentialPhishingDetailWidget(this))
 {
     setWindowTitle(i18nc("@title:window", "Details"));
     auto topLayout = new QVBoxLayout(this);
@@ -33,7 +31,7 @@ PotentialPhishingDetailDialog::PotentialPhishingDetailDialog(QWidget *parent)
     mPotentialPhishingDetailWidget->setObjectName("potentialphising_widget"_L1);
 
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
@@ -50,7 +48,7 @@ PotentialPhishingDetailDialog::~PotentialPhishingDetailDialog()
     writeConfig();
 }
 
-void PotentialPhishingDetailDialog::fillList(const QStringList &lst)
+void PotentialPhishingDetailDialog::fillList(const QStringList& lst)
 {
     mPotentialPhishingDetailWidget->fillList(lst);
 }

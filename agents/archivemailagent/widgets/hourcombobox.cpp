@@ -7,8 +7,7 @@
 */
 #include "hourcombobox.h"
 
-HourComboBox::HourComboBox(QWidget *parent)
-    : QComboBox(parent)
+HourComboBox::HourComboBox(QWidget* parent) : QComboBox(parent)
 {
     initializeList();
 }

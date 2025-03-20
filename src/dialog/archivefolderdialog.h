@@ -12,42 +12,39 @@ class QCheckBox;
 class KUrlRequester;
 class QComboBox;
 class QPushButton;
-namespace Akonadi
-{
+namespace Akonadi {
 class Collection;
 }
 
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderRequester;
 }
 
-namespace KMail
-{
+namespace KMail {
 class ArchiveFolderDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ArchiveFolderDialog(QWidget *parent = nullptr);
-    void setFolder(const Akonadi::Collection &defaultCollection);
+    explicit ArchiveFolderDialog(QWidget* parent = nullptr);
+    void setFolder(const Akonadi::Collection& defaultCollection);
 
 private:
     void slotFixFileExtension();
-    void slotFolderChanged(const Akonadi::Collection &);
+    void slotFolderChanged(const Akonadi::Collection&);
     void slotRecursiveCheckboxClicked();
     void slotAccepted();
-    void slotUrlChanged(const QString &);
+    void slotUrlChanged(const QString&);
 
-    [[nodiscard]] bool allowToDeleteFolders(const Akonadi::Collection &folder) const;
-    [[nodiscard]] QString standardArchivePath(const QString &folderName);
+    [[nodiscard]] bool allowToDeleteFolders(const Akonadi::Collection& folder) const;
+    [[nodiscard]] QString standardArchivePath(const QString& folderName);
 
-    QWidget *const mParentWidget;
-    QCheckBox *mDeleteCheckBox = nullptr;
-    QCheckBox *mRecursiveCheckBox = nullptr;
-    MailCommon::FolderRequester *mFolderRequester = nullptr;
-    QComboBox *mFormatComboBox = nullptr;
-    KUrlRequester *mUrlRequester = nullptr;
-    QPushButton *mOkButton = nullptr;
+    QWidget* const mParentWidget;
+    QCheckBox* mDeleteCheckBox = nullptr;
+    QCheckBox* mRecursiveCheckBox = nullptr;
+    MailCommon::FolderRequester* mFolderRequester = nullptr;
+    QComboBox* mFormatComboBox = nullptr;
+    KUrlRequester* mUrlRequester = nullptr;
+    QPushButton* mOkButton = nullptr;
 };
-}
+} // namespace KMail

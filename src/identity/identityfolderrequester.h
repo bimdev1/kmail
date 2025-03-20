@@ -8,23 +8,21 @@
 
 #include <MailCommon/FolderRequester>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class Collection;
 }
 
-namespace KMail
-{
+namespace KMail {
 class IdentityFolderRequester : public MailCommon::FolderRequester
 {
     Q_OBJECT
 public:
-    explicit IdentityFolderRequester(QWidget *parent = nullptr);
+    explicit IdentityFolderRequester(QWidget* parent = nullptr);
     ~IdentityFolderRequester() override;
 
-    void setIsInvalidFolder(const Akonadi::Collection &col);
+    void setIsInvalidFolder(const Akonadi::Collection& col);
 
 private:
-    void slotFolderChanged(const Akonadi::Collection &col);
+    void slotFolderChanged(const Akonadi::Collection& col);
 };
-}
+} // namespace KMail

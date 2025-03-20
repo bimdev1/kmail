@@ -12,7 +12,7 @@ class ActivitiesManagerTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ActivitiesManagerTest(QObject *parent = nullptr);
+    explicit ActivitiesManagerTest(QObject* parent = nullptr);
     ~ActivitiesManagerTest() override = default;
 
 private Q_SLOTS:

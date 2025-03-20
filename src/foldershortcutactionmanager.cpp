@@ -20,18 +20,17 @@
 using namespace KMail;
 using namespace MailCommon;
 
-FolderShortcutCommand::FolderShortcutCommand(QWidget *mainwidget, const Akonadi::Collection &col)
-    : QObject(mainwidget)
-    , mCollectionFolder(col)
-    , mMainWidget(mainwidget)
+FolderShortcutCommand::FolderShortcutCommand(QWidget* mainwidget, const Akonadi::Collection& col)
+    : QObject(mainwidget), mCollectionFolder(col), mMainWidget(mainwidget)
 {
-    connect(this, SIGNAL(selectCollectionFolder(Akonadi::Collection)), mMainWidget, SLOT(slotSelectCollectionFolder(Akonadi::Collection)));
+    connect(this, SIGNAL(selectCollectionFolder(Akonadi::Collection)), mMainWidget,
+            SLOT(slotSelectCollectionFolder(Akonadi::Collection)));
 }
 
 FolderShortcutCommand::~FolderShortcutCommand()
 {
     if (mAction) {
-        auto action = qobject_cast<QWidget *>(mAction->parent());
+        auto action = qobject_cast<QWidget*>(mAction->parent());
         if (action) {
             action->removeAction(mAction);
         }
@@ -44,15 +43,13 @@ void FolderShortcutCommand::start()
     Q_EMIT selectCollectionFolder(mCollectionFolder);
 }
 
-void FolderShortcutCommand::setAction(QAction *action)
+void FolderShortcutCommand::setAction(QAction* action)
 {
     mAction = action;
 }
 
-FolderShortcutActionManager::FolderShortcutActionManager(QWidget *parent, KActionCollection *actionCollection)
-    : QObject(parent)
-    , mActionCollection(actionCollection)
-    , mParent(parent)
+FolderShortcutActionManager::FolderShortcutActionManager(QWidget* parent, KActionCollection* actionCollection)
+    : QObject(parent), mActionCollection(actionCollection), mParent(parent)
 {
 }
 
@@ -61,13 +58,11 @@ void FolderShortcutActionManager::createActions()
     // When this function is called, the ETM has not finished loading yet. Therefore, when new
     // rows are inserted in the ETM, see if we have new collections that we can assign shortcuts
     // to.
-    const QAbstractItemModel *model = KernelIf->collectionModel();
-    connect(model, &QAbstractItemModel::rowsInserted, this, &FolderShortcutActionManager::slotRowsInserted, Qt::UniqueConnection);
-    connect(KernelIf->folderCollectionMonitor(),
-            &Akonadi::Monitor::collectionRemoved,
-            this,
-            &FolderShortcutActionManager::slotCollectionRemoved,
+    const QAbstractItemModel* model = KernelIf->collectionModel();
+    connect(model, &QAbstractItemModel::rowsInserted, this, &FolderShortcutActionManager::slotRowsInserted,
             Qt::UniqueConnection);
+    connect(KernelIf->folderCollectionMonitor(), &Akonadi::Monitor::collectionRemoved, this,
+            &FolderShortcutActionManager::slotCollectionRemoved, Qt::UniqueConnection);
 
     const int rowCount(model->rowCount());
     if (rowCount > 0) {
@@ -75,14 +70,14 @@ void FolderShortcutActionManager::createActions()
     }
 }
 
-void FolderShortcutActionManager::slotRowsInserted(const QModelIndex &parent, int start, int end)
+void FolderShortcutActionManager::slotRowsInserted(const QModelIndex& parent, int start, int end)
 {
     updateShortcutsForIndex(parent, start, end);
 }
 
-void FolderShortcutActionManager::updateShortcutsForIndex(const QModelIndex &parent, int start, int end)
+void FolderShortcutActionManager::updateShortcutsForIndex(const QModelIndex& parent, int start, int end)
 {
-    QAbstractItemModel *model = KernelIf->collectionModel();
+    QAbstractItemModel* model = KernelIf->collectionModel();
     for (int i = start; i <= end; ++i) {
         if (model->hasIndex(i, 0, parent)) {
             const QModelIndex child = model->index(i, 0, parent);
@@ -97,12 +92,12 @@ void FolderShortcutActionManager::updateShortcutsForIndex(const QModelIndex &par
     }
 }
 
-void FolderShortcutActionManager::slotCollectionRemoved(const Akonadi::Collection &col)
+void FolderShortcutActionManager::slotCollectionRemoved(const Akonadi::Collection& col)
 {
     delete mFolderShortcutCommands.take(col.id());
 }
 
-void FolderShortcutActionManager::shortcutChanged(const Akonadi::Collection &col)
+void FolderShortcutActionManager::shortcutChanged(const Akonadi::Collection& col)
 {
     // remove the old one, no autodelete in Qt4
     slotCollectionRemoved(col);
@@ -116,14 +111,15 @@ void FolderShortcutActionManager::shortcutChanged(const Akonadi::Collection &col
     mFolderShortcutCommands.insert(col.id(), command);
 
     QIcon icon(QStringLiteral("folder"));
-    if (col.hasAttribute<Akonadi::EntityDisplayAttribute>() && !col.attribute<Akonadi::EntityDisplayAttribute>()->iconName().isEmpty()) {
+    if (col.hasAttribute<Akonadi::EntityDisplayAttribute>() &&
+        !col.attribute<Akonadi::EntityDisplayAttribute>()->iconName().isEmpty()) {
         icon = QIcon(col.attribute<Akonadi::EntityDisplayAttribute>()->iconName());
     }
 
     const QString actionLabel = i18n("Folder Shortcut %1", col.name());
     QString actionName = i18n("Folder Shortcut %1", QString::number(col.id()));
     actionName.replace(QLatin1Char(' '), QLatin1Char('_'));
-    QAction *action = mActionCollection->addAction(actionName);
+    QAction* action = mActionCollection->addAction(actionName);
     // The folder shortcut is set in the folder shortcut dialog.
     // The shortcut set in the shortcut dialog would not be saved back to
     // the folder settings correctly.

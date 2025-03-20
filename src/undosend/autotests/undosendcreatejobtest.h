@@ -12,7 +12,7 @@ class UndoSendCreateJobTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit UndoSendCreateJobTest(QObject *parent = nullptr);
+    explicit UndoSendCreateJobTest(QObject* parent = nullptr);
     ~UndoSendCreateJobTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValues();

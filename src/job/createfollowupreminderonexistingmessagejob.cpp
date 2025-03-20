@@ -5,13 +5,13 @@
 */
 
 #include "createfollowupreminderonexistingmessagejob.h"
-#include "kmail_debug.h"
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <KMime/Message>
 #include <MessageComposer/FollowupReminderCreateJob>
+#include "kmail_debug.h"
 
-CreateFollowupReminderOnExistingMessageJob::CreateFollowupReminderOnExistingMessageJob(QObject *parent)
+CreateFollowupReminderOnExistingMessageJob::CreateFollowupReminderOnExistingMessageJob(QObject* parent)
     : QObject(parent)
 {
 }
@@ -35,9 +35,9 @@ void CreateFollowupReminderOnExistingMessageJob::doStart()
     connect(job, &KJob::result, this, &CreateFollowupReminderOnExistingMessageJob::itemFetchJobDone);
 }
 
-void CreateFollowupReminderOnExistingMessageJob::itemFetchJobDone(KJob *job)
+void CreateFollowupReminderOnExistingMessageJob::itemFetchJobDone(KJob* job)
 {
-    auto fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
+    auto fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
     if (fetchJob->items().count() == 1) {
         mMessageItem = fetchJob->items().constFirst();
     } else {
@@ -53,7 +53,7 @@ void CreateFollowupReminderOnExistingMessageJob::itemFetchJobDone(KJob *job)
     auto msg = mMessageItem.payload<KMime::Message::Ptr>();
     if (msg) {
         auto reminderJob = new MessageComposer::FollowupReminderCreateJob(this);
-        KMime::Headers::MessageID *messageID = msg->messageID(false);
+        KMime::Headers::MessageID* messageID = msg->messageID(false);
         if (messageID) {
             const QString messageIdStr = messageID->asUnicodeString();
             reminderJob->setMessageId(messageIdStr);
@@ -67,11 +67,11 @@ void CreateFollowupReminderOnExistingMessageJob::itemFetchJobDone(KJob *job)
         reminderJob->setFollowUpReminderDate(mDate);
         reminderJob->setCollectionToDo(mCollection);
         reminderJob->setOriginalMessageItemId(mMessageItem.id());
-        KMime::Headers::To *to = msg->to(false);
+        KMime::Headers::To* to = msg->to(false);
         if (to) {
             reminderJob->setTo(to->asUnicodeString());
         }
-        KMime::Headers::Subject *subject = msg->subject(false);
+        KMime::Headers::Subject* subject = msg->subject(false);
         if (subject) {
             reminderJob->setSubject(subject->asUnicodeString());
         }
@@ -84,7 +84,7 @@ void CreateFollowupReminderOnExistingMessageJob::itemFetchJobDone(KJob *job)
     }
 }
 
-void CreateFollowupReminderOnExistingMessageJob::slotReminderDone(KJob *job)
+void CreateFollowupReminderOnExistingMessageJob::slotReminderDone(KJob* job)
 {
     if (job->error()) {
         qCDebug(KMAIL_LOG) << "CreateFollowupReminderOnExistingMessageJob::slotReminderDone  :" << job->errorString();
@@ -99,7 +99,7 @@ Akonadi::Collection CreateFollowupReminderOnExistingMessageJob::collection() con
     return mCollection;
 }
 
-void CreateFollowupReminderOnExistingMessageJob::setCollection(const Akonadi::Collection &collection)
+void CreateFollowupReminderOnExistingMessageJob::setCollection(const Akonadi::Collection& collection)
 {
     mCollection = collection;
 }
@@ -119,7 +119,7 @@ Akonadi::Item CreateFollowupReminderOnExistingMessageJob::messageItem() const
     return mMessageItem;
 }
 
-void CreateFollowupReminderOnExistingMessageJob::setMessageItem(const Akonadi::Item &messageItem)
+void CreateFollowupReminderOnExistingMessageJob::setMessageItem(const Akonadi::Item& messageItem)
 {
     mMessageItem = messageItem;
 }

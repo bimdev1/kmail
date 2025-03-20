@@ -6,16 +6,14 @@
 
 #include "aicategoryindicatorwidget.h"
 
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QStyle>
-#include <QApplication>
 
 namespace KMail {
 
-AICategoryIndicatorWidget::AICategoryIndicatorWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_category(AIServiceInterface::Uncategorized)
-    , m_label(new QLabel(this))
+AICategoryIndicatorWidget::AICategoryIndicatorWidget(QWidget* parent)
+    : QWidget(parent), m_category(AIServiceInterface::Uncategorized), m_label(new QLabel(this))
 {
     auto layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -27,9 +25,7 @@ AICategoryIndicatorWidget::AICategoryIndicatorWidget(QWidget *parent)
     updateWidget();
 }
 
-AICategoryIndicatorWidget::~AICategoryIndicatorWidget()
-{
-}
+AICategoryIndicatorWidget::~AICategoryIndicatorWidget() {}
 
 void AICategoryIndicatorWidget::setCategory(AIServiceInterface::EmailCategory category)
 {
@@ -85,11 +81,13 @@ void AICategoryIndicatorWidget::updateWidget()
         QBuffer buffer(&byteArray);
         buffer.open(QIODevice::WriteOnly);
         pixmap.save(&buffer, "PNG");
-        iconHtml = QStringLiteral("<img src=\"data:image/png;base64,%1\" width=\"16\" height=\"16\">").arg(QString::fromLatin1(byteArray.toBase64()));
+        iconHtml = QStringLiteral("<img src=\"data:image/png;base64,%1\" width=\"16\" height=\"16\">")
+                       .arg(QString::fromLatin1(byteArray.toBase64()));
     }
 
     // Set the label text
-    m_label->setText(QStringLiteral("<span style=\"color: %1;\">%2 %3</span>").arg(categoryColor, iconHtml, categoryText));
+    m_label->setText(
+        QStringLiteral("<span style=\"color: %1;\">%2 %3</span>").arg(categoryColor, iconHtml, categoryText));
 
     // Set tooltip
     m_label->setToolTip(tr("AI-detected email category: %1").arg(categoryText));

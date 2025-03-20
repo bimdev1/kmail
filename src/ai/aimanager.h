@@ -6,16 +6,16 @@
 
 #pragma once
 
-#include "aiserviceinterface.h"
+#include <memory>
 #include <QObject>
 #include <QPointer>
-#include <memory>
+#include "aiserviceinterface.h"
 
 namespace KMail {
 
 /**
  * @brief Manager for AI services in KMail
- * 
+ *
  * This class manages the AI services used in KMail.
  * It provides a singleton instance and methods to access the AI services.
  */
@@ -28,7 +28,7 @@ public:
      * Get the singleton instance of the AI manager
      * @return The singleton instance
      */
-    static AIManager *self();
+    static AIManager* self();
 
     /**
      * Destroy the singleton instance
@@ -39,7 +39,7 @@ public:
      * Get the AI service
      * @return The AI service
      */
-    AIServiceInterface *service() const;
+    AIServiceInterface* service() const;
 
     /**
      * Check if AI features are enabled
@@ -71,7 +71,7 @@ private:
      * Constructor
      * @param parent The parent object
      */
-    explicit AIManager(QObject *parent = nullptr);
+    explicit AIManager(QObject* parent = nullptr);
 
     /**
      * Destructor
@@ -87,7 +87,7 @@ private:
     /**
      * The singleton instance
      */
-    static AIManager *s_self;
+    static AIManager* s_self;
 
     /**
      * The AI service

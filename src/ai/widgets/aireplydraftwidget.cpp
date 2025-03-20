@@ -9,25 +9,23 @@
 #include "../aiserviceinterface.h"
 #include "kmail_debug.h"
 
-#include <KLocalizedString>
-#include <KConfigGroup>
-#include <KSharedConfig>
 #include <Akonadi/MessageQueueJob>
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <KSharedConfig>
 #include <MessageComposer/Util>
 
-#include <QLabel>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QProgressBar>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLabel>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QTextEdit>
 #include <QTimer>
+#include <QVBoxLayout>
 
 namespace KMail {
 
-AIReplyDraftWidget::AIReplyDraftWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_isGenerating(false)
+AIReplyDraftWidget::AIReplyDraftWidget(QWidget* parent) : QWidget(parent), m_isGenerating(false)
 {
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -77,11 +75,9 @@ AIReplyDraftWidget::AIReplyDraftWidget(QWidget *parent)
     updateUIState();
 }
 
-AIReplyDraftWidget::~AIReplyDraftWidget()
-{
-}
+AIReplyDraftWidget::~AIReplyDraftWidget() {}
 
-void AIReplyDraftWidget::setOriginalMessage(const KMime::Message::Ptr &message)
+void AIReplyDraftWidget::setOriginalMessage(const KMime::Message::Ptr& message)
 {
     m_originalMessage = message;
     m_replyText.clear();
@@ -101,7 +97,7 @@ void AIReplyDraftWidget::generateReply()
         return;
     }
 
-    AIServiceInterface *service = aiService();
+    AIServiceInterface* service = aiService();
     if (!service) {
         qCWarning(KMAIL_LOG) << "AI service not available";
         return;
@@ -111,7 +107,7 @@ void AIReplyDraftWidget::generateReply()
     QString emailContent;
     if (m_originalMessage->contentType()->isMultipart()) {
         // Handle multipart messages
-        KMime::Content *textPart = MessageComposer::Util::findTextPart(m_originalMessage.data(), true);
+        KMime::Content* textPart = MessageComposer::Util::findTextPart(m_originalMessage.data(), true);
         if (textPart) {
             emailContent = textPart->decodedText();
         }
@@ -134,7 +130,8 @@ void AIReplyDraftWidget::generateReply()
     updateUIState();
 
     // Connect to the replyGenerated signal
-    connect(service, &AIServiceInterface::replyGenerated, this, &AIReplyDraftWidget::handleGeneratedReply, Qt::UniqueConnection);
+    connect(service, &AIServiceInterface::replyGenerated, this, &AIReplyDraftWidget::handleGeneratedReply,
+            Qt::UniqueConnection);
 
     // Generate the reply asynchronously
     QTimer::singleShot(0, this, [this, service, emailContent, userHistory]() {
@@ -146,10 +143,10 @@ void AIReplyDraftWidget::generateReply()
     });
 }
 
-void AIReplyDraftWidget::handleGeneratedReply(const QString &reply)
+void AIReplyDraftWidget::handleGeneratedReply(const QString& reply)
 {
     // Disconnect from the signal
-    if (AIServiceInterface *service = aiService()) {
+    if (AIServiceInterface* service = aiService()) {
         disconnect(service, &AIServiceInterface::replyGenerated, this, &AIReplyDraftWidget::handleGeneratedReply);
     }
 
@@ -194,7 +191,7 @@ void AIReplyDraftWidget::updateUIState()
     m_replyTextEdit->setReadOnly(m_isGenerating);
 }
 
-AIServiceInterface *AIReplyDraftWidget::aiService() const
+AIServiceInterface* AIReplyDraftWidget::aiService() const
 {
     if (AIManager::self()->isEnabled()) {
         return AIManager::self()->service();

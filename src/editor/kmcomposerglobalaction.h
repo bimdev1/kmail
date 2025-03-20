@@ -12,7 +12,7 @@ class KMComposerGlobalAction : public QObject
 {
     Q_OBJECT
 public:
-    explicit KMComposerGlobalAction(KMComposerWin *composerWin, QObject *parent = nullptr);
+    explicit KMComposerGlobalAction(KMComposerWin* composerWin, QObject* parent = nullptr);
     ~KMComposerGlobalAction() override;
 
 public Q_SLOTS:
@@ -22,9 +22,9 @@ public Q_SLOTS:
     void slotCopy();
     void slotPaste();
     void slotMarkAll();
-    void slotInsertEmoticon(const QString &str);
-    void slotInsertText(const QString &str);
+    void slotInsertEmoticon(const QString& str);
+    void slotInsertText(const QString& str);
 
 private:
-    KMComposerWin *const mComposerWin;
+    KMComposerWin* const mComposerWin;
 };

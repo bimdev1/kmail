@@ -14,17 +14,17 @@ class FollowUpReminderJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit FollowUpReminderJob(QObject *parent = nullptr);
+    explicit FollowUpReminderJob(QObject* parent = nullptr);
     ~FollowUpReminderJob() override;
 
-    void setItem(const Akonadi::Item &item);
+    void setItem(const Akonadi::Item& item);
 
     void start();
 
 Q_SIGNALS:
-    void finished(const QString &messageId, Akonadi::Item::Id id);
+    void finished(const QString& messageId, Akonadi::Item::Id id);
 
 private:
-    void slotItemFetchJobDone(KJob *job);
+    void slotItemFetchJobDone(KJob* job);
     Akonadi::Item mItem;
 };

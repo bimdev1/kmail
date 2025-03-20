@@ -13,9 +13,8 @@
 #include <KLocalizedString>
 #include <QAction>
 
-ValidateSendMailShortcut::ValidateSendMailShortcut(KActionCollection *actionCollection, QWidget *parent)
-    : mParent(parent)
-    , mActionCollection(actionCollection)
+ValidateSendMailShortcut::ValidateSendMailShortcut(KActionCollection* actionCollection, QWidget* parent)
+    : mParent(parent), mActionCollection(actionCollection)
 {
 }
 
@@ -24,16 +23,13 @@ ValidateSendMailShortcut::~ValidateSendMailShortcut() = default;
 bool ValidateSendMailShortcut::validate()
 {
     bool sendNow = false;
-    const int result =
-        PIMMessageBox::fourBtnMsgBox(mParent,
-                                     QMessageBox::Question,
-                                     i18n("This shortcut allows to send mail directly.\nMail can be send accidentally.\nWhat do you want to do?"),
-                                     i18n("Configure shortcut"),
-                                     i18n("Remove Shortcut"),
-                                     i18n("Ask Before Sending"),
-                                     i18n("Sending Without Confirmation"));
+    const int result = PIMMessageBox::fourBtnMsgBox(
+        mParent, QMessageBox::Question,
+        i18n("This shortcut allows to send mail directly.\nMail can be send accidentally.\nWhat do you want to do?"),
+        i18n("Configure shortcut"), i18n("Remove Shortcut"), i18n("Ask Before Sending"),
+        i18n("Sending Without Confirmation"));
     if (result == QDialogButtonBox::Yes) {
-        QAction *act = mActionCollection->action(QStringLiteral("send_mail"));
+        QAction* act = mActionCollection->action(QStringLiteral("send_mail"));
         if (act) {
             act->setShortcut(QKeySequence());
             mActionCollection->writeSettings();

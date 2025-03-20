@@ -11,8 +11,8 @@
 
 #include "summaryview_part.h"
 
-#include "dropwidget.h"
 #include <PimCommon/BroadcastStatus>
+#include "dropwidget.h"
 using PimCommon::BroadcastStatus;
 
 #include <KIdentityManagementCore/Identity>
@@ -41,10 +41,9 @@ using PimCommon::BroadcastStatus;
 #include <QVBoxLayout>
 using namespace Qt::Literals::StringLiterals;
 
-SummaryViewPart::SummaryViewPart(KontactInterface::Core *core, const KAboutData &aboutData, QObject *parent)
-    : KParts::Part(parent)
-    , mCore(core)
-    , mConfigAction(new QAction(QIcon::fromTheme(QStringLiteral("configure")), i18n("&Configure Summary View…"), this))
+SummaryViewPart::SummaryViewPart(KontactInterface::Core* core, const KAboutData& aboutData, QObject* parent)
+    : KParts::Part(parent), mCore(core),
+      mConfigAction(new QAction(QIcon::fromTheme(QStringLiteral("configure")), i18n("&Configure Summary View…"), this))
 {
     Q_UNUSED(aboutData)
     setComponentName(QStringLiteral("kontactsummary"), i18n("Kontact Summary"));
@@ -61,10 +60,9 @@ SummaryViewPart::SummaryViewPart(KontactInterface::Core *core, const KAboutData 
     const QString str = i18n("Configure the summary view");
     mConfigAction->setStatusTip(str);
     mConfigAction->setToolTip(str);
-    mConfigAction->setWhatsThis(i18nc("@info:whatsthis",
-                                      "Choosing this will show a dialog where you can select which "
-                                      "summaries you want to see and also allow you to configure "
-                                      "the summaries to your liking."));
+    mConfigAction->setWhatsThis(i18nc("@info:whatsthis", "Choosing this will show a dialog where you can select which "
+                                                         "summaries you want to see and also allow you to configure "
+                                                         "the summaries to your liking."));
 
     setXMLFile(QStringLiteral("kontactsummary_part.rc"));
 
@@ -76,7 +74,7 @@ SummaryViewPart::~SummaryViewPart()
     saveLayout();
 }
 
-void SummaryViewPart::partActivateEvent(KParts::PartActivateEvent *event)
+void SummaryViewPart::partActivateEvent(KParts::PartActivateEvent* event)
 {
     // inform the plugins that the part has been activated so that they can
     // update the displayed information
@@ -89,8 +87,8 @@ void SummaryViewPart::partActivateEvent(KParts::PartActivateEvent *event)
 
 void SummaryViewPart::updateSummaries()
 {
-    QMap<QString, KontactInterface::Summary *>::ConstIterator it;
-    QMap<QString, KontactInterface::Summary *>::ConstIterator end(mSummaries.constEnd());
+    QMap<QString, KontactInterface::Summary*>::ConstIterator it;
+    QMap<QString, KontactInterface::Summary*>::ConstIterator end(mSummaries.constEnd());
     for (it = mSummaries.constBegin(); it != end; ++it) {
         it.value()->updateSummary(false);
     }
@@ -102,7 +100,7 @@ void SummaryViewPart::updateWidgets()
 
     delete mFrame;
 
-    const KIdentityManagementCore::Identity &id = KIdentityManagementCore::IdentityManager::self()->defaultIdentity();
+    const KIdentityManagementCore::Identity& id = KIdentityManagementCore::IdentityManager::self()->defaultIdentity();
 
     const QString currentUser = i18n("Summary for %1", id.fullName());
     mUsernameLabel->setText(QStringLiteral("<b>%1</b>").arg(currentUser));
@@ -129,24 +127,27 @@ void SummaryViewPart::updateWidgets()
     // Collect all summary widgets with a summaryHeight > 0
     QStringList loadedSummaries;
 
-    QList<KontactInterface::Plugin *> plugins = mCore->pluginList();
-    const QList<KontactInterface::Plugin *>::ConstIterator end = plugins.constEnd();
-    QList<KontactInterface::Plugin *>::ConstIterator it = plugins.constBegin();
+    QList<KontactInterface::Plugin*> plugins = mCore->pluginList();
+    const QList<KontactInterface::Plugin*>::ConstIterator end = plugins.constEnd();
+    QList<KontactInterface::Plugin*>::ConstIterator it = plugins.constBegin();
     for (; it != end; ++it) {
-        KontactInterface::Plugin *plugin = *it;
+        KontactInterface::Plugin* plugin = *it;
         const QString pluginIdentifier{plugin->identifier()};
         if (!activeSummaries.contains(pluginIdentifier)) {
             continue;
         }
-        KontactInterface::Summary *summary = plugin->createSummaryWidget(mFrame);
+        KontactInterface::Summary* summary = plugin->createSummaryWidget(mFrame);
         if (summary) {
             if (summary->summaryHeight() > 0) {
                 mSummaries.insert(pluginIdentifier, summary);
 
-                connect(summary, &KontactInterface::Summary::message, BroadcastStatus::instance(), &PimCommon::BroadcastStatus::setStatusMsg);
-                connect(summary, &KontactInterface::Summary::summaryWidgetDropped, this, &SummaryViewPart::summaryWidgetMoved);
+                connect(summary, &KontactInterface::Summary::message, BroadcastStatus::instance(),
+                        &PimCommon::BroadcastStatus::setStatusMsg);
+                connect(summary, &KontactInterface::Summary::summaryWidgetDropped, this,
+                        &SummaryViewPart::summaryWidgetMoved);
 
-                if (!mLeftColumnSummaries.contains(pluginIdentifier) && !mRightColumnSummaries.contains(pluginIdentifier)) {
+                if (!mLeftColumnSummaries.contains(pluginIdentifier) &&
+                    !mRightColumnSummaries.contains(pluginIdentifier)) {
                     mLeftColumnSummaries.append(pluginIdentifier);
                 }
 
@@ -219,9 +220,9 @@ void SummaryViewPart::updateWidgets()
     mRightColumn->addStretch();
 }
 
-void SummaryViewPart::summaryWidgetMoved(QWidget *target, QObject *obj, int alignment)
+void SummaryViewPart::summaryWidgetMoved(QWidget* target, QObject* obj, int alignment)
 {
-    QWidget *widget = qobject_cast<QWidget *>(obj);
+    QWidget* widget = qobject_cast<QWidget*>(obj);
     if (!widget || (target == widget)) {
         return;
     }
@@ -231,8 +232,8 @@ void SummaryViewPart::summaryWidgetMoved(QWidget *target, QObject *obj, int alig
             return;
         }
     } else {
-        if ((mLeftColumn->indexOf(target) == -1 && mRightColumn->indexOf(target) == -1)
-            || (mLeftColumn->indexOf(widget) == -1 && mRightColumn->indexOf(widget) == -1)) {
+        if ((mLeftColumn->indexOf(target) == -1 && mRightColumn->indexOf(target) == -1) ||
+            (mLeftColumn->indexOf(widget) == -1 && mRightColumn->indexOf(widget) == -1)) {
             return;
         }
     }
@@ -244,7 +245,7 @@ void SummaryViewPart::summaryWidgetMoved(QWidget *target, QObject *obj, int alig
     }
 }
 
-void SummaryViewPart::drawLtoR(QWidget *target, QWidget *widget, int alignment)
+void SummaryViewPart::drawLtoR(QWidget* target, QWidget* widget, int alignment)
 {
     if (mLeftColumn->indexOf(widget) != -1) {
         mLeftColumn->removeWidget(widget);
@@ -302,7 +303,7 @@ void SummaryViewPart::drawLtoR(QWidget *target, QWidget *widget, int alignment)
     mFrame->updateGeometry();
 }
 
-void SummaryViewPart::drawRtoL(QWidget *target, QWidget *widget, int alignment)
+void SummaryViewPart::drawRtoL(QWidget* target, QWidget* widget, int alignment)
 {
     if (mRightColumn->indexOf(widget) != -1) {
         mRightColumn->removeWidget(widget);
@@ -368,29 +369,27 @@ void SummaryViewPart::slotTextChanged()
 void SummaryViewPart::slotAdjustPalette()
 {
     if (!QApplication::isRightToLeft()) {
-        mMainWidget->setStyleSheet(
-            QStringLiteral("#mMainWidget { "
-                           " background: palette(base);"
-                           " color: palette(text);"
-                           " background-image: url(:/summaryview/kontact_bg.png);"
-                           " background-position: bottom right;"
-                           " background-repeat: no-repeat; }"
-                           "QLabel { "
-                           " color: palette(text); }"
-                           "KUrlLabel { "
-                           " color: palette(link); }"));
+        mMainWidget->setStyleSheet(QStringLiteral("#mMainWidget { "
+                                                  " background: palette(base);"
+                                                  " color: palette(text);"
+                                                  " background-image: url(:/summaryview/kontact_bg.png);"
+                                                  " background-position: bottom right;"
+                                                  " background-repeat: no-repeat; }"
+                                                  "QLabel { "
+                                                  " color: palette(text); }"
+                                                  "KUrlLabel { "
+                                                  " color: palette(link); }"));
     } else {
-        mMainWidget->setStyleSheet(
-            QStringLiteral("#mMainWidget { "
-                           " background: palette(base);"
-                           " color: palette(text);"
-                           " background-image: url(:/summaryview/kontact_bg.png);"
-                           " background-position: bottom left;"
-                           " background-repeat: no-repeat; }"
-                           "QLabel { "
-                           " color: palette(text); }"
-                           "KUrlLabel { "
-                           " color: palette(link); }"));
+        mMainWidget->setStyleSheet(QStringLiteral("#mMainWidget { "
+                                                  " background: palette(base);"
+                                                  " color: palette(text);"
+                                                  " background-image: url(:/summaryview/kontact_bg.png);"
+                                                  " background-position: bottom left;"
+                                                  " background-repeat: no-repeat; }"
+                                                  "QLabel { "
+                                                  " color: palette(text); }"
+                                                  "KUrlLabel { "
+                                                  " color: palette(link); }"));
     }
 }
 
@@ -407,7 +406,7 @@ void SummaryViewPart::slotConfigure()
     dlg->setModal(true);
     connect(dlg.data(), &KCMultiDialog::configCommitted, this, &SummaryViewPart::updateWidgets);
     const auto metaDataList = KPluginMetaData::findPlugins(QStringLiteral("pim6/kcms/summary/"));
-    for (const auto &metaData : metaDataList) {
+    for (const auto& metaData : metaDataList) {
         dlg->addModule(metaData);
     }
 
@@ -415,7 +414,7 @@ void SummaryViewPart::slotConfigure()
     delete dlg;
 }
 
-void SummaryViewPart::initGUI(KontactInterface::Core *core)
+void SummaryViewPart::initGUI(KontactInterface::Core* core)
 {
     auto sa = new QScrollArea(core);
 
@@ -493,10 +492,10 @@ void SummaryViewPart::saveLayout()
     config.sync();
 }
 
-QString SummaryViewPart::widgetName(QWidget *widget) const
+QString SummaryViewPart::widgetName(QWidget* widget) const
 {
-    QMap<QString, KontactInterface::Summary *>::ConstIterator it;
-    const QMap<QString, KontactInterface::Summary *>::ConstIterator end(mSummaries.constEnd());
+    QMap<QString, KontactInterface::Summary*>::ConstIterator it;
+    const QMap<QString, KontactInterface::Summary*>::ConstIterator end(mSummaries.constEnd());
     for (it = mSummaries.constBegin(); it != end; ++it) {
         if (it.value() == widget) {
             return it.key();
@@ -506,7 +505,7 @@ QString SummaryViewPart::widgetName(QWidget *widget) const
     return {};
 }
 
-bool SummaryViewPart::event(QEvent *e)
+bool SummaryViewPart::event(QEvent* e)
 {
     if (e->type() == QEvent::ApplicationPaletteChange) {
         slotAdjustPalette();

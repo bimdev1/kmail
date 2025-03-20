@@ -5,11 +5,6 @@
 */
 
 #include "sendlateragent.h"
-#include "sendlateragent_debug.h"
-#include "sendlateragentadaptor.h"
-#include "sendlateragentsettings.h"
-#include "sendlatermanager.h"
-#include "sendlaterutil.h"
 #include <Akonadi/AgentInstance>
 #include <Akonadi/AgentManager>
 #include <Akonadi/AttributeFactory>
@@ -21,28 +16,31 @@
 #include <Akonadi/SpecialMailCollections>
 #include <KMime/Message>
 #include <QDBusConnection>
+#include "sendlateragent_debug.h"
+#include "sendlateragentadaptor.h"
+#include "sendlateragentsettings.h"
+#include "sendlatermanager.h"
+#include "sendlaterutil.h"
 
 #include <KWindowSystem>
+#include <chrono>
 #include <QPointer>
 #include <QTimer>
-#include <chrono>
 
 using namespace std::chrono_literals;
 
 // #define DEBUG_SENDLATERAGENT 1
 
-SendLaterAgent::SendLaterAgent(const QString &id)
-    : Akonadi::AgentWidgetBase(id)
-    , mManager(new SendLaterManager(this))
+SendLaterAgent::SendLaterAgent(const QString& id) : Akonadi::AgentWidgetBase(id), mManager(new SendLaterManager(this))
 {
     connect(mManager, &SendLaterManager::needUpdateConfigDialogBox, this, &SendLaterAgent::needUpdateConfigDialogBox);
-    connect(this, &SendLaterAgent::configurationDialogAccepted, mManager, [this]() {
-        mManager->load();
-    });
+    connect(this, &SendLaterAgent::configurationDialogAccepted, mManager, [this]() { mManager->load(); });
     new SendLaterAgentAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/SendLaterAgent"), this, QDBusConnection::ExportAdaptors);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/SendLaterAgent"), this,
+                                                 QDBusConnection::ExportAdaptors);
 
-    const QString service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_sendlater_agent"));
+    const QString service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent,
+                                                                             QStringLiteral("akonadi_sendlater_agent"));
 
     QDBusConnection::sessionBus().registerService(service);
 
@@ -123,13 +121,8 @@ void SendLaterAgent::removeItem(qint64 item)
     }
 }
 
-void SendLaterAgent::addItem(qint64 timestamp,
-                             bool recurrence,
-                             int recurrenceValue,
-                             int recurrenceUnit,
-                             Akonadi::Item::Id id,
-                             const QString &subject,
-                             const QString &to)
+void SendLaterAgent::addItem(qint64 timestamp, bool recurrence, int recurrenceValue, int recurrenceUnit,
+                             Akonadi::Item::Id id, const QString& subject, const QString& to)
 {
     auto info = new MessageComposer::SendLaterInfo;
     info->setDateTime(QDateTime::fromSecsSinceEpoch(timestamp));
@@ -149,10 +142,10 @@ void SendLaterAgent::slotSendNow(Akonadi::Item::Id id)
     mManager->sendNow(id);
 }
 
-void SendLaterAgent::itemsRemoved(const Akonadi::Item::List &items)
+void SendLaterAgent::itemsRemoved(const Akonadi::Item::List& items)
 {
     bool needToReload = false;
-    for (const Akonadi::Item &item : items) {
+    for (const Akonadi::Item& item : items) {
         if (mManager->itemRemoved(item.id())) {
             needToReload = true;
         }
@@ -162,11 +155,11 @@ void SendLaterAgent::itemsRemoved(const Akonadi::Item::List &items)
     }
 }
 
-void SendLaterAgent::itemsMoved(const Akonadi::Item::List &items,
-                                const Akonadi::Collection & /*sourceCollection*/,
-                                const Akonadi::Collection &destinationCollection)
+void SendLaterAgent::itemsMoved(const Akonadi::Item::List& items, const Akonadi::Collection& /*sourceCollection*/,
+                                const Akonadi::Collection& destinationCollection)
 {
-    if (Akonadi::SpecialMailCollections::self()->specialCollectionType(destinationCollection) != Akonadi::SpecialMailCollections::Trash) {
+    if (Akonadi::SpecialMailCollections::self()->specialCollectionType(destinationCollection) !=
+        Akonadi::SpecialMailCollections::Trash) {
         return;
     }
     itemsRemoved(items);

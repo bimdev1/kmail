@@ -22,23 +22,23 @@ class ColorListBox : public QTreeWidget
     Q_OBJECT
 
 public:
-    explicit ColorListBox(QWidget *parent = nullptr);
-    void addColor(const QString &text, const QColor &color = Qt::black);
-    void setColor(int index, const QColor &color);
+    explicit ColorListBox(QWidget* parent = nullptr);
+    void addColor(const QString& text, const QColor& color = Qt::black);
+    void setColor(int index, const QColor& color);
     // like setColor, but does not Q_EMIT changed()
-    void setColorSilently(int index, const QColor &color);
+    void setColorSilently(int index, const QColor& color);
     [[nodiscard]] QColor color(int index) const;
 
 Q_SIGNALS:
     void changed();
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *e) override;
-    void dragLeaveEvent(QDragLeaveEvent *e) override;
-    void dragMoveEvent(QDragMoveEvent *e) override;
-    void dropEvent(QDropEvent *e) override;
+    void dragEnterEvent(QDragEnterEvent* e) override;
+    void dragLeaveEvent(QDragLeaveEvent* e) override;
+    void dragMoveEvent(QDragMoveEvent* e) override;
+    void dropEvent(QDropEvent* e) override;
 
 private:
-    void newColor(const QModelIndex &index);
-    QTreeWidgetItem *mCurrentOnDragEnter = nullptr;
+    void newColor(const QModelIndex& index);
+    QTreeWidgetItem* mCurrentOnDragEnter = nullptr;
 };

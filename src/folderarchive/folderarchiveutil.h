@@ -6,12 +6,10 @@
 #pragma once
 
 #include <QString>
-namespace FolderArchive
-{
-namespace FolderArchiveUtil
-{
+namespace FolderArchive {
+namespace FolderArchiveUtil {
 [[nodiscard]] QString groupConfigPattern();
-[[nodiscard]] bool resourceSupportArchiving(const QString &resource);
+[[nodiscard]] bool resourceSupportArchiving(const QString& resource);
 [[nodiscard]] QString configFileName();
-}
-}
+} // namespace FolderArchiveUtil
+} // namespace FolderArchive

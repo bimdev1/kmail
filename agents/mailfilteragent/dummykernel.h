@@ -2,14 +2,12 @@
 
 #include <MailCommon/MailInterfaces>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class EntityTreeModel;
 class EntityMimeTypeFilterModel;
-}
+} // namespace Akonadi
 
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderCollectionMonitor;
 }
 
@@ -17,16 +15,16 @@ class DummyKernel : public QObject, public MailCommon::IKernel, public MailCommo
 {
     Q_OBJECT
 public:
-    explicit DummyKernel(QObject *parent = nullptr);
+    explicit DummyKernel(QObject* parent = nullptr);
 
-    [[nodiscard]] KIdentityManagementCore::IdentityManager *identityManager() override;
-    [[nodiscard]] MessageComposer::MessageSender *msgSender() override;
+    [[nodiscard]] KIdentityManagementCore::IdentityManager* identityManager() override;
+    [[nodiscard]] MessageComposer::MessageSender* msgSender() override;
 
-    [[nodiscard]] Akonadi::EntityMimeTypeFilterModel *collectionModel() const override;
+    [[nodiscard]] Akonadi::EntityMimeTypeFilterModel* collectionModel() const override;
     [[nodiscard]] KSharedConfig::Ptr config() override;
     void syncConfig() override;
-    [[nodiscard]] MailCommon::JobScheduler *jobScheduler() const override;
-    [[nodiscard]] Akonadi::ChangeRecorder *folderCollectionMonitor() const override;
+    [[nodiscard]] MailCommon::JobScheduler* jobScheduler() const override;
+    [[nodiscard]] Akonadi::ChangeRecorder* folderCollectionMonitor() const override;
     void updateSystemTray() override;
 
     [[nodiscard]] qreal closeToQuotaThreshold() override;
@@ -38,9 +36,9 @@ public:
     void expunge(Akonadi::Collection::Id id, bool sync) override;
 
 private:
-    MessageComposer::MessageSender *const mMessageSender;
-    KIdentityManagementCore::IdentityManager *const mIdentityManager;
-    MailCommon::FolderCollectionMonitor *mFolderCollectionMonitor = nullptr;
-    Akonadi::EntityTreeModel *mEntityTreeModel = nullptr;
-    Akonadi::EntityMimeTypeFilterModel *const mCollectionModel;
+    MessageComposer::MessageSender* const mMessageSender;
+    KIdentityManagementCore::IdentityManager* const mIdentityManager;
+    MailCommon::FolderCollectionMonitor* mFolderCollectionMonitor = nullptr;
+    Akonadi::EntityTreeModel* mEntityTreeModel = nullptr;
+    Akonadi::EntityMimeTypeFilterModel* const mCollectionModel;
 };

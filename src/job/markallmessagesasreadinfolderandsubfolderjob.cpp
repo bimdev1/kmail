@@ -11,14 +11,14 @@
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/CollectionFetchScope>
 
-MarkAllMessagesAsReadInFolderAndSubFolderJob::MarkAllMessagesAsReadInFolderAndSubFolderJob(QObject *parent)
+MarkAllMessagesAsReadInFolderAndSubFolderJob::MarkAllMessagesAsReadInFolderAndSubFolderJob(QObject* parent)
     : QObject(parent)
 {
 }
 
 MarkAllMessagesAsReadInFolderAndSubFolderJob::~MarkAllMessagesAsReadInFolderAndSubFolderJob() = default;
 
-void MarkAllMessagesAsReadInFolderAndSubFolderJob::setTopLevelCollection(const Akonadi::Collection &topLevelCollection)
+void MarkAllMessagesAsReadInFolderAndSubFolderJob::setTopLevelCollection(const Akonadi::Collection& topLevelCollection)
 {
     mTopLevelCollection = topLevelCollection;
 }
@@ -26,14 +26,15 @@ void MarkAllMessagesAsReadInFolderAndSubFolderJob::setTopLevelCollection(const A
 void MarkAllMessagesAsReadInFolderAndSubFolderJob::start()
 {
     if (mTopLevelCollection.isValid()) {
-        auto fetchJob = new Akonadi::CollectionFetchJob(mTopLevelCollection, Akonadi::CollectionFetchJob::Recursive, this);
+        auto fetchJob =
+            new Akonadi::CollectionFetchJob(mTopLevelCollection, Akonadi::CollectionFetchJob::Recursive, this);
         fetchJob->fetchScope().setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
-        connect(fetchJob, &Akonadi::CollectionFetchJob::finished, this, [this](KJob *job) {
+        connect(fetchJob, &Akonadi::CollectionFetchJob::finished, this, [this](KJob* job) {
             if (job->error()) {
                 qCWarning(KMAIL_LOG) << job->errorString();
                 slotFetchCollectionFailed();
             } else {
-                auto fetch = static_cast<Akonadi::CollectionFetchJob *>(job);
+                auto fetch = static_cast<Akonadi::CollectionFetchJob*>(job);
                 slotFetchCollectionDone(fetch->collections());
             }
         });
@@ -49,12 +50,13 @@ void MarkAllMessagesAsReadInFolderAndSubFolderJob::slotFetchCollectionFailed()
     deleteLater();
 }
 
-void MarkAllMessagesAsReadInFolderAndSubFolderJob::slotFetchCollectionDone(const Akonadi::Collection::List &list)
+void MarkAllMessagesAsReadInFolderAndSubFolderJob::slotFetchCollectionDone(const Akonadi::Collection::List& list)
 {
     Akonadi::MessageStatus messageStatus;
     messageStatus.setRead(true);
     auto markAsReadAllJob = new Akonadi::MarkAsCommand(messageStatus, list);
-    connect(markAsReadAllJob, &Akonadi::MarkAsCommand::result, this, &MarkAllMessagesAsReadInFolderAndSubFolderJob::slotMarkAsResult);
+    connect(markAsReadAllJob, &Akonadi::MarkAsCommand::result, this,
+            &MarkAllMessagesAsReadInFolderAndSubFolderJob::slotMarkAsResult);
     markAsReadAllJob->execute();
 }
 

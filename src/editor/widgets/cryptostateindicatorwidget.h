@@ -6,15 +6,15 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <QWidget>
+#include "kmail_private_export.h"
 class QLabel;
 
 class KMAILTESTS_TESTS_EXPORT CryptoStateIndicatorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CryptoStateIndicatorWidget(QWidget *parent = nullptr);
+    explicit CryptoStateIndicatorWidget(QWidget* parent = nullptr);
     ~CryptoStateIndicatorWidget() override;
 
     void updateSignatureAndEncrypionStateIndicators(bool isSign, bool isEncrypted);
@@ -23,8 +23,8 @@ public:
 
 private:
     KMAIL_NO_EXPORT void updateShowAlwaysIndicator();
-    QLabel *const mSignatureStateIndicator;
-    QLabel *const mEncryptionStateIndicator;
+    QLabel* const mSignatureStateIndicator;
+    QLabel* const mEncryptionStateIndicator;
     bool mShowAlwaysIndicator = true;
     bool mIsSign = false;
     bool mIsEncrypted = false;

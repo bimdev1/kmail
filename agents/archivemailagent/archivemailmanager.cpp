@@ -13,18 +13,17 @@
 #include <MailCommon/MailKernel>
 #include <MailCommon/MailUtil>
 
-#include "archivemailagent_debug.h"
 #include <KConfigGroup>
+#include "archivemailagent_debug.h"
 
 #include <QDate>
 #include <QFile>
 #include <QRegularExpression>
 
-ArchiveMailManager::ArchiveMailManager(QObject *parent)
-    : QObject(parent)
+ArchiveMailManager::ArchiveMailManager(QObject* parent) : QObject(parent)
 {
     mArchiveMailKernel = ArchiveMailKernel::self();
-    CommonKernel->registerKernelIf(mArchiveMailKernel); // register KernelIf early, it is used by the Filter classes
+    CommonKernel->registerKernelIf(mArchiveMailKernel);   // register KernelIf early, it is used by the Filter classes
     CommonKernel->registerSettingsIf(mArchiveMailKernel); // SettingsIf is used in FolderTreeWidget
     mConfig = KSharedConfig::openConfig();
 }
@@ -39,14 +38,15 @@ void ArchiveMailManager::load()
     qDeleteAll(mListArchiveInfo);
     mListArchiveInfo.clear();
 
-    const QStringList collectionList = mConfig->groupList().filter(QRegularExpression(QStringLiteral("ArchiveMailCollection \\d+")));
+    const QStringList collectionList =
+        mConfig->groupList().filter(QRegularExpression(QStringLiteral("ArchiveMailCollection \\d+")));
     const int numberOfCollection = collectionList.count();
     for (int i = 0; i < numberOfCollection; ++i) {
         KConfigGroup group = mConfig->group(collectionList.at(i));
         auto info = new ArchiveMailInfo(group);
 
         if (ArchiveMailAgentUtil::needToArchive(info)) {
-            for (ArchiveMailInfo *oldInfo : std::as_const(mListArchiveInfo)) {
+            for (ArchiveMailInfo* oldInfo : std::as_const(mListArchiveInfo)) {
                 if (oldInfo->saveCollectionId() == info->saveCollectionId()) {
                     // already in jobscheduler
                     delete info;
@@ -57,7 +57,8 @@ void ArchiveMailManager::load()
             if (info) {
                 // Store task started
                 mListArchiveInfo.append(info);
-                auto task = new ScheduledArchiveTask(this, info, Akonadi::Collection(info->saveCollectionId()), /*immediate*/ false);
+                auto task = new ScheduledArchiveTask(this, info, Akonadi::Collection(info->saveCollectionId()),
+                                                     /*immediate*/ false);
                 mArchiveMailKernel->jobScheduler()->registerTask(task);
             }
         } else {
@@ -66,7 +67,7 @@ void ArchiveMailManager::load()
     }
 }
 
-void ArchiveMailManager::removeCollection(const Akonadi::Collection &collection)
+void ArchiveMailManager::removeCollection(const Akonadi::Collection& collection)
 {
     removeCollectionId(collection.id());
 }
@@ -80,7 +81,7 @@ void ArchiveMailManager::removeCollectionId(Akonadi::Collection::Id id)
         mConfig->sync();
         mConfig->reparseConfiguration();
         const auto lst = mListArchiveInfo;
-        for (ArchiveMailInfo *info : lst) {
+        for (ArchiveMailInfo* info : lst) {
             if (info->saveCollectionId() == id) {
                 mListArchiveInfo.removeAll(info);
             }
@@ -88,7 +89,7 @@ void ArchiveMailManager::removeCollectionId(Akonadi::Collection::Id id)
     }
 }
 
-void ArchiveMailManager::backupDone(ArchiveMailInfo *info)
+void ArchiveMailManager::backupDone(ArchiveMailInfo* info)
 {
     info->setLastDateSaved(QDate::currentDate());
     const QString groupname = ArchiveMailAgentUtil::archivePattern.arg(info->saveCollectionId());
@@ -118,7 +119,7 @@ void ArchiveMailManager::backupDone(ArchiveMailInfo *info)
     Q_EMIT needUpdateConfigDialogBox();
 }
 
-void ArchiveMailManager::collectionDoesntExist(ArchiveMailInfo *info)
+void ArchiveMailManager::collectionDoesntExist(ArchiveMailInfo* info)
 {
     removeCollectionId(info->saveCollectionId());
     mListArchiveInfo.removeAll(info);
@@ -141,7 +142,7 @@ QString ArchiveMailManager::printCurrentListInfo() const
     if (mListArchiveInfo.isEmpty()) {
         infoStr = QStringLiteral("No archive in queue");
     } else {
-        for (ArchiveMailInfo *info : std::as_const(mListArchiveInfo)) {
+        for (ArchiveMailInfo* info : std::as_const(mListArchiveInfo)) {
             if (!infoStr.isEmpty()) {
                 infoStr += QLatin1Char('\n');
             }
@@ -151,12 +152,15 @@ QString ArchiveMailManager::printCurrentListInfo() const
     return infoStr;
 }
 
-QString ArchiveMailManager::infoToStr(ArchiveMailInfo *info) const
+QString ArchiveMailManager::infoToStr(ArchiveMailInfo* info) const
 {
-    QString infoStr = QLatin1StringView("collectionId: ") + QString::number(info->saveCollectionId()) + QLatin1Char('\n');
-    infoStr += QLatin1StringView("save sub collection: ") + (info->saveSubCollection() ? QStringLiteral("true") : QStringLiteral("false")) + QLatin1Char('\n');
+    QString infoStr =
+        QLatin1StringView("collectionId: ") + QString::number(info->saveCollectionId()) + QLatin1Char('\n');
+    infoStr += QLatin1StringView("save sub collection: ") +
+               (info->saveSubCollection() ? QStringLiteral("true") : QStringLiteral("false")) + QLatin1Char('\n');
     infoStr += QLatin1StringView("last Date Saved: ") + info->lastDateSaved().toString() + QLatin1Char('\n');
-    infoStr += QLatin1StringView("maximum archive number: ") + QString::number(info->maximumArchiveCount()) + QLatin1Char('\n');
+    infoStr += QLatin1StringView("maximum archive number: ") + QString::number(info->maximumArchiveCount()) +
+               QLatin1Char('\n');
     infoStr += QLatin1StringView("directory: ") + info->url().toDisplayString() + QLatin1Char('\n');
     infoStr += QLatin1StringView("Enabled: ") + (info->isEnabled() ? QStringLiteral("true") : QStringLiteral("false"));
     return infoStr;
@@ -165,7 +169,8 @@ QString ArchiveMailManager::infoToStr(ArchiveMailInfo *info) const
 QString ArchiveMailManager::printArchiveListInfo() const
 {
     QString infoStr;
-    const QStringList collectionList = mConfig->groupList().filter(QRegularExpression(QStringLiteral("ArchiveMailCollection \\d+")));
+    const QStringList collectionList =
+        mConfig->groupList().filter(QRegularExpression(QStringLiteral("ArchiveMailCollection \\d+")));
     const int numberOfCollection = collectionList.count();
     for (int i = 0; i < numberOfCollection; ++i) {
         KConfigGroup group = mConfig->group(collectionList.at(i));
@@ -178,7 +183,7 @@ QString ArchiveMailManager::printArchiveListInfo() const
     return infoStr;
 }
 
-void ArchiveMailManager::archiveFolder(const QString &path, Akonadi::Collection::Id collectionId)
+void ArchiveMailManager::archiveFolder(const QString& path, Akonadi::Collection::Id collectionId)
 {
     auto info = new ArchiveMailInfo;
     info->setSaveCollectionId(collectionId);
@@ -188,7 +193,7 @@ void ArchiveMailManager::archiveFolder(const QString &path, Akonadi::Collection:
     mArchiveMailKernel->jobScheduler()->registerTask(task);
 }
 
-ArchiveMailKernel *ArchiveMailManager::kernel() const
+ArchiveMailKernel* ArchiveMailManager::kernel() const
 {
     return mArchiveMailKernel;
 }

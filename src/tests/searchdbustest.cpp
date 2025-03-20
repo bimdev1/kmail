@@ -13,8 +13,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-searchdbustest::searchdbustest(QWidget *parent)
-    : QWidget(parent)
+searchdbustest::searchdbustest(QWidget* parent) : QWidget(parent)
 {
     auto mainlayout = new QVBoxLayout(this);
     auto button = new QPushButton(QStringLiteral("reindex collections"), this);
@@ -24,7 +23,8 @@ searchdbustest::searchdbustest(QWidget *parent)
 
 void searchdbustest::slotReindexCollections()
 {
-    QDBusInterface interfaceAkonadiIndexer(PimCommon::MailUtil::indexerServiceName(), QStringLiteral("/"), QStringLiteral("org.freedesktop.Akonadi.Indexer"));
+    QDBusInterface interfaceAkonadiIndexer(PimCommon::MailUtil::indexerServiceName(), QStringLiteral("/"),
+                                           QStringLiteral("org.freedesktop.Akonadi.Indexer"));
     if (interfaceAkonadiIndexer.isValid()) {
         const QList<qlonglong> lst = {100, 300};
         qDebug() << "reindex " << lst;
@@ -35,7 +35,7 @@ void searchdbustest::slotReindexCollections()
     }
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 

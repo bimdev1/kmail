@@ -7,15 +7,14 @@
 #include "transportactivities.h"
 #include "activitiesmanager.h"
 
-TransportActivities::TransportActivities(ActivitiesManager *manager)
-    : MailTransport::TransportActivitiesAbstract{manager}
-    , mActivitiesManager(manager)
+TransportActivities::TransportActivities(ActivitiesManager* manager)
+    : MailTransport::TransportActivitiesAbstract{manager}, mActivitiesManager(manager)
 {
 }
 
 TransportActivities::~TransportActivities() = default;
 
-bool TransportActivities::filterAcceptsRow(const QStringList &activities) const
+bool TransportActivities::filterAcceptsRow(const QStringList& activities) const
 {
     if (mActivitiesManager && mActivitiesManager->enabled()) {
         if (!activities.isEmpty()) {

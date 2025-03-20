@@ -15,14 +15,14 @@ class KMComposerUpdateTemplateJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit KMComposerUpdateTemplateJob(QObject *parent = nullptr);
+    explicit KMComposerUpdateTemplateJob(QObject* parent = nullptr);
     ~KMComposerUpdateTemplateJob() override;
     void start();
-    void setMsg(const KMime::Message::Ptr &msg);
+    void setMsg(const KMime::Message::Ptr& msg);
 
-    void setCustomTemplate(const QString &customTemplate);
+    void setCustomTemplate(const QString& customTemplate);
 
-    void setTextSelection(const QString &textSelection);
+    void setTextSelection(const QString& textSelection);
 
     void setWasModified(bool wasModified);
 
@@ -30,11 +30,12 @@ public:
 
     void setUoid(uint uoid);
 
-    void setIdent(const KIdentityManagementCore::Identity &ident);
+    void setIdent(const KIdentityManagementCore::Identity& ident);
 
-    void setCollection(const Akonadi::Collection &col);
+    void setCollection(const Akonadi::Collection& col);
 Q_SIGNALS:
-    void updateComposer(const KIdentityManagementCore::Identity &ident, const KMime::Message::Ptr &msg, uint uoid, uint uoldId, bool wasModified);
+    void updateComposer(const KIdentityManagementCore::Identity& ident, const KMime::Message::Ptr& msg, uint uoid,
+                        uint uoldId, bool wasModified);
 
 private:
     void slotFinished();

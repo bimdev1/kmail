@@ -1,8 +1,8 @@
 //
 
 #pragma once
-#include "config-kmail.h"
 #include <MailCommon/MailInterfaces>
+#include "config-kmail.h"
 
 #include <QDBusObjectPath>
 #include <QList>
@@ -11,11 +11,11 @@
 
 #include <QUrl>
 
-#include "kmail_export.h"
-#include "settings/kmailsettings.h"
 #include <Akonadi/ServerManager>
 #include <Libkdepim/ProgressManager>
 #include <MessageViewer/Viewer>
+#include "kmail_export.h"
+#include "settings/kmailsettings.h"
 
 #include <memory>
 
@@ -23,37 +23,30 @@
 #define kmconfig KMKernel::config()
 
 class QAbstractItemModel;
-namespace Akonadi
-{
+namespace Akonadi {
 class Collection;
 class ChangeRecorder;
 class EntityTreeModel;
 class EntityMimeTypeFilterModel;
-}
+} // namespace Akonadi
 
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
-namespace Akonadi
-{
-namespace Search
-{
-namespace PIM
-{
+namespace Akonadi {
+namespace Search {
+namespace PIM {
 class IndexedItems;
 }
-}
-}
+} // namespace Search
+} // namespace Akonadi
 #endif
-namespace KIO
-{
+namespace KIO {
 class Job;
 }
 
-namespace MessageComposer
-{
+namespace MessageComposer {
 class MessageSender;
 }
-namespace TextAutoCorrectionCore
-{
+namespace TextAutoCorrectionCore {
 class AutoCorrection;
 }
 
@@ -61,43 +54,37 @@ class AutoCorrection;
  * This is to keep them out of the way from all the other
  * un-namespaced classes in libs and the rest of PIM.
  */
-namespace KMail
-{
+namespace KMail {
 class MailServiceImpl;
 class UndoStack;
 class UnityServiceManager;
-}
-namespace MessageComposer
-{
+} // namespace KMail
+namespace MessageComposer {
 class AkonadiSender;
 }
 
-namespace KIdentityManagementCore
-{
+namespace KIdentityManagementCore {
 class Identity;
 class IdentityManager;
-}
+} // namespace KIdentityManagementCore
 
-namespace MailCommon
-{
+namespace MailCommon {
 class Kernel;
 class FolderSettings;
 class FolderCollectionMonitor;
 class JobScheduler;
 class KMFilterDialog;
 class MailCommonSettings;
-}
+} // namespace MailCommon
 
 #if KMAIL_WITH_KUSERFEEDBACK
 class KMailUserFeedbackProvider;
-namespace KUserFeedback
-{
+namespace KUserFeedback {
 class Provider;
 }
 #endif
 
-namespace Kleo
-{
+namespace Kleo {
 class KeyCache;
 }
 
@@ -130,13 +117,16 @@ class CheckIndexingManager;
  * - handling of some config settings, like wrapCol()
  * - various other stuff
  */
-class KMAIL_EXPORT KMKernel : public QObject, public MailCommon::IKernel, public MailCommon::ISettings, public MailCommon::IFilter
+class KMAIL_EXPORT KMKernel : public QObject,
+                              public MailCommon::IKernel,
+                              public MailCommon::ISettings,
+                              public MailCommon::IFilter
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.kmail.kmail")
 
 public:
-    explicit KMKernel(QObject *parent = nullptr);
+    explicit KMKernel(QObject* parent = nullptr);
     ~KMKernel() override;
 
     /**
@@ -181,13 +171,13 @@ public Q_SLOTS:
      * If the account name is empty, all accounts not excluded from manual
      * mail check will be checked.
      */
-    Q_SCRIPTABLE void checkAccount(const QString &account);
+    Q_SCRIPTABLE void checkAccount(const QString& account);
 
-    Q_SCRIPTABLE bool selectFolder(const QString &folder);
+    Q_SCRIPTABLE bool selectFolder(const QString& folder);
 
     Q_SCRIPTABLE bool canQueryClose();
 
-    Q_SCRIPTABLE bool handleCommandLine(bool noArgsOpensReader, const QStringList &args, const QString &workingDir);
+    Q_SCRIPTABLE bool handleCommandLine(bool noArgsOpensReader, const QStringList& args, const QString& workingDir);
 
     /**
      * Opens a composer window and prefills it with different
@@ -207,19 +197,11 @@ public Q_SLOTS:
      * @param inReplyTo A list of in-reply-to headers.
      * @param identity The mail identity.
      */
-    Q_SCRIPTABLE void openComposer(const QString &to,
-                                   const QString &cc,
-                                   const QString &bcc,
-                                   const QString &subject,
-                                   const QString &body,
-                                   bool hidden,
-                                   const QString &messageFile,
-                                   const QStringList &attachmentPaths,
-                                   const QStringList &customHeaders,
-                                   const QString &replyTo = QString(),
-                                   const QString &inReplyTo = QString(),
-                                   const QString &identity = QString(),
-                                   bool htmlBody = false);
+    Q_SCRIPTABLE void openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                                   const QString& body, bool hidden, const QString& messageFile,
+                                   const QStringList& attachmentPaths, const QStringList& customHeaders,
+                                   const QString& replyTo = QString(), const QString& inReplyTo = QString(),
+                                   const QString& identity = QString(), bool htmlBody = false);
 
     /**
      * Opens a composer window and prefills it with different
@@ -242,23 +224,13 @@ public Q_SLOTS:
      * @param attachCharset The charset of the attachment.
      * @param identity The identity identifier which will be used as sender identity.
      */
-    Q_SCRIPTABLE void openComposer(const QString &to,
-                                   const QString &cc,
-                                   const QString &bcc,
-                                   const QString &subject,
-                                   const QString &body,
-                                   bool hidden,
-                                   const QString &attachName,
-                                   const QByteArray &attachCte,
-                                   const QByteArray &attachData,
-                                   const QByteArray &attachType,
-                                   const QByteArray &attachSubType,
-                                   const QByteArray &attachParamAttr,
-                                   const QString &attachParamValue,
-                                   const QByteArray &attachContDisp,
-                                   const QByteArray &attachCharset,
-                                   unsigned int identity,
-                                   bool htmlBody);
+    Q_SCRIPTABLE void openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                                   const QString& body, bool hidden, const QString& attachName,
+                                   const QByteArray& attachCte, const QByteArray& attachData,
+                                   const QByteArray& attachType, const QByteArray& attachSubType,
+                                   const QByteArray& attachParamAttr, const QString& attachParamValue,
+                                   const QByteArray& attachContDisp, const QByteArray& attachCharset,
+                                   unsigned int identity, bool htmlBody);
 
     /**
      * Opens a composer window and prefills it with different
@@ -281,22 +253,12 @@ public Q_SLOTS:
      * @param attachCharset The charset of the attachment.
      * @param identity The identity identifier which will be used as sender identity.
      */
-    Q_SCRIPTABLE void openComposer(const QString &to,
-                                   const QString &cc,
-                                   const QString &bcc,
-                                   const QString &subject,
-                                   const QString &body,
-                                   const QString &attachName,
-                                   const QByteArray &attachCte,
-                                   const QByteArray &attachData,
-                                   const QByteArray &attachType,
-                                   const QByteArray &attachSubType,
-                                   const QByteArray &attachParamAttr,
-                                   const QString &attachParamValue,
-                                   const QByteArray &attachContDisp,
-                                   const QByteArray &attachCharset,
-                                   unsigned int identity,
-                                   bool htmlBody);
+    Q_SCRIPTABLE void openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                                   const QString& body, const QString& attachName, const QByteArray& attachCte,
+                                   const QByteArray& attachData, const QByteArray& attachType,
+                                   const QByteArray& attachSubType, const QByteArray& attachParamAttr,
+                                   const QString& attachParamValue, const QByteArray& attachContDisp,
+                                   const QByteArray& attachCharset, unsigned int identity, bool htmlBody);
 
     /**
      * Opens a composer window and prefills it with different
@@ -310,7 +272,8 @@ public Q_SLOTS:
      * @param body The message body.
      * @param hidden Whether the composer window shall initially be hidden.
      */
-    Q_SCRIPTABLE void openComposer(const QString &to, const QString &cc, const QString &bcc, const QString &subject, const QString &body, bool hidden);
+    Q_SCRIPTABLE void openComposer(const QString& to, const QString& cc, const QString& bcc, const QString& subject,
+                                   const QString& body, bool hidden);
 
     /**
      * Opens a composer window and prefills it with different
@@ -326,16 +289,16 @@ public Q_SLOTS:
      * @param messageFile A message file that will be used as message body.
      * @param attachURL The URL to the file that will be attached to the message.
      */
-    Q_SCRIPTABLE void
-    newMessage(const QString &to, const QString &cc, const QString &bcc, bool hidden, bool useFolderId, const QString &messageFile, const QString &attachURL);
+    Q_SCRIPTABLE void newMessage(const QString& to, const QString& cc, const QString& bcc, bool hidden,
+                                 bool useFolderId, const QString& messageFile, const QString& attachURL);
 
     Q_SCRIPTABLE bool showMail(qint64 serialNumber);
 
-    Q_SCRIPTABLE int viewMessage(const QString &messageFile);
+    Q_SCRIPTABLE int viewMessage(const QString& messageFile);
 
     Q_SCRIPTABLE void updateConfig();
 
-    Q_SCRIPTABLE void showFolder(const QString &collectionId);
+    Q_SCRIPTABLE void showFolder(const QString& collectionId);
 
     Q_SCRIPTABLE void reloadFolderArchiveConfig();
 
@@ -363,7 +326,7 @@ public:
 
     /** normal control stuff */
 
-    static KMKernel *self();
+    static KMKernel* self();
     KSharedConfig::Ptr config() override;
     void syncConfig() override;
 
@@ -371,18 +334,18 @@ public:
     void setupDBus();
 
     void expunge(Akonadi::Collection::Id col, bool sync) override;
-    Akonadi::ChangeRecorder *folderCollectionMonitor() const override;
+    Akonadi::ChangeRecorder* folderCollectionMonitor() const override;
 
     /**
      * Returns the main model, which contains all folders and the items of recently opened folders.
      */
-    Akonadi::EntityTreeModel *entityTreeModel() const;
+    Akonadi::EntityTreeModel* entityTreeModel() const;
 
     /**
      * Returns a model of all folders in KMail. This is basically the same as entityTreeModel(),
      * but with items filtered out, the model contains only collections.
      */
-    [[nodiscard]] Akonadi::EntityMimeTypeFilterModel *collectionModel() const override;
+    [[nodiscard]] Akonadi::EntityMimeTypeFilterModel* collectionModel() const override;
 
     void recoverDeadLetters();
     void closeAllKMailWindows();
@@ -391,38 +354,27 @@ public:
     void doSessionManagement();
     [[nodiscard]] bool firstInstance() const;
     void setFirstInstance(bool value);
-    void action(bool mailto,
-                bool check,
-                bool startInTray,
-                bool htmlBody,
-                const QString &to,
-                const QString &cc,
-                const QString &bcc,
-                const QString &subj,
-                const QString &body,
-                const QUrl &messageFile,
-                const QList<QUrl> &attach,
-                const QStringList &customHeaders,
-                const QString &replyTo,
-                const QString &inReplyTo,
-                const QString &identity);
+    void action(bool mailto, bool check, bool startInTray, bool htmlBody, const QString& to, const QString& cc,
+                const QString& bcc, const QString& subj, const QString& body, const QUrl& messageFile,
+                const QList<QUrl>& attach, const QStringList& customHeaders, const QString& replyTo,
+                const QString& inReplyTo, const QString& identity);
 
     // sets online status for akonadi accounts. true for online, false for offline
     void setAccountStatus(bool);
 
     [[nodiscard]] const QString xmlGuiInstanceName() const;
-    void setXmlGuiInstanceName(const QString &instance);
+    void setXmlGuiInstanceName(const QString& instance);
 
-    [[nodiscard]] KMail::UndoStack *undoStack() const;
-    MessageComposer::MessageSender *msgSender() override;
+    [[nodiscard]] KMail::UndoStack* undoStack() const;
+    MessageComposer::MessageSender* msgSender() override;
 
     void openFilterDialog(bool createDummyFilter = true) override;
-    void createFilter(const QByteArray &field, const QString &value) override;
+    void createFilter(const QByteArray& field, const QString& value) override;
 
     /** return the pointer to the identity manager */
-    KIdentityManagementCore::IdentityManager *identityManager() override;
+    KIdentityManagementCore::IdentityManager* identityManager() override;
 
-    MailCommon::JobScheduler *jobScheduler() const override;
+    MailCommon::JobScheduler* jobScheduler() const override;
 
     /** Expire all folders, used for the gui action */
     void expireAllFoldersNow();
@@ -437,13 +389,13 @@ public:
      */
     [[nodiscard]] bool haveSystemTrayApplet() const;
 
-    void setSystemTryAssociatedWindow(QWindow *window);
+    void setSystemTryAssociatedWindow(QWindow* window);
 
     /** returns a reference to the first Mainwin or a temporary Mainwin */
-    KMainWindow *mainWin();
+    KMainWindow* mainWin();
 
     /** Get first mainwidget */
-    KMMainWidget *getKMMainWidget() const;
+    KMMainWidget* getKMMainWidget() const;
 
     /**
      * Returns a list of all currently loaded folders. Since folders are loaded async, this
@@ -454,7 +406,7 @@ public:
     /**
      * Includes all subfolders of @p col, including the @p col itself.
      */
-    [[nodiscard]] Akonadi::Collection::List subfolders(const Akonadi::Collection &col) const;
+    [[nodiscard]] Akonadi::Collection::List subfolders(const Akonadi::Collection& col) const;
 
     //
     void selectCollectionFromId(Akonadi::Collection::Id id);
@@ -475,30 +427,30 @@ public:
 
     QStringList customTemplates() override;
 
-    void checkFolderFromResources(const Akonadi::Collection::List &collectionList);
+    void checkFolderFromResources(const Akonadi::Collection::List& collectionList);
 
-    [[nodiscard]] const QAbstractItemModel *treeviewModelSelection();
+    [[nodiscard]] const QAbstractItemModel* treeviewModelSelection();
 
     void savePaneSelection();
 
     void updatePaneTagComboBox();
-    [[nodiscard]] TextAutoCorrectionCore::AutoCorrection *composerAutoCorrection();
+    [[nodiscard]] TextAutoCorrectionCore::AutoCorrection* composerAutoCorrection();
 
     void toggleSystemTray();
-    FolderArchiveManager *folderArchiveManager() const;
+    FolderArchiveManager* folderArchiveManager() const;
 
     [[nodiscard]] bool allowToDebug() const;
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
-    [[nodiscard]] Akonadi::Search::PIM::IndexedItems *indexedItems() const;
+    [[nodiscard]] Akonadi::Search::PIM::IndexedItems* indexedItems() const;
 #endif
 
     void cleanupTemporaryFiles();
-    [[nodiscard]] MailCommon::MailCommonSettings *mailCommonSettings() const;
+    [[nodiscard]] MailCommon::MailCommonSettings* mailCommonSettings() const;
 #if KMAIL_WITH_KUSERFEEDBACK
-    KUserFeedback::Provider *userFeedbackProvider() const;
+    KUserFeedback::Provider* userFeedbackProvider() const;
 #endif
 protected:
-    void agentInstanceBroken(const Akonadi::AgentInstance &instance);
+    void agentInstanceBroken(const Akonadi::AgentInstance& instance);
 
 public Q_SLOTS:
 
@@ -538,51 +490,40 @@ Q_SIGNALS:
     void incomingAccountsChanged();
 private Q_SLOTS:
     /** Updates identities when a transport has been deleted. */
-    KMAIL_NO_EXPORT void transportRemoved(int id, const QString &name);
+    KMAIL_NO_EXPORT void transportRemoved(int id, const QString& name);
     /** Updates identities when a transport has been renamed. */
-    KMAIL_NO_EXPORT void transportRenamed(int id, const QString &oldName, const QString &newName);
+    KMAIL_NO_EXPORT void transportRenamed(int id, const QString& oldName, const QString& newName);
     KMAIL_NO_EXPORT void itemDispatchStarted();
-    KMAIL_NO_EXPORT void instanceStatusChanged(const Akonadi::AgentInstance &);
+    KMAIL_NO_EXPORT void instanceStatusChanged(const Akonadi::AgentInstance&);
 
     KMAIL_NO_EXPORT void akonadiStateChanged(Akonadi::ServerManager::State);
-    KMAIL_NO_EXPORT void slotProgressItemCompletedOrCanceled(KPIM::ProgressItem *item);
-    KMAIL_NO_EXPORT void slotInstanceError(const Akonadi::AgentInstance &instance, const QString &message);
-    KMAIL_NO_EXPORT void slotInstanceWarning(const Akonadi::AgentInstance &instance, const QString &message);
-    KMAIL_NO_EXPORT void slotCollectionRemoved(const Akonadi::Collection &col);
+    KMAIL_NO_EXPORT void slotProgressItemCompletedOrCanceled(KPIM::ProgressItem* item);
+    KMAIL_NO_EXPORT void slotInstanceError(const Akonadi::AgentInstance& instance, const QString& message);
+    KMAIL_NO_EXPORT void slotInstanceWarning(const Akonadi::AgentInstance& instance, const QString& message);
+    KMAIL_NO_EXPORT void slotCollectionRemoved(const Akonadi::Collection& col);
     KMAIL_NO_EXPORT void slotDeleteIdentity(uint identity);
-    KMAIL_NO_EXPORT void slotInstanceRemoved(const Akonadi::AgentInstance &);
-    KMAIL_NO_EXPORT void slotInstanceAdded(const Akonadi::AgentInstance &);
+    KMAIL_NO_EXPORT void slotInstanceRemoved(const Akonadi::AgentInstance&);
+    KMAIL_NO_EXPORT void slotInstanceAdded(const Akonadi::AgentInstance&);
     KMAIL_NO_EXPORT void slotSystemNetworkStatusChanged(bool isOnline);
-    KMAIL_NO_EXPORT void slotCollectionChanged(const Akonadi::Collection &, const QSet<QByteArray> &set);
+    KMAIL_NO_EXPORT void slotCollectionChanged(const Akonadi::Collection&, const QSet<QByteArray>& set);
 
     KMAIL_NO_EXPORT void slotCheckAccount(Akonadi::ServerManager::State state);
 
 private:
-    KMAIL_NO_EXPORT void viewMessage(const QUrl &url);
+    KMAIL_NO_EXPORT void viewMessage(const QUrl& url);
     [[nodiscard]] KMAIL_NO_EXPORT Akonadi::Collection currentCollection() const;
 
     /*
      * Fills a composer cWin
      *
      */
-    KMAIL_NO_EXPORT void fillComposer(bool hidden,
-                                      const QString &to,
-                                      const QString &cc,
-                                      const QString &bcc,
-                                      const QString &subject,
-                                      const QString &body,
-                                      const QString &attachName,
-                                      const QByteArray &attachCte,
-                                      const QByteArray &attachData,
-                                      const QByteArray &attachType,
-                                      const QByteArray &attachSubType,
-                                      const QByteArray &attachParamAttr,
-                                      const QString &attachParamValue,
-                                      const QByteArray &attachContDisp,
-                                      const QByteArray &attachCharset,
-                                      unsigned int identity,
-                                      bool forceShowWindow,
-                                      bool htmlBody);
+    KMAIL_NO_EXPORT void fillComposer(bool hidden, const QString& to, const QString& cc, const QString& bcc,
+                                      const QString& subject, const QString& body, const QString& attachName,
+                                      const QByteArray& attachCte, const QByteArray& attachData,
+                                      const QByteArray& attachType, const QByteArray& attachSubType,
+                                      const QByteArray& attachParamAttr, const QString& attachParamValue,
+                                      const QByteArray& attachContDisp, const QByteArray& attachCharset,
+                                      unsigned int identity, bool forceShowWindow, bool htmlBody);
 
     KMAIL_NO_EXPORT void verifyAccount();
     KMAIL_NO_EXPORT void resourceGoOnLine();
@@ -590,8 +531,8 @@ private:
     KMAIL_NO_EXPORT QSharedPointer<MailCommon::FolderSettings> currentFolderCollection();
     KMAIL_NO_EXPORT void saveConfig();
 
-    KMail::UndoStack *the_undoStack = nullptr;
-    MessageComposer::AkonadiSender *the_msgSender = nullptr;
+    KMail::UndoStack* the_undoStack = nullptr;
+    MessageComposer::AkonadiSender* the_msgSender = nullptr;
     /** is this the first start?  read from config */
     bool the_firstStart = false;
     /** are we going down? set from here */
@@ -601,33 +542,33 @@ private:
 
     KSharedConfig::Ptr mConfig;
     QString mXmlGuiInstance;
-    ConfigureDialog *mConfigureDialog = nullptr;
+    ConfigureDialog* mConfigureDialog = nullptr;
 
-    QTimer *mBackgroundTasksTimer = nullptr;
-    MailCommon::JobScheduler *const mJobScheduler;
-    KMail::MailServiceImpl *mMailService = nullptr;
+    QTimer* mBackgroundTasksTimer = nullptr;
+    MailCommon::JobScheduler* const mJobScheduler;
+    KMail::MailServiceImpl* mMailService = nullptr;
 
     bool mSystemNetworkStatus = true;
 
-    KMail::UnityServiceManager *mUnityServiceManager = nullptr;
+    KMail::UnityServiceManager* mUnityServiceManager = nullptr;
     QHash<QString, KPIM::ProgressItem::CryptoStatus> mResourceCryptoSettingCache;
-    MailCommon::FolderCollectionMonitor *mFolderCollectionMonitor = nullptr;
-    Akonadi::EntityTreeModel *mEntityTreeModel = nullptr;
-    Akonadi::EntityMimeTypeFilterModel *mCollectionModel = nullptr;
+    MailCommon::FolderCollectionMonitor* mFolderCollectionMonitor = nullptr;
+    Akonadi::EntityTreeModel* mEntityTreeModel = nullptr;
+    Akonadi::EntityMimeTypeFilterModel* mCollectionModel = nullptr;
 
     /// List of Akonadi resources that are currently being checked.
     QStringList mResourcesBeingChecked;
 
     QPointer<MailCommon::KMFilterDialog> mFilterEditDialog;
-    TextAutoCorrectionCore::AutoCorrection *mAutoCorrection = nullptr;
-    FolderArchiveManager *const mFolderArchiveManager;
+    TextAutoCorrectionCore::AutoCorrection* mAutoCorrection = nullptr;
+    FolderArchiveManager* const mFolderArchiveManager;
 #if !KMAIL_FORCE_DISABLE_AKONADI_SEARCH
-    CheckIndexingManager *mCheckIndexingManager = nullptr;
-    Akonadi::Search::PIM::IndexedItems *mIndexedItems = nullptr;
+    CheckIndexingManager* mCheckIndexingManager = nullptr;
+    Akonadi::Search::PIM::IndexedItems* mIndexedItems = nullptr;
 #endif
-    MailCommon::MailCommonSettings *mMailCommonSettings = nullptr;
+    MailCommon::MailCommonSettings* mMailCommonSettings = nullptr;
 #if KMAIL_WITH_KUSERFEEDBACK
-    KMailUserFeedbackProvider *mUserFeedbackProvider = nullptr;
+    KMailUserFeedbackProvider* mUserFeedbackProvider = nullptr;
 #endif
     std::shared_ptr<const Kleo::KeyCache> mKeyCache;
 

@@ -7,10 +7,7 @@
 #include "zoomlabelwidget.h"
 #include <KLocalizedString>
 
-ZoomLabelWidget::ZoomLabelWidget(QWidget *parent)
-    : QLabel(parent)
-{
-}
+ZoomLabelWidget::ZoomLabelWidget(QWidget* parent) : QLabel(parent) {}
 
 ZoomLabelWidget::~ZoomLabelWidget() = default;
 

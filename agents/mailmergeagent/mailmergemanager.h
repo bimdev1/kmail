@@ -13,7 +13,7 @@ class MailMergeManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit MailMergeManager(QObject *parent = nullptr);
+    explicit MailMergeManager(QObject* parent = nullptr);
     ~MailMergeManager() override;
     [[nodiscard]] QString printDebugInfo() const;
     void load(bool state = false);

@@ -14,10 +14,7 @@
 
 #include "followupreminderagent_debug.h"
 
-FollowUpReminderJob::FollowUpReminderJob(QObject *parent)
-    : QObject(parent)
-{
-}
+FollowUpReminderJob::FollowUpReminderJob(QObject* parent) : QObject(parent) {}
 
 FollowUpReminderJob::~FollowUpReminderJob() = default;
 
@@ -35,12 +32,12 @@ void FollowUpReminderJob::start()
     connect(job, &Akonadi::ItemFetchJob::result, this, &FollowUpReminderJob::slotItemFetchJobDone);
 }
 
-void FollowUpReminderJob::setItem(const Akonadi::Item &item)
+void FollowUpReminderJob::setItem(const Akonadi::Item& item)
 {
     mItem = item;
 }
 
-void FollowUpReminderJob::slotItemFetchJobDone(KJob *job)
+void FollowUpReminderJob::slotItemFetchJobDone(KJob* job)
 {
     if (job->error()) {
         qCCritical(FOLLOWUPREMINDERAGENT_LOG) << "Error while fetching item. " << job->error() << job->errorString();
@@ -48,7 +45,7 @@ void FollowUpReminderJob::slotItemFetchJobDone(KJob *job)
         return;
     }
 
-    const Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
+    const Akonadi::ItemFetchJob* fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
 
     const Akonadi::Item::List items = fetchJob->items();
     if (items.isEmpty()) {
@@ -64,7 +61,7 @@ void FollowUpReminderJob::slotItemFetchJobDone(KJob *job)
     }
     const auto msg = item.payload<KMime::Message::Ptr>();
     if (msg) {
-        KMime::Headers::InReplyTo *replyTo = msg->inReplyTo(false);
+        KMime::Headers::InReplyTo* replyTo = msg->inReplyTo(false);
         if (replyTo) {
             const QString replyToIdStr = replyTo->asUnicodeString();
             Q_EMIT finished(replyToIdStr, item.id());

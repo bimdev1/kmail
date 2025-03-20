@@ -13,11 +13,10 @@
 
 #include <KSharedConfig>
 
-namespace MessageComposer
-{
+namespace MessageComposer {
 class AkonadiSender;
 class SendLaterInfo;
-}
+} // namespace MessageComposer
 
 class QTimer;
 class SendLaterJob;
@@ -34,17 +33,17 @@ public:
         UnknownError = 5,
     };
 
-    explicit SendLaterManager(QObject *parent);
+    explicit SendLaterManager(QObject* parent);
     ~SendLaterManager() override;
 
-    void sendDone(MessageComposer::SendLaterInfo *info);
-    void sendError(MessageComposer::SendLaterInfo *info, ErrorType type);
+    void sendDone(MessageComposer::SendLaterInfo* info);
+    void sendError(MessageComposer::SendLaterInfo* info, ErrorType type);
     [[nodiscard]] QString printDebugInfo() const;
 
     void stopAll();
     [[nodiscard]] bool itemRemoved(Akonadi::Item::Id id);
 
-    [[nodiscard]] MessageComposer::AkonadiSender *sender() const;
+    [[nodiscard]] MessageComposer::AkonadiSender* sender() const;
 
     void sendNow(Akonadi::Item::Id id);
 
@@ -57,17 +56,17 @@ public Q_SLOTS:
 private:
     void slotCreateJob();
     void createSendInfoList();
-    [[nodiscard]] QString infoToStr(MessageComposer::SendLaterInfo *info) const;
-    void removeLaterInfo(MessageComposer::SendLaterInfo *info);
-    [[nodiscard]] MessageComposer::SendLaterInfo *searchInfo(Akonadi::Item::Id id);
+    [[nodiscard]] QString infoToStr(MessageComposer::SendLaterInfo* info) const;
+    void removeLaterInfo(MessageComposer::SendLaterInfo* info);
+    [[nodiscard]] MessageComposer::SendLaterInfo* searchInfo(Akonadi::Item::Id id);
     void recreateSendList();
     void stopTimer();
     void removeInfo(Akonadi::Item::Id id);
     KSharedConfig::Ptr mConfig;
-    QList<MessageComposer::SendLaterInfo *> mListSendLaterInfo;
-    MessageComposer::SendLaterInfo *mCurrentInfo = nullptr;
-    SendLaterJob *mCurrentJob = nullptr;
-    QTimer *const mTimer;
-    MessageComposer::AkonadiSender *const mSender;
+    QList<MessageComposer::SendLaterInfo*> mListSendLaterInfo;
+    MessageComposer::SendLaterInfo* mCurrentInfo = nullptr;
+    SendLaterJob* mCurrentJob = nullptr;
+    QTimer* const mTimer;
+    MessageComposer::AkonadiSender* const mSender;
     QQueue<Akonadi::Item::Id> mSendLaterQueue;
 };

@@ -8,8 +8,7 @@
 
 #include <QString>
 
-namespace Common
-{
+namespace Common {
 static const auto MailMimeType = QStringLiteral("message/rfc822");
 
 static const auto InboxBoxId = QStringLiteral("inbox");
@@ -21,4 +20,4 @@ static constexpr auto SpecialCollectionSentMail = "send-mail";
 static constexpr auto SpecialCollectionDrafts = "drafts";
 
 static const auto AgentIdentifier = QStringLiteral("akonadi_unifiedmailbox_agent");
-}
+} // namespace Common

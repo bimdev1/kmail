@@ -16,7 +16,7 @@ ecm_qt_declare_logging_category(mailmergeagent HEADER mailmergeagent_debug.h IDE
         EXPORT KMAIL
 )
 
-qt_add_dbus_adaptor(mailmergeagent_SRCS org.freedesktop.Akonadi.MailMergeAgent.xml mailmergeagent.h MailMergeAgent)
+qt5_add_dbus_adaptor(mailmergeagent_SRCS org.freedesktop.Akonadi.MailMergeAgent.xml mailmergeagent.h MailMergeAgent)
 
 ki18n_wrap_ui(mailmergeagent ui/mailmergeconfigurewidget.ui)
 
@@ -40,23 +40,23 @@ kconfig_add_kcfg_files(mailmergeagent mailmergeagentsettings.kcfgc)
 #endif()
 
 target_link_libraries(mailmergeagent
-    KPim6::AkonadiCore
-    KPim6::AkonadiMime
-    #KPim6::Mime
-    KPim6::MessageComposer
-    KPim6::MessageCore
-    KF6::DBusAddons
-    KF6::WindowSystem
-    KF6::XmlGui
-    KF6::I18n
-    KF6::Notifications
-    KPim6::AkonadiAgentWidgetBase
+    KPim5::AkonadiCore
+    KPim5::AkonadiMime
+    #KPim5::Mime
+    KPim5::MessageComposer
+    KPim5::MessageCore
+    KF5::DBusAddons
+    KF5::WindowSystem
+    KF5::XmlGui
+    KF5::I18n
+    KF5::Notifications
+    KPim5::AkonadiAgentWidgetBase
 )
 
 add_executable(akonadi_mailmerge_agent)
 target_link_libraries(akonadi_mailmerge_agent
     mailmergeagent
-    KPim6::AkonadiAgentBase
+    KPim5::AkonadiAgentBase
 )
 
 

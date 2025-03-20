@@ -5,9 +5,9 @@
 */
 
 #pragma once
-#include "kmail_private_export.h"
 #include <PimCommonActivities/ActivitiesBaseManager>
 #include <QObject>
+#include "kmail_private_export.h"
 class TransportActivities;
 class IdentityActivities;
 class LdapActivities;
@@ -16,22 +16,22 @@ class KMAILTESTS_TESTS_EXPORT ActivitiesManager : public PimCommonActivities::Ac
 {
     Q_OBJECT
 public:
-    static ActivitiesManager *self();
+    static ActivitiesManager* self();
 
-    explicit ActivitiesManager(QObject *parent = nullptr);
+    explicit ActivitiesManager(QObject* parent = nullptr);
     ~ActivitiesManager() override;
 
-    [[nodiscard]] TransportActivities *transportActivities() const;
+    [[nodiscard]] TransportActivities* transportActivities() const;
 
-    [[nodiscard]] IdentityActivities *identityActivities() const;
+    [[nodiscard]] IdentityActivities* identityActivities() const;
 
-    [[nodiscard]] LdapActivities *ldapActivities() const;
+    [[nodiscard]] LdapActivities* ldapActivities() const;
 
-    [[nodiscard]] AccountActivities *accountActivities() const;
+    [[nodiscard]] AccountActivities* accountActivities() const;
 
 private:
-    TransportActivities *const mTransportActivities;
-    IdentityActivities *const mIdentityActivities;
-    LdapActivities *const mLdapActivities;
-    AccountActivities *const mAccountActivities;
+    TransportActivities* const mTransportActivities;
+    IdentityActivities* const mIdentityActivities;
+    LdapActivities* const mLdapActivities;
+    AccountActivities* const mAccountActivities;
 };

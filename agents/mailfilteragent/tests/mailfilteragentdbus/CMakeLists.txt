@@ -4,7 +4,7 @@
 
 set(dbusobjectmanager_xml ../../org.freedesktop.Akonadi.MailFilterAgent.xml)
 set_source_files_properties(${dbusobjectmanager_xml} PROPERTIES INCLUDE "../../dbusoperators.h")
-qt_add_dbus_interfaces(mailagentdbus_gui_SRCS ${dbusobjectmanager_xml})
+qt5_add_dbus_interfaces(mailagentdbus_gui_SRCS ${dbusobjectmanager_xml})
 
 
 add_executable(mailagentdbus_gui mailagentdbus_gui.cpp
@@ -15,5 +15,5 @@ add_executable(mailagentdbus_gui mailagentdbus_gui.cpp
 
 target_link_libraries(mailagentdbus_gui
     mailfilteragentprivate
-    KPim6::MailCommon
+    KPim5::MailCommon
 )

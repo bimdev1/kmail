@@ -6,7 +6,7 @@
 #include "mailfilterpurposemenuwidget.h"
 #include <TextCustomEditor/PlainTextEditor>
 
-MailfilterPurposeMenuWidget::MailfilterPurposeMenuWidget(QWidget *parentWidget, QObject *parent)
+MailfilterPurposeMenuWidget::MailfilterPurposeMenuWidget(QWidget* parentWidget, QObject* parent)
     : PimCommon::PurposeMenuWidget(parentWidget, parent)
 {
 }
@@ -21,7 +21,7 @@ QByteArray MailfilterPurposeMenuWidget::text()
     return {};
 }
 
-void MailfilterPurposeMenuWidget::setEditorWidget(TextCustomEditor::PlainTextEditor *editor)
+void MailfilterPurposeMenuWidget::setEditorWidget(TextCustomEditor::PlainTextEditor* editor)
 {
     mEditor = editor;
 }

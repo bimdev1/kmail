@@ -12,7 +12,7 @@ class UndoSendComboboxTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit UndoSendComboboxTest(QObject *parent = nullptr);
+    explicit UndoSendComboboxTest(QObject* parent = nullptr);
     ~UndoSendComboboxTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValues();

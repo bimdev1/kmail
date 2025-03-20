@@ -21,20 +21,18 @@
 #include <QVBoxLayout>
 #include <QWindow>
 
-#include "dbusproperties.h" // DBUS-generated
+#include "dbusproperties.h"          // DBUS-generated
 #include "notifications_interface.h" // DBUS-generated
 
 using namespace Qt::Literals::StringLiterals;
-namespace
-{
+namespace {
 static constexpr const char s_fdo_notifications_service[] = "org.freedesktop.Notifications";
 static constexpr const char s_fdo_notifications_path[] = "/org/freedesktop/Notifications";
 static constexpr const char DialogGroup[] = "FollowUpReminderNoAnswerDialog";
-}
+} // namespace
 
-FollowUpReminderNoAnswerDialog::FollowUpReminderNoAnswerDialog(QWidget *parent)
-    : QDialog(parent)
-    , mWidget(new FollowUpReminderInfoWidget(this))
+FollowUpReminderNoAnswerDialog::FollowUpReminderNoAnswerDialog(QWidget* parent)
+    : QDialog(parent), mWidget(new FollowUpReminderInfoWidget(this))
 {
     setWindowTitle(i18nc("@title:window", "Follow Up Reminder"));
     setWindowIcon(QIcon::fromTheme(QStringLiteral("kmail")));
@@ -48,7 +46,7 @@ FollowUpReminderNoAnswerDialog::FollowUpReminderNoAnswerDialog(QWidget *parent)
     mainLayout->addWidget(mWidget);
 
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, this);
-    QPushButton *closeButton = buttonBox->button(QDialogButtonBox::Close);
+    QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
     closeButton->setDefault(true);
     closeButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &FollowUpReminderNoAnswerDialog::reject);
@@ -58,13 +56,10 @@ FollowUpReminderNoAnswerDialog::FollowUpReminderNoAnswerDialog(QWidget *parent)
     readConfig();
     QDBusConnection dbusConn = QDBusConnection::sessionBus();
     if (dbusConn.interface()->isServiceRegistered(QString::fromLatin1(s_fdo_notifications_service))) {
-        auto propsIface = new OrgFreedesktopDBusPropertiesInterface(QString::fromLatin1(s_fdo_notifications_service),
-                                                                    QString::fromLatin1(s_fdo_notifications_path),
-                                                                    dbusConn,
-                                                                    this);
-        connect(propsIface,
-                &OrgFreedesktopDBusPropertiesInterface::PropertiesChanged,
-                this,
+        auto propsIface =
+            new OrgFreedesktopDBusPropertiesInterface(QString::fromLatin1(s_fdo_notifications_service),
+                                                      QString::fromLatin1(s_fdo_notifications_path), dbusConn, this);
+        connect(propsIface, &OrgFreedesktopDBusPropertiesInterface::PropertiesChanged, this,
                 &FollowUpReminderNoAnswerDialog::slotDBusNotificationsPropertiesChanged);
     }
 }
@@ -80,7 +75,8 @@ void FollowUpReminderNoAnswerDialog::wakeUp()
     // In that case, we'll wait until they are allowed again (see slotDBusNotificationsPropertiesChanged)
     QDBusConnection dbusConn = QDBusConnection::sessionBus();
     if (dbusConn.interface()->isServiceRegistered(QString::fromLatin1(s_fdo_notifications_service))) {
-        OrgFreedesktopNotificationsInterface iface(QString::fromLatin1(s_fdo_notifications_service), QString::fromLatin1(s_fdo_notifications_path), dbusConn);
+        OrgFreedesktopNotificationsInterface iface(QString::fromLatin1(s_fdo_notifications_service),
+                                                   QString::fromLatin1(s_fdo_notifications_path), dbusConn);
         if (iface.inhibited()) {
             return;
         }
@@ -88,9 +84,9 @@ void FollowUpReminderNoAnswerDialog::wakeUp()
     show();
 }
 
-void FollowUpReminderNoAnswerDialog::slotDBusNotificationsPropertiesChanged(const QString &interface,
-                                                                            const QVariantMap &changedProperties,
-                                                                            const QStringList &invalidatedProperties)
+void FollowUpReminderNoAnswerDialog::slotDBusNotificationsPropertiesChanged(const QString& interface,
+                                                                            const QVariantMap& changedProperties,
+                                                                            const QStringList& invalidatedProperties)
 {
     Q_UNUSED(interface) // always "org.freedesktop.Notifications"
     Q_UNUSED(invalidatedProperties)
@@ -104,7 +100,7 @@ void FollowUpReminderNoAnswerDialog::slotDBusNotificationsPropertiesChanged(cons
     }
 }
 
-void FollowUpReminderNoAnswerDialog::setInfo(const QList<FollowUpReminder::FollowUpReminderInfo *> &info)
+void FollowUpReminderNoAnswerDialog::setInfo(const QList<FollowUpReminder::FollowUpReminderInfo*>& info)
 {
     mWidget->setInfo(info);
 }
@@ -139,7 +135,7 @@ void FollowUpReminderNoAnswerDialog::reject()
     QDialog::reject();
 }
 
-void FollowUpReminderNoAnswerDialog::closeEvent(QCloseEvent *event)
+void FollowUpReminderNoAnswerDialog::closeEvent(QCloseEvent* event)
 {
     slotSave();
     QDialog::closeEvent(event);

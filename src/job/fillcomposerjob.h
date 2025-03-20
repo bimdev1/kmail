@@ -12,42 +12,17 @@
 struct FillComposerJobSettings {
     FillComposerJobSettings() = default;
 
-    FillComposerJobSettings(bool hidden,
-                            const QString &to,
-                            const QString &cc,
-                            const QString &bcc,
-                            const QString &subject,
-                            const QString &body,
-                            const QString &attachName,
-                            const QByteArray &attachCte,
-                            const QByteArray &attachData,
-                            const QByteArray &attachType,
-                            const QByteArray &attachSubType,
-                            const QByteArray &attachParamAttr,
-                            const QString &attachParamValue,
-                            const QByteArray &attachContDisp,
-                            const QByteArray &attachCharset,
-                            unsigned int identity,
-                            bool forceShowWindow,
-                            bool htmlBody)
-        : mTo(to)
-        , mCc(cc)
-        , mBcc(bcc)
-        , mSubject(subject)
-        , mBody(body)
-        , mAttachName(attachName)
-        , mAttachCte(attachCte)
-        , mAttachData(attachData)
-        , mAttachType(attachType)
-        , mAttachSubType(attachSubType)
-        , mAttachParamAttr(attachParamAttr)
-        , mAttachParamValue(attachParamValue)
-        , mAttachContDisp(attachContDisp)
-        , mAttachCharset(attachCharset)
-        , mIdentity(identity)
-        , mForceShowWindow(forceShowWindow)
-        , mHidden(hidden)
-        , mHtmlBody(htmlBody)
+    FillComposerJobSettings(bool hidden, const QString& to, const QString& cc, const QString& bcc,
+                            const QString& subject, const QString& body, const QString& attachName,
+                            const QByteArray& attachCte, const QByteArray& attachData, const QByteArray& attachType,
+                            const QByteArray& attachSubType, const QByteArray& attachParamAttr,
+                            const QString& attachParamValue, const QByteArray& attachContDisp,
+                            const QByteArray& attachCharset, unsigned int identity, bool forceShowWindow, bool htmlBody)
+        : mTo(to), mCc(cc), mBcc(bcc), mSubject(subject), mBody(body), mAttachName(attachName), mAttachCte(attachCte),
+          mAttachData(attachData), mAttachType(attachType), mAttachSubType(attachSubType),
+          mAttachParamAttr(attachParamAttr), mAttachParamValue(attachParamValue), mAttachContDisp(attachContDisp),
+          mAttachCharset(attachCharset), mIdentity(identity), mForceShowWindow(forceShowWindow), mHidden(hidden),
+          mHtmlBody(htmlBody)
     {
     }
 
@@ -75,10 +50,10 @@ class FillComposerJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit FillComposerJob(QObject *parent = nullptr);
+    explicit FillComposerJob(QObject* parent = nullptr);
     ~FillComposerJob() override;
     void start();
-    void setSettings(const FillComposerJobSettings &settings);
+    void setSettings(const FillComposerJobSettings& settings);
 
 private:
     void slotOpenComposer();

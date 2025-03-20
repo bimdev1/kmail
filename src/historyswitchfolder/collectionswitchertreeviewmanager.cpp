@@ -6,19 +6,20 @@ SPDX-License-Identifier: GPL-2.0-only
 */
 
 #include "collectionswitchertreeviewmanager.h"
+#include <QScrollBar>
 #include "collectionswitchermodel.h"
 #include "collectionswitchertreeview.h"
 #include "kmail_debug.h"
-#include <QScrollBar>
 
-CollectionSwitcherTreeViewManager::CollectionSwitcherTreeViewManager(QObject *parent)
-    : QObject{parent}
-    , mCollectionSwitcherTreeView(new CollectionSwitcherTreeView(nullptr))
-    , mCollectionSwitcherModel(new CollectionSwitcherModel(this))
+CollectionSwitcherTreeViewManager::CollectionSwitcherTreeViewManager(QObject* parent)
+    : QObject{parent}, mCollectionSwitcherTreeView(new CollectionSwitcherTreeView(nullptr)),
+      mCollectionSwitcherModel(new CollectionSwitcherModel(this))
 {
     mCollectionSwitcherTreeView->setModel(mCollectionSwitcherModel);
-    connect(mCollectionSwitcherTreeView, &CollectionSwitcherTreeView::pressed, this, &CollectionSwitcherTreeViewManager::switchToCollectionClicked);
-    connect(mCollectionSwitcherTreeView, &CollectionSwitcherTreeView::collectionSelected, this, &CollectionSwitcherTreeViewManager::activateCollection);
+    connect(mCollectionSwitcherTreeView, &CollectionSwitcherTreeView::pressed, this,
+            &CollectionSwitcherTreeViewManager::switchToCollectionClicked);
+    connect(mCollectionSwitcherTreeView, &CollectionSwitcherTreeView::collectionSelected, this,
+            &CollectionSwitcherTreeViewManager::activateCollection);
 }
 
 CollectionSwitcherTreeViewManager::~CollectionSwitcherTreeViewManager()
@@ -26,13 +27,13 @@ CollectionSwitcherTreeViewManager::~CollectionSwitcherTreeViewManager()
     delete mCollectionSwitcherTreeView;
 }
 
-void CollectionSwitcherTreeViewManager::addActions(const QList<QAction *> &lst)
+void CollectionSwitcherTreeViewManager::addActions(const QList<QAction*>& lst)
 {
     // Make sure that actions works when mCollectionSwitcherTreeView is show.
     mCollectionSwitcherTreeView->addActions(lst);
 }
 
-void CollectionSwitcherTreeViewManager::activateCollection(const QModelIndex &index)
+void CollectionSwitcherTreeViewManager::activateCollection(const QModelIndex& index)
 {
     Q_UNUSED(index)
     if (mCollectionSwitcherTreeView->selectionModel()->selectedRows().isEmpty()) {
@@ -46,18 +47,18 @@ void CollectionSwitcherTreeViewManager::activateCollection(const QModelIndex &in
     mCollectionSwitcherTreeView->hide();
 }
 
-void CollectionSwitcherTreeViewManager::switchToCollectionClicked(const QModelIndex &index)
+void CollectionSwitcherTreeViewManager::switchToCollectionClicked(const QModelIndex& index)
 {
     mCollectionSwitcherTreeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
     activateCollection(index);
 }
 
-QWidget *CollectionSwitcherTreeViewManager::parentWidget() const
+QWidget* CollectionSwitcherTreeViewManager::parentWidget() const
 {
     return mParentWidget;
 }
 
-void CollectionSwitcherTreeViewManager::setParentWidget(QWidget *newParentWidget)
+void CollectionSwitcherTreeViewManager::setParentWidget(QWidget* newParentWidget)
 {
     mParentWidget = newParentWidget;
 }
@@ -82,11 +83,13 @@ void CollectionSwitcherTreeViewManager::selectCollection(const int from, const i
         index = mCollectionSwitcherModel->index(newRow, 0);
     }
 
-    mCollectionSwitcherTreeView->selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::ClearAndSelect);
-    mCollectionSwitcherTreeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
+    mCollectionSwitcherTreeView->selectionModel()->select(index, QItemSelectionModel::Rows |
+                                                                     QItemSelectionModel::ClearAndSelect);
+    mCollectionSwitcherTreeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent |
+                                                                              QItemSelectionModel::Rows);
 }
 
-CollectionSwitcherTreeView *CollectionSwitcherTreeViewManager::collectionSwitcherTreeView() const
+CollectionSwitcherTreeView* CollectionSwitcherTreeViewManager::collectionSwitcherTreeView() const
 {
     return mCollectionSwitcherTreeView;
 }
@@ -103,7 +106,7 @@ void CollectionSwitcherTreeViewManager::selectBackward()
 
 void CollectionSwitcherTreeViewManager::updateViewGeometry()
 {
-    QWidget *window = mParentWidget ? mParentWidget->window() : nullptr;
+    QWidget* window = mParentWidget ? mParentWidget->window() : nullptr;
     if (window) {
         const QSize centralSize = window->size();
 
@@ -111,9 +114,12 @@ void CollectionSwitcherTreeViewManager::updateViewGeometry()
 
         const int rowHeight = mCollectionSwitcherTreeView->sizeHintForRow(0);
         const int frameWidth = mCollectionSwitcherTreeView->frameWidth();
-        const QSize viewSize(std::min(mCollectionSwitcherTreeView->sizeHintWidth() + 2 * frameWidth + mCollectionSwitcherTreeView->verticalScrollBar()->width(),
-                                      viewMaxSize.width()),
-                             std::min(std::max(rowHeight * mCollectionSwitcherModel->rowCount() + 2 * frameWidth, rowHeight * 6), viewMaxSize.height()));
+        const QSize viewSize(
+            std::min(mCollectionSwitcherTreeView->sizeHintWidth() + 2 * frameWidth +
+                         mCollectionSwitcherTreeView->verticalScrollBar()->width(),
+                     viewMaxSize.width()),
+            std::min(std::max(rowHeight * mCollectionSwitcherModel->rowCount() + 2 * frameWidth, rowHeight * 6),
+                     viewMaxSize.height()));
 
         // Position should be central over the editor area, so map to global from
         // parent of central widget since the view is positioned in global coords
@@ -128,7 +134,7 @@ void CollectionSwitcherTreeViewManager::updateViewGeometry()
     }
 }
 
-void CollectionSwitcherTreeViewManager::addHistory(const Akonadi::Collection &currentCol, const QString &fullPath)
+void CollectionSwitcherTreeViewManager::addHistory(const Akonadi::Collection& currentCol, const QString& fullPath)
 {
     mCollectionSwitcherModel->addHistory(currentCol, fullPath);
 }

@@ -5,53 +5,50 @@
 */
 
 #include "kmailplugingrammareditormanagerinterface.h"
-#include "kmail_debug.h"
 #include <MessageComposer/PluginEditorGrammarCustomToolsViewInterface>
 #include <MessageComposer/PluginEditorGrammarManager>
 #include <PimCommon/CustomToolsPlugin>
 #include <PimCommon/CustomToolsWidgetng>
+#include "kmail_debug.h"
 
-KMailPluginGrammarEditorManagerInterface::KMailPluginGrammarEditorManagerInterface(QObject *parent)
-    : QObject(parent)
-{
-}
+KMailPluginGrammarEditorManagerInterface::KMailPluginGrammarEditorManagerInterface(QObject* parent) : QObject(parent) {}
 
-KPIMTextEdit::RichTextComposer *KMailPluginGrammarEditorManagerInterface::richTextEditor() const
+KPIMTextEdit::RichTextComposer* KMailPluginGrammarEditorManagerInterface::richTextEditor() const
 {
     return mRichTextEditor;
 }
 
-void KMailPluginGrammarEditorManagerInterface::setRichTextEditor(KPIMTextEdit::RichTextComposer *richTextEditor)
+void KMailPluginGrammarEditorManagerInterface::setRichTextEditor(KPIMTextEdit::RichTextComposer* richTextEditor)
 {
     mRichTextEditor = richTextEditor;
 }
 
-QWidget *KMailPluginGrammarEditorManagerInterface::parentWidget() const
+QWidget* KMailPluginGrammarEditorManagerInterface::parentWidget() const
 {
     return mParentWidget;
 }
 
-void KMailPluginGrammarEditorManagerInterface::setParentWidget(QWidget *parentWidget)
+void KMailPluginGrammarEditorManagerInterface::setParentWidget(QWidget* parentWidget)
 {
     mParentWidget = parentWidget;
 }
 
-KActionCollection *KMailPluginGrammarEditorManagerInterface::actionCollection() const
+KActionCollection* KMailPluginGrammarEditorManagerInterface::actionCollection() const
 {
     return mActionCollection;
 }
 
-void KMailPluginGrammarEditorManagerInterface::setActionCollection(KActionCollection *actionCollection)
+void KMailPluginGrammarEditorManagerInterface::setActionCollection(KActionCollection* actionCollection)
 {
     mActionCollection = actionCollection;
 }
 
-PimCommon::CustomToolsWidgetNg *KMailPluginGrammarEditorManagerInterface::customToolsWidget() const
+PimCommon::CustomToolsWidgetNg* KMailPluginGrammarEditorManagerInterface::customToolsWidget() const
 {
     return mCustomToolsWidget;
 }
 
-void KMailPluginGrammarEditorManagerInterface::setCustomToolsWidget(PimCommon::CustomToolsWidgetNg *customToolsWidget)
+void KMailPluginGrammarEditorManagerInterface::setCustomToolsWidget(PimCommon::CustomToolsWidgetNg* customToolsWidget)
 {
     mCustomToolsWidget = customToolsWidget;
 }
@@ -59,7 +56,8 @@ void KMailPluginGrammarEditorManagerInterface::setCustomToolsWidget(PimCommon::C
 void KMailPluginGrammarEditorManagerInterface::initializePlugins()
 {
     if (mWasInitialized) {
-        qCDebug(KMAIL_LOG) << "KMailPluginGrammarEditorManagerInterface : Plugin was already initialized. This is a bug";
+        qCDebug(KMAIL_LOG)
+            << "KMailPluginGrammarEditorManagerInterface : Plugin was already initialized. This is a bug";
         return;
     }
     if (!mRichTextEditor) {
@@ -74,11 +72,12 @@ void KMailPluginGrammarEditorManagerInterface::initializePlugins()
         return;
     }
 
-    const QList<PimCommon::CustomToolsPlugin *> lstPlugin = MessageComposer::PluginEditorGrammarManager::self()->pluginsList();
-    for (PimCommon::CustomToolsPlugin *plugin : lstPlugin) {
+    const QList<PimCommon::CustomToolsPlugin*> lstPlugin =
+        MessageComposer::PluginEditorGrammarManager::self()->pluginsList();
+    for (PimCommon::CustomToolsPlugin* plugin : lstPlugin) {
         if (plugin->isEnabled()) {
-            auto interface =
-                static_cast<MessageComposer::PluginEditorGrammarCustomToolsViewInterface *>(plugin->createView(mActionCollection, mCustomToolsWidget));
+            auto interface = static_cast<MessageComposer::PluginEditorGrammarCustomToolsViewInterface*>(
+                plugin->createView(mActionCollection, mCustomToolsWidget));
             mCustomToolsWidget->addCustomToolViewInterface(interface);
             interface->setParentWidget(mParentWidget);
             interface->setRichTextEditor(mRichTextEditor);

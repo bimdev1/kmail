@@ -16,11 +16,10 @@
 
 class DropWidget;
 
-namespace KontactInterface
-{
+namespace KontactInterface {
 class Core;
 class Summary;
-}
+} // namespace KontactInterface
 
 class KAboutData;
 class QAction;
@@ -34,7 +33,7 @@ class SummaryViewPart : public KParts::Part
     Q_OBJECT
 
 public:
-    SummaryViewPart(KontactInterface::Core *core, const KAboutData &aboutData, QObject *parent = nullptr);
+    SummaryViewPart(KontactInterface::Core* core, const KAboutData& aboutData, QObject* parent = nullptr);
     ~SummaryViewPart() override;
 
 public Q_SLOTS:
@@ -44,36 +43,36 @@ public Q_SLOTS:
     void updateSummaries();
 
 Q_SIGNALS:
-    void textChanged(const QString &);
+    void textChanged(const QString&);
 
 protected:
-    void partActivateEvent(KParts::PartActivateEvent *event) override;
+    void partActivateEvent(KParts::PartActivateEvent* event) override;
 
-    bool event(QEvent *e) override;
+    bool event(QEvent* e) override;
 protected Q_SLOTS:
     void slotConfigure();
     void updateWidgets();
-    void summaryWidgetMoved(QWidget *target, QObject *obj, int alignment);
+    void summaryWidgetMoved(QWidget* target, QObject* obj, int alignment);
 
 private:
-    void initGUI(KontactInterface::Core *core);
+    void initGUI(KontactInterface::Core* core);
     void loadLayout();
     void saveLayout();
-    [[nodiscard]] QString widgetName(QWidget *) const;
+    [[nodiscard]] QString widgetName(QWidget*) const;
 
-    void drawLtoR(QWidget *target, QWidget *widget, int alignment);
-    void drawRtoL(QWidget *target, QWidget *widget, int alignment);
+    void drawLtoR(QWidget* target, QWidget* widget, int alignment);
+    void drawRtoL(QWidget* target, QWidget* widget, int alignment);
 
-    QMap<QString, KontactInterface::Summary *> mSummaries;
+    QMap<QString, KontactInterface::Summary*> mSummaries;
     QStringList mLeftColumnSummaries;
     QStringList mRightColumnSummaries;
-    KontactInterface::Core *mCore = nullptr;
-    DropWidget *mFrame = nullptr;
-    QFrame *mMainWidget = nullptr;
-    QVBoxLayout *mMainLayout = nullptr;
-    QVBoxLayout *mLeftColumn = nullptr;
-    QVBoxLayout *mRightColumn = nullptr;
-    QLabel *mUsernameLabel = nullptr;
-    QLabel *mDateLabel = nullptr;
-    QAction *const mConfigAction;
+    KontactInterface::Core* mCore = nullptr;
+    DropWidget* mFrame = nullptr;
+    QFrame* mMainWidget = nullptr;
+    QVBoxLayout* mMainLayout = nullptr;
+    QVBoxLayout* mLeftColumn = nullptr;
+    QVBoxLayout* mRightColumn = nullptr;
+    QLabel* mUsernameLabel = nullptr;
+    QLabel* mDateLabel = nullptr;
+    QAction* const mConfigAction;
 };

@@ -18,11 +18,11 @@ public:
 
     [[nodiscard]] QByteArray type() const override;
 
-    TaskAttribute *clone() const override;
+    TaskAttribute* clone() const override;
 
     [[nodiscard]] QByteArray serialized() const override;
 
-    void deserialize(const QByteArray &data) override;
+    void deserialize(const QByteArray& data) override;
 
     void setTaskId(Akonadi::Item::Id id);
     [[nodiscard]] Akonadi::Item::Id taskId() const;

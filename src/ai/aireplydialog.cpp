@@ -1,35 +1,30 @@
 #include "aireplydialog.h"
-#include "localaiservice.h"
 #include "../kmmessage.h"
+#include "localaiservice.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
 
-#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QProgressBar>
 #include <QLabel>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 namespace KMail {
 
-AIReplyDialog::AIReplyDialog(KMMessage *originalMessage, QWidget *parent)
-    : QDialog(parent)
-    , m_originalMessage(originalMessage)
-    , m_aiService(new LocalAIService(this))
-    , m_isGenerating(false)
+AIReplyDialog::AIReplyDialog(KMMessage* originalMessage, QWidget* parent)
+    : QDialog(parent), m_originalMessage(originalMessage), m_aiService(new LocalAIService(this)), m_isGenerating(false)
 {
     setupUi();
     createConnections();
-    
+
     // Generate initial reply
     slotGenerateReply();
 }
 
-AIReplyDialog::~AIReplyDialog()
-{
-}
+AIReplyDialog::~AIReplyDialog() {}
 
 void AIReplyDialog::setupUi()
 {
@@ -57,34 +52,29 @@ void AIReplyDialog::setupUi()
 
     // Add buttons
     auto buttonLayout = new QHBoxLayout;
-    
+
     m_generateButton = new QPushButton(i18n("Regenerate"), this);
     m_acceptButton = new QPushButton(i18n("Accept"), this);
     m_cancelButton = new QPushButton(i18n("Cancel"), this);
-    
+
     m_acceptButton->setDefault(true);
-    
+
     buttonLayout->addWidget(m_generateButton);
     buttonLayout->addStretch();
     buttonLayout->addWidget(m_acceptButton);
     buttonLayout->addWidget(m_cancelButton);
-    
+
     mainLayout->addLayout(buttonLayout);
 }
 
 void AIReplyDialog::createConnections()
 {
-    connect(m_generateButton, &QPushButton::clicked,
-            this, &AIReplyDialog::slotGenerateReply);
-    connect(m_acceptButton, &QPushButton::clicked,
-            this, &AIReplyDialog::slotAccept);
-    connect(m_cancelButton, &QPushButton::clicked,
-            this, &QDialog::reject);
-            
-    connect(m_aiService, &LocalAIService::replyGenerated,
-            this, &AIReplyDialog::slotReplyGenerated);
-    connect(m_aiService, &LocalAIService::error,
-            this, &AIReplyDialog::slotError);
+    connect(m_generateButton, &QPushButton::clicked, this, &AIReplyDialog::slotGenerateReply);
+    connect(m_acceptButton, &QPushButton::clicked, this, &AIReplyDialog::slotAccept);
+    connect(m_cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+
+    connect(m_aiService, &LocalAIService::replyGenerated, this, &AIReplyDialog::slotReplyGenerated);
+    connect(m_aiService, &LocalAIService::error, this, &AIReplyDialog::slotError);
 }
 
 void AIReplyDialog::slotGenerateReply()
@@ -103,10 +93,10 @@ void AIReplyDialog::slotGenerateReply()
     m_aiService->generateReply(content);
 }
 
-void AIReplyDialog::slotReplyGenerated(const QString &reply)
+void AIReplyDialog::slotReplyGenerated(const QString& reply)
 {
     m_replyEdit->setPlainText(reply);
-    
+
     m_isGenerating = false;
     m_generateButton->setEnabled(true);
     m_acceptButton->setEnabled(true);
@@ -114,7 +104,7 @@ void AIReplyDialog::slotReplyGenerated(const QString &reply)
     m_progressBar->hide();
 }
 
-void AIReplyDialog::slotError(const QString &error)
+void AIReplyDialog::slotError(const QString& error)
 {
     m_isGenerating = false;
     m_generateButton->setEnabled(true);

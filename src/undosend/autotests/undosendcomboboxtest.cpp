@@ -5,14 +5,11 @@
 */
 
 #include "undosendcomboboxtest.h"
-#include "undosend/undosendcombobox.h"
 #include <QTest>
+#include "undosend/undosendcombobox.h"
 QTEST_MAIN(UndoSendComboboxTest)
 
-UndoSendComboboxTest::UndoSendComboboxTest(QObject *parent)
-    : QObject(parent)
-{
-}
+UndoSendComboboxTest::UndoSendComboboxTest(QObject* parent) : QObject(parent) {}
 
 void UndoSendComboboxTest::shouldHaveDefaultValues()
 {

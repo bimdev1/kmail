@@ -25,7 +25,7 @@ class UnifiedMailboxAgent : public Akonadi::ResourceWidgetBase
     Q_OBJECT
 
 public:
-    explicit UnifiedMailboxAgent(const QString &id);
+    explicit UnifiedMailboxAgent(const QString& id);
     ~UnifiedMailboxAgent() override = default;
 
     void configure(WId windowId) override;
@@ -34,15 +34,15 @@ public:
     [[nodiscard]] bool enabledAgent() const;
 
     void retrieveCollections() override;
-    void retrieveItems(const Akonadi::Collection &collection) override;
-    [[nodiscard]] bool retrieveItems(const Akonadi::Item::List &items, const QSet<QByteArray> &parts) override;
-    [[nodiscard]] bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts) override;
+    void retrieveItems(const Akonadi::Collection& collection) override;
+    [[nodiscard]] bool retrieveItems(const Akonadi::Item::List& items, const QSet<QByteArray>& parts) override;
+    [[nodiscard]] bool retrieveItem(const Akonadi::Item& item, const QSet<QByteArray>& parts) override;
 
 private:
     void delayedInit();
 
     void fixSpecialCollections();
-    void fixSpecialCollection(const QString &colId, Akonadi::SpecialMailCollections::Type type);
+    void fixSpecialCollection(const QString& colId, Akonadi::SpecialMailCollections::Type type);
 
     UnifiedMailboxManager mBoxManager;
 };

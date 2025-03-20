@@ -7,8 +7,10 @@
 #include "kmailsearchpatternedit.h"
 
 using namespace KMail;
-KMailSearchPatternEdit::KMailSearchPatternEdit(QWidget *parent)
-    : MailCommon::SearchPatternEdit(parent, static_cast<MailCommon::SearchPatternEdit::SearchPatternEditOptions>(SearchPatternEdit::NotShowTags), BalooMode)
+KMailSearchPatternEdit::KMailSearchPatternEdit(QWidget* parent)
+    : MailCommon::SearchPatternEdit(
+          parent, static_cast<MailCommon::SearchPatternEdit::SearchPatternEditOptions>(SearchPatternEdit::NotShowTags),
+          BalooMode)
 {
 }
 

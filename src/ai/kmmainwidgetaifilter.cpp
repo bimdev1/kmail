@@ -1,6 +1,6 @@
 #include "kmmainwidgetaifilter.h"
-#include "../kmmainwidget.h"
 #include "../filter/kmmailfilter.h"
+#include "../kmmainwidget.h"
 #include "../kmmessage.h"
 
 #include <KLocalizedString>
@@ -8,29 +8,23 @@
 
 namespace KMail {
 
-KMMainWidgetAIFilter::KMMainWidgetAIFilter(KMMainWidget *parent)
-    : QObject(parent)
-    , m_mainWidget(parent)
-    , m_mailFilter(new KMMailFilter(this))
+KMMainWidgetAIFilter::KMMainWidgetAIFilter(KMMainWidget* parent)
+    : QObject(parent), m_mainWidget(parent), m_mailFilter(new KMMailFilter(this))
 {
-    connect(m_mailFilter, &KMMailFilter::messageCategorized,
-            this, &KMMainWidgetAIFilter::slotMessageCategorized);
-    connect(m_mailFilter, &KMMailFilter::error,
-            this, &KMMainWidgetAIFilter::slotFilterError);
+    connect(m_mailFilter, &KMMailFilter::messageCategorized, this, &KMMainWidgetAIFilter::slotMessageCategorized);
+    connect(m_mailFilter, &KMMailFilter::error, this, &KMMainWidgetAIFilter::slotFilterError);
 }
 
-KMMainWidgetAIFilter::~KMMainWidgetAIFilter()
-{
-}
+KMMainWidgetAIFilter::~KMMainWidgetAIFilter() {}
 
-void KMMainWidgetAIFilter::processNewMessage(KMMessage *message)
+void KMMainWidgetAIFilter::processNewMessage(KMMessage* message)
 {
     if (message) {
         m_mailFilter->processMessage(message);
     }
 }
 
-void KMMainWidgetAIFilter::slotMessageCategorized(KMMessage *message, const QString &category)
+void KMMainWidgetAIFilter::slotMessageCategorized(KMMessage* message, const QString& category)
 {
     if (!message) {
         return;
@@ -41,14 +35,12 @@ void KMMainWidgetAIFilter::slotMessageCategorized(KMMessage *message, const QStr
     message->save();
 
     // Notify the user about the categorization
-    QString notification = i18n("Message \"%1\" categorized as %2",
-                              message->subject().trimmed(),
-                              category);
-    
+    QString notification = i18n("Message \"%1\" categorized as %2", message->subject().trimmed(), category);
+
     m_mainWidget->showStatusMessage(notification);
 }
 
-void KMMainWidgetAIFilter::slotFilterError(const QString &error)
+void KMMainWidgetAIFilter::slotFilterError(const QString& error)
 {
     KMessageBox::error(m_mainWidget, error, i18n("AI Filter Error"));
 }

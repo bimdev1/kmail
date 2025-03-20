@@ -12,7 +12,7 @@ class FormatComboBoxTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit FormatComboBoxTest(QObject *parent = nullptr);
+    explicit FormatComboBoxTest(QObject* parent = nullptr);
     ~FormatComboBoxTest() override;
 private Q_SLOTS:
     void shouldHaveDefaultValue();

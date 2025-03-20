@@ -5,9 +5,9 @@
 */
 
 #pragma once
-#include "kmail_private_export.h"
 #include <QDebug>
 #include <QUrl>
+#include "kmail_private_export.h"
 
 class KMAILTESTS_TESTS_EXPORT CommandLineInfo
 {
@@ -15,7 +15,7 @@ public:
     CommandLineInfo();
     ~CommandLineInfo();
 
-    void parseCommandLine(const QStringList &args, const QString &workingDir);
+    void parseCommandLine(const QStringList& args, const QString& workingDir);
     [[nodiscard]] QStringList customHeaders() const;
 
     [[nodiscard]] QList<QUrl> attachURLs() const;
@@ -48,29 +48,29 @@ public:
 
     [[nodiscard]] bool calledWithSession() const;
 
-    [[nodiscard]] bool operator==(const CommandLineInfo &other) const;
+    [[nodiscard]] bool operator==(const CommandLineInfo& other) const;
 
-    void setCustomHeaders(const QStringList &newCustomHeaders);
+    void setCustomHeaders(const QStringList& newCustomHeaders);
 
-    void setAttachURLs(const QList<QUrl> &newAttachURLs);
+    void setAttachURLs(const QList<QUrl>& newAttachURLs);
 
-    void setTo(const QString &newTo);
+    void setTo(const QString& newTo);
 
-    void setCc(const QString &newCc);
+    void setCc(const QString& newCc);
 
-    void setBcc(const QString &newBcc);
+    void setBcc(const QString& newBcc);
 
-    void setSubject(const QString &newSubject);
+    void setSubject(const QString& newSubject);
 
-    void setBody(const QString &newBody);
+    void setBody(const QString& newBody);
 
-    void setInReplyTo(const QString &newInReplyTo);
+    void setInReplyTo(const QString& newInReplyTo);
 
-    void setReplyTo(const QString &newReplyTo);
+    void setReplyTo(const QString& newReplyTo);
 
-    void setIdentity(const QString &newIdentity);
+    void setIdentity(const QString& newIdentity);
 
-    void setMessageFile(const QUrl &newMessageFile);
+    void setMessageFile(const QUrl& newMessageFile);
 
     void setStartInTray(bool newStartInTray);
 
@@ -106,4 +106,4 @@ private:
 };
 
 Q_DECLARE_TYPEINFO(CommandLineInfo, Q_RELOCATABLE_TYPE);
-KMAILTESTS_TESTS_EXPORT QDebug operator<<(QDebug d, const CommandLineInfo &t);
+KMAILTESTS_TESTS_EXPORT QDebug operator<<(QDebug d, const CommandLineInfo& t);

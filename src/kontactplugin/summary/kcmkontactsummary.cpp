@@ -23,9 +23,7 @@
 class PluginItem : public QTreeWidgetItem
 {
 public:
-    PluginItem(const KPluginMetaData &info, QTreeWidget *parent)
-        : QTreeWidgetItem(parent)
-        , mInfo(info)
+    PluginItem(const KPluginMetaData& info, QTreeWidget* parent) : QTreeWidgetItem(parent), mInfo(info)
     {
         setIcon(0, QIcon::fromTheme(mInfo.iconName()));
         setText(0, mInfo.name());
@@ -33,10 +31,7 @@ public:
         setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
     }
 
-    [[nodiscard]] KPluginMetaData pluginInfo() const
-    {
-        return mInfo;
-    }
+    [[nodiscard]] KPluginMetaData pluginInfo() const { return mInfo; }
 
     [[nodiscard]] virtual QString text(int column) const
     {
@@ -54,8 +49,7 @@ private:
     const KPluginMetaData mInfo;
 };
 
-PluginView::PluginView(QWidget *parent)
-    : QTreeWidget(parent)
+PluginView::PluginView(QWidget* parent) : QTreeWidget(parent)
 {
     setColumnCount(1);
     setHeaderLabel(i18nc("@title:column plugin name", "Summary Plugin Name"));
@@ -66,14 +60,14 @@ PluginView::~PluginView() = default;
 
 K_PLUGIN_CLASS_WITH_JSON(KCMKontactSummary, "kcmkontactsummary.json")
 
-KCMKontactSummary::KCMKontactSummary(QObject *parent, const KPluginMetaData &data)
-    : KCModule(parent, data)
-    , mPluginView(new PluginView(widget()))
+KCMKontactSummary::KCMKontactSummary(QObject* parent, const KPluginMetaData& data)
+    : KCModule(parent, data), mPluginView(new PluginView(widget()))
 {
     auto layout = new QVBoxLayout(widget());
 
     layout->setContentsMargins({});
-    auto label = new QLabel(i18nc("@label:textbox", "Select the plugin summaries to show on the summary page."), widget());
+    auto label =
+        new QLabel(i18nc("@label:textbox", "Select the plugin summaries to show on the summary page."), widget());
     layout->addWidget(label);
 
     layout->addWidget(mPluginView);
@@ -86,9 +80,10 @@ KCMKontactSummary::KCMKontactSummary(QObject *parent, const KPluginMetaData &dat
 
 void KCMKontactSummary::load()
 {
-    const QList<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("pim6/kontact"), [](const KPluginMetaData &data) {
-        return data.rawData().value(QStringLiteral("X-KDE-KontactPluginVersion")).toInt() == KONTACT_PLUGIN_VERSION;
-    });
+    const QList<KPluginMetaData> pluginMetaDatas =
+        KPluginMetaData::findPlugins(QStringLiteral("pim6/kontact"), [](const KPluginMetaData& data) {
+            return data.rawData().value(QStringLiteral("X-KDE-KontactPluginVersion")).toInt() == KONTACT_PLUGIN_VERSION;
+        });
 
     QStringList activeSummaries;
 
@@ -107,7 +102,7 @@ void KCMKontactSummary::load()
 
     mPluginView->clear();
 
-    for (const auto &plugin : std::as_const(pluginMetaDatas)) {
+    for (const auto& plugin : std::as_const(pluginMetaDatas)) {
         const QVariant var = plugin.value(QStringLiteral("X-KDE-KontactPluginHasSummary"), false);
         if (var.isValid() && var.toBool() == true) {
             auto item = new PluginItem(plugin, mPluginView);
@@ -128,7 +123,7 @@ void KCMKontactSummary::save()
 
     QTreeWidgetItemIterator it(mPluginView);
     while (*it) {
-        auto item = static_cast<PluginItem *>(*it);
+        auto item = static_cast<PluginItem*>(*it);
         if (item->checkState(0) == Qt::Checked) {
             activeSummaries.append(item->pluginInfo().pluginId());
         }

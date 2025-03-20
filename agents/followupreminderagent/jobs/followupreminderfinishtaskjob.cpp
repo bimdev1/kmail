@@ -11,9 +11,8 @@
 #include <Akonadi/ItemModifyJob>
 #include <KCalendarCore/Todo>
 
-FollowUpReminderFinishTaskJob::FollowUpReminderFinishTaskJob(Akonadi::Item::Id id, QObject *parent)
-    : QObject(parent)
-    , mTodoId(id)
+FollowUpReminderFinishTaskJob::FollowUpReminderFinishTaskJob(Akonadi::Item::Id id, QObject* parent)
+    : QObject(parent), mTodoId(id)
 {
 }
 
@@ -37,20 +36,22 @@ void FollowUpReminderFinishTaskJob::closeTodo()
     connect(job, &Akonadi::ItemFetchJob::result, this, &FollowUpReminderFinishTaskJob::slotItemFetchJobDone);
 }
 
-void FollowUpReminderFinishTaskJob::slotItemFetchJobDone(KJob *job)
+void FollowUpReminderFinishTaskJob::slotItemFetchJobDone(KJob* job)
 {
     if (job->error()) {
-        qCWarning(FOLLOWUPREMINDERAGENT_LOG) << "Failed to fetch item in FollowUpReminderFinishTaskJob : " << job->errorString();
+        qCWarning(FOLLOWUPREMINDERAGENT_LOG)
+            << "Failed to fetch item in FollowUpReminderFinishTaskJob : " << job->errorString();
         Q_EMIT finishTaskFailed();
         deleteLater();
         return;
     }
 
-    const Akonadi::Item::List lst = qobject_cast<Akonadi::ItemFetchJob *>(job)->items();
+    const Akonadi::Item::List lst = qobject_cast<Akonadi::ItemFetchJob*>(job)->items();
     if (lst.count() == 1) {
         const Akonadi::Item item = lst.first();
         if (!item.hasPayload<KCalendarCore::Todo::Ptr>()) {
-            qCDebug(FOLLOWUPREMINDERAGENT_LOG) << "FollowUpReminderFinishTaskJob::slotItemFetchJobDone: item is not a todo.";
+            qCDebug(FOLLOWUPREMINDERAGENT_LOG)
+                << "FollowUpReminderFinishTaskJob::slotItemFetchJobDone: item is not a todo.";
             Q_EMIT finishTaskFailed();
             deleteLater();
             return;
@@ -70,10 +71,12 @@ void FollowUpReminderFinishTaskJob::slotItemFetchJobDone(KJob *job)
     }
 }
 
-void FollowUpReminderFinishTaskJob::slotItemModifiedResult(KJob *job)
+void FollowUpReminderFinishTaskJob::slotItemModifiedResult(KJob* job)
 {
     if (job->error()) {
-        qCWarning(FOLLOWUPREMINDERAGENT_LOG) << "FollowUpReminderFinishTaskJob::slotItemModifiedResult: Error during modified item: " << job->errorString();
+        qCWarning(FOLLOWUPREMINDERAGENT_LOG)
+            << "FollowUpReminderFinishTaskJob::slotItemModifiedResult: Error during modified item: "
+            << job->errorString();
         Q_EMIT finishTaskFailed();
     } else {
         Q_EMIT finishTaskDone();

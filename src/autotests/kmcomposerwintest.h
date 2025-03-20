@@ -11,8 +11,7 @@
 #include <QTemporaryDir>
 class KMKernel;
 
-namespace KMail
-{
+namespace KMail {
 class Composer;
 }
 
@@ -20,7 +19,7 @@ class KMComposerWinTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit KMComposerWinTest(QObject *parent = nullptr);
+    explicit KMComposerWinTest(QObject* parent = nullptr);
     ~KMComposerWinTest() override;
 
 private Q_SLOTS:
@@ -52,9 +51,9 @@ private Q_SLOTS:
 
 private:
     void resetIdentities();
-    void toggleEncryption(KMail::Composer *composer);
-    void toggleSigning(KMail::Composer *composer);
-    KMKernel *mKernel = nullptr;
+    void toggleEncryption(KMail::Composer* composer);
+    void toggleSigning(KMail::Composer* composer);
+    KMKernel* mKernel = nullptr;
     QDir autocryptDir;
     QTemporaryDir gnupgDir;
 };

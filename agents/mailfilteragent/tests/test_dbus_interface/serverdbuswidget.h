@@ -12,13 +12,13 @@ class ServerDbusWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ServerDbusWidget(QWidget *parent = nullptr);
+    explicit ServerDbusWidget(QWidget* parent = nullptr);
     ~ServerDbusWidget() override;
 
     QString debug();
-    void sendElements(const QList<qint64> &items, int index);
+    void sendElements(const QList<qint64>& items, int index);
     void showDialog(qlonglong windowId);
 
 private:
-    QTextEdit *const mEdit;
+    QTextEdit* const mEdit;
 };

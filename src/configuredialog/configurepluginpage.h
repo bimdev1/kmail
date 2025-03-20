@@ -9,15 +9,14 @@
 #include "configuredialog_p.h"
 
 #include <QWidget>
-namespace PimCommon
-{
+namespace PimCommon {
 class ConfigurePluginsWidget;
 }
 class KMAIL_EXPORT ConfigurePluginPage : public ConfigModule
 {
     Q_OBJECT
 public:
-    explicit ConfigurePluginPage(QObject *parent, const KPluginMetaData &data);
+    explicit ConfigurePluginPage(QObject* parent, const KPluginMetaData& data);
     ~ConfigurePluginPage() override;
 
     [[nodiscard]] QString helpAnchor() const override;
@@ -26,5 +25,5 @@ public:
     void defaults() override;
 
 private:
-    PimCommon::ConfigurePluginsWidget *const mConfigurePlugins;
+    PimCommon::ConfigurePluginsWidget* const mConfigurePlugins;
 };

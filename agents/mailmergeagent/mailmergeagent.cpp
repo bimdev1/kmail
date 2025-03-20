@@ -5,11 +5,6 @@
 */
 
 #include "mailmergeagent.h"
-#include "mailmergeagent_debug.h"
-#include "mailmergeagentadaptor.h"
-#include "mailmergeagentsettings.h"
-#include "mailmergeconfiguredialog.h"
-#include "mailmergemanager.h"
 #include <Akonadi/AgentInstance>
 #include <Akonadi/AgentManager>
 #include <Akonadi/AttributeFactory>
@@ -21,26 +16,31 @@
 #include <Akonadi/SpecialMailCollections>
 #include <KMime/Message>
 #include <QDBusConnection>
+#include "mailmergeagent_debug.h"
+#include "mailmergeagentadaptor.h"
+#include "mailmergeagentsettings.h"
+#include "mailmergeconfiguredialog.h"
+#include "mailmergemanager.h"
 
 #include <KWindowSystem>
 
+#include <chrono>
 #include <QPointer>
 #include <QTimer>
-#include <chrono>
 
 using namespace std::chrono_literals;
 
 // #define DEBUG_MAILMERGEAGENT 1
 
-MailMergeAgent::MailMergeAgent(const QString &id)
-    : Akonadi::AgentWidgetBase(id)
-    , mManager(new MailMergeManager(this))
+MailMergeAgent::MailMergeAgent(const QString& id) : Akonadi::AgentWidgetBase(id), mManager(new MailMergeManager(this))
 {
     connect(mManager, &MailMergeManager::needUpdateConfigDialogBox, this, &MailMergeAgent::needUpdateConfigDialogBox);
     new MailMergeAgentAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/MailMergeAgent"), this, QDBusConnection::ExportAdaptors);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/MailMergeAgent"), this,
+                                                 QDBusConnection::ExportAdaptors);
 
-    const QString service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, QStringLiteral("akonadi_mergemail_agent"));
+    const QString service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent,
+                                                                             QStringLiteral("akonadi_mergemail_agent"));
 
     QDBusConnection::sessionBus().registerService(service);
 
@@ -121,8 +121,9 @@ void MailMergeAgent::configure(WId windowId)
         dialog->setAttribute(Qt::WA_NativeWindow, true);
         KWindowSystem::setMainWindow(dialog->windowHandle(), windowId);
     }
-    //    connect(this, &MailMergeAgent::needUpdateConfigDialogBox, dialog.data(), &MailMergeConfigureDialog::slotNeedToReloadConfig);
-    //    connect(dialog.data(), &SendLaterConfigureDialog::sendNow, this, &MailMergeAgent::slotSendNow);
+    //    connect(this, &MailMergeAgent::needUpdateConfigDialogBox, dialog.data(),
+    //    &MailMergeConfigureDialog::slotNeedToReloadConfig); connect(dialog.data(), &SendLaterConfigureDialog::sendNow,
+    //    this, &MailMergeAgent::slotSendNow);
     if (dialog->exec()) {
         // TODO
         //        mManager->load();
@@ -143,13 +144,8 @@ void MailMergeAgent::removeItem(qint64 item)
     }
 }
 
-void MailMergeAgent::addItem(qint64 timestamp,
-                             bool recurrence,
-                             int recurrenceValue,
-                             int recurrenceUnit,
-                             Akonadi::Item::Id id,
-                             const QString &subject,
-                             const QString &to)
+void MailMergeAgent::addItem(qint64 timestamp, bool recurrence, int recurrenceValue, int recurrenceUnit,
+                             Akonadi::Item::Id id, const QString& subject, const QString& to)
 {
     //    auto info = new MessageComposer::SendLaterInfo;
     //    info->setDateTime(QDateTime::fromSecsSinceEpoch(timestamp));
@@ -164,10 +160,10 @@ void MailMergeAgent::addItem(qint64 timestamp,
     //    reload();
 }
 
-void MailMergeAgent::itemsRemoved(const Akonadi::Item::List &items)
+void MailMergeAgent::itemsRemoved(const Akonadi::Item::List& items)
 {
     bool needToReload = false;
-    for (const Akonadi::Item &item : items) {
+    for (const Akonadi::Item& item : items) {
         if (mManager->itemRemoved(item.id())) {
             needToReload = true;
         }
@@ -177,11 +173,11 @@ void MailMergeAgent::itemsRemoved(const Akonadi::Item::List &items)
     }
 }
 
-void MailMergeAgent::itemsMoved(const Akonadi::Item::List &items,
-                                const Akonadi::Collection & /*sourceCollection*/,
-                                const Akonadi::Collection &destinationCollection)
+void MailMergeAgent::itemsMoved(const Akonadi::Item::List& items, const Akonadi::Collection& /*sourceCollection*/,
+                                const Akonadi::Collection& destinationCollection)
 {
-    if (Akonadi::SpecialMailCollections::self()->specialCollectionType(destinationCollection) != Akonadi::SpecialMailCollections::Trash) {
+    if (Akonadi::SpecialMailCollections::self()->specialCollectionType(destinationCollection) !=
+        Akonadi::SpecialMailCollections::Trash) {
         return;
     }
     itemsRemoved(items);

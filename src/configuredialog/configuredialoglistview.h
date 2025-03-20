@@ -11,15 +11,15 @@ class ListView : public QTreeWidget
 {
     Q_OBJECT
 public:
-    explicit ListView(QWidget *parent = nullptr);
+    explicit ListView(QWidget* parent = nullptr);
 
 Q_SIGNALS:
     void addHeader();
     void removeHeader();
 
 protected:
-    void resizeEvent(QResizeEvent *e) override;
-    void showEvent(QShowEvent *e) override;
+    void resizeEvent(QResizeEvent* e) override;
+    void showEvent(QShowEvent* e) override;
 
 private:
     void slotContextMenu(QPoint pos);

@@ -6,8 +6,6 @@
 
 #include "opencomposerjob.h"
 
-#include "kmail_debug.h"
-#include "kmkernel.h"
 #include <KIdentityManagementCore/Identity>
 #include <KIdentityManagementCore/IdentityManager>
 #include <KLocalizedString>
@@ -15,17 +13,16 @@
 #include <MessageComposer/ComposerJob>
 #include <MessageComposer/MessageHelper>
 #include <MessageCore/StringUtil>
+#include <TemplateParser/TemplateParserJob>
 #include <QFile>
 #include <QMimeDatabase>
-#include <TemplateParser/TemplateParserJob>
+#include "kmail_debug.h"
+#include "kmkernel.h"
 
 using namespace Qt::Literals::StringLiterals;
-OpenComposerJob::OpenComposerJob(QObject *parent)
-    : QObject(parent)
-{
-}
+OpenComposerJob::OpenComposerJob(QObject* parent) : QObject(parent) {}
 
-void OpenComposerJob::setOpenComposerSettings(const OpenComposerSettings &openComposerSettings)
+void OpenComposerJob::setOpenComposerSettings(const OpenComposerSettings& openComposerSettings)
 {
     mOpenComposerSettings = openComposerSettings;
 }
@@ -37,7 +34,8 @@ void OpenComposerJob::start()
     mMsg = KMime::Message::Ptr(new KMime::Message);
     if (!mOpenComposerSettings.mIdentity.isEmpty()) {
         if (KMKernel::self()->identityManager()->identities().contains(mOpenComposerSettings.mIdentity)) {
-            const KIdentityManagementCore::Identity id = KMKernel::self()->identityManager()->modifyIdentityForName(mOpenComposerSettings.mIdentity);
+            const KIdentityManagementCore::Identity id =
+                KMKernel::self()->identityManager()->modifyIdentityForName(mOpenComposerSettings.mIdentity);
             mIdentityId = id.uoid();
         } else {
             qCWarning(KMAIL_LOG) << "Identity name doesn't exist " << mOpenComposerSettings.mIdentity;
@@ -74,7 +72,8 @@ void OpenComposerJob::start()
         QFile f(mOpenComposerSettings.mMessageFile);
         QByteArray str;
         if (!f.open(QIODevice::ReadOnly)) {
-            qCWarning(KMAIL_LOG) << "Failed to load message: " << mOpenComposerSettings.mMessageFile << " Error : " << f.errorString();
+            qCWarning(KMAIL_LOG) << "Failed to load message: " << mOpenComposerSettings.mMessageFile
+                                 << " Error : " << f.errorString();
         } else {
             str = f.readAll();
             f.close();
@@ -105,7 +104,7 @@ void OpenComposerJob::start()
 
 void OpenComposerJob::slotOpenComposer()
 {
-    KMail::Composer *cWin = KMail::makeComposer(mMsg, false, false, mContext, mIdentityId);
+    KMail::Composer* cWin = KMail::makeComposer(mMsg, false, false, mContext, mIdentityId);
     if (mOpenComposerSettings.mHtmlBody) {
         cWin->forceEnableHtml();
     }
@@ -118,11 +117,11 @@ void OpenComposerJob::slotOpenComposer()
     for (QList<QUrl>::ConstIterator it = attachURLs.constBegin(); it != endAttachment; ++it) {
         QMimeDatabase mimeDb;
         if (mimeDb.mimeTypeForUrl(*it).name() == "inode/directory"_L1) {
-            const int answer = KMessageBox::questionTwoActions(nullptr,
-                                                               i18n("Do you want to attach this folder \"%1\"?", (*it).toDisplayString()),
-                                                               i18nc("@title:window", "Attach Folder"),
-                                                               KGuiItem(i18nc("@action:button", "Attach"), QStringLiteral("dialog-ok")),
-                                                               KGuiItem(i18nc("@action:button", "Do Not Attach"), QStringLiteral("dialog-cancel")));
+            const int answer = KMessageBox::questionTwoActions(
+                nullptr, i18n("Do you want to attach this folder \"%1\"?", (*it).toDisplayString()),
+                i18nc("@title:window", "Attach Folder"),
+                KGuiItem(i18nc("@action:button", "Attach"), QStringLiteral("dialog-ok")),
+                KGuiItem(i18nc("@action:button", "Do Not Attach"), QStringLiteral("dialog-cancel")));
             if (answer == KMessageBox::ButtonCode::SecondaryAction) {
                 continue;
             }

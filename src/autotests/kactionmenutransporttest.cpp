@@ -5,13 +5,10 @@
 */
 
 #include "kactionmenutransporttest.h"
-#include "../widgets/kactionmenutransport.h"
 #include <QMenu>
 #include <QTest>
-KActionMenuTransportTest::KActionMenuTransportTest(QObject *parent)
-    : QObject(parent)
-{
-}
+#include "../widgets/kactionmenutransport.h"
+KActionMenuTransportTest::KActionMenuTransportTest(QObject* parent) : QObject(parent) {}
 
 KActionMenuTransportTest::~KActionMenuTransportTest() = default;
 

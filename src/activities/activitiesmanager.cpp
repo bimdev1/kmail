@@ -10,12 +10,10 @@
 #include "ldapactivities.h"
 #include "transportactivities.h"
 
-ActivitiesManager::ActivitiesManager(QObject *parent)
-    : PimCommonActivities::ActivitiesBaseManager{parent}
-    , mTransportActivities(new TransportActivities(this))
-    , mIdentityActivities(new IdentityActivities(this))
-    , mLdapActivities(new LdapActivities(this))
-    , mAccountActivities(new AccountActivities(this))
+ActivitiesManager::ActivitiesManager(QObject* parent)
+    : PimCommonActivities::ActivitiesBaseManager{parent}, mTransportActivities(new TransportActivities(this)),
+      mIdentityActivities(new IdentityActivities(this)), mLdapActivities(new LdapActivities(this)),
+      mAccountActivities(new AccountActivities(this))
 {
     connect(this, &ActivitiesManager::activitiesChanged, this, [this]() {
         Q_EMIT mIdentityActivities->activitiesChanged();
@@ -27,28 +25,28 @@ ActivitiesManager::ActivitiesManager(QObject *parent)
 
 ActivitiesManager::~ActivitiesManager() = default;
 
-ActivitiesManager *ActivitiesManager::self()
+ActivitiesManager* ActivitiesManager::self()
 {
     static ActivitiesManager s_self;
     return &s_self;
 }
 
-IdentityActivities *ActivitiesManager::identityActivities() const
+IdentityActivities* ActivitiesManager::identityActivities() const
 {
     return mIdentityActivities;
 }
 
-TransportActivities *ActivitiesManager::transportActivities() const
+TransportActivities* ActivitiesManager::transportActivities() const
 {
     return mTransportActivities;
 }
 
-LdapActivities *ActivitiesManager::ldapActivities() const
+LdapActivities* ActivitiesManager::ldapActivities() const
 {
     return mLdapActivities;
 }
 
-AccountActivities *ActivitiesManager::accountActivities() const
+AccountActivities* ActivitiesManager::accountActivities() const
 {
     return mAccountActivities;
 }

@@ -29,11 +29,11 @@ static const int s_delegatePaddingSize = 7;
 
 struct Icons {
     Icons()
-        : readyPixmap(QIcon::fromTheme(QStringLiteral("user-online")).pixmap(QSize(16, 16)))
-        , syncPixmap(QIcon::fromTheme(QStringLiteral("network-connect")).pixmap(QSize(16, 16)))
-        , errorPixmap(QIcon::fromTheme(QStringLiteral("dialog-error")).pixmap(QSize(16, 16)))
-        , offlinePixmap(QIcon::fromTheme(QStringLiteral("network-disconnect")).pixmap(QSize(16, 16)))
-        , checkMailIcon(QIcon::fromTheme(QStringLiteral("mail-receive")))
+        : readyPixmap(QIcon::fromTheme(QStringLiteral("user-online")).pixmap(QSize(16, 16))),
+          syncPixmap(QIcon::fromTheme(QStringLiteral("network-connect")).pixmap(QSize(16, 16))),
+          errorPixmap(QIcon::fromTheme(QStringLiteral("dialog-error")).pixmap(QSize(16, 16))),
+          offlinePixmap(QIcon::fromTheme(QStringLiteral("network-disconnect")).pixmap(QSize(16, 16))),
+          checkMailIcon(QIcon::fromTheme(QStringLiteral("mail-receive")))
     {
     }
 
@@ -43,12 +43,9 @@ struct Icons {
 
 Q_GLOBAL_STATIC(Icons, s_icons)
 
-ConfigAgentDelegate::ConfigAgentDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
-{
-}
+ConfigAgentDelegate::ConfigAgentDelegate(QObject* parent) : QStyledItemDelegate(parent) {}
 
-QTextDocument *ConfigAgentDelegate::document(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QTextDocument* ConfigAgentDelegate::document(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     if (!index.isValid()) {
         return nullptr;
@@ -61,14 +58,17 @@ QTextDocument *ConfigAgentDelegate::document(const QStyleOptionViewItem &option,
 
     auto document = new QTextDocument(nullptr);
 
-    const QSize decorationSize(KIconLoader::global()->currentSize(KIconLoader::Desktop), KIconLoader::global()->currentSize(KIconLoader::Desktop));
+    const QSize decorationSize(KIconLoader::global()->currentSize(KIconLoader::Desktop),
+                               KIconLoader::global()->currentSize(KIconLoader::Desktop));
     const QVariant data = index.model()->data(index, Qt::DecorationRole);
     if (data.isValid() && data.userType() == QMetaType::QIcon) {
-        document->addResource(QTextDocument::ImageResource, QUrl(QStringLiteral("agent_icon")), qvariant_cast<QIcon>(data).pixmap(decorationSize));
+        document->addResource(QTextDocument::ImageResource, QUrl(QStringLiteral("agent_icon")),
+                              qvariant_cast<QIcon>(data).pixmap(decorationSize));
     }
 
     if (!index.data(AgentInstanceModel::OnlineRole).toBool()) {
-        document->addResource(QTextDocument::ImageResource, QUrl(QStringLiteral("status_icon")), s_icons->offlinePixmap);
+        document->addResource(QTextDocument::ImageResource, QUrl(QStringLiteral("status_icon")),
+                              s_icons->offlinePixmap);
     } else if (status == AgentInstance::Idle) {
         document->addResource(QTextDocument::ImageResource, QUrl(QStringLiteral("status_icon")), s_icons->readyPixmap);
     } else if (status == AgentInstance::Running) {
@@ -89,34 +89,32 @@ QTextDocument *ConfigAgentDelegate::document(const QStyleOptionViewItem &option,
         textColor = option.palette.color(cg, QPalette::Text);
     }
 
-    const QString content = QStringLiteral(
-                                "<html style=\"color:%1\">"
-                                "<body>"
-                                "<table>"
-                                "<tr>"
-                                "<td rowspan=\"2\"><img src=\"agent_icon\">&nbsp;&nbsp;</td>"
-                                "<td><b>%2</b></td>"
-                                "</tr>")
-                                .arg(textColor.name().toUpper(), name)
-        + QStringLiteral(
-              "<tr>"
-              "<td><img src=\"status_icon\"/> %1 %2</td>"
-              "</tr>")
-              .arg(statusMessage, status == 1 ? i18n("(%1%)", progress) : ""_L1)
-        + "</table></body></html>"_L1;
+    const QString content = QStringLiteral("<html style=\"color:%1\">"
+                                           "<body>"
+                                           "<table>"
+                                           "<tr>"
+                                           "<td rowspan=\"2\"><img src=\"agent_icon\">&nbsp;&nbsp;</td>"
+                                           "<td><b>%2</b></td>"
+                                           "</tr>")
+                                .arg(textColor.name().toUpper(), name) +
+                            QStringLiteral("<tr>"
+                                           "<td><img src=\"status_icon\"/> %1 %2</td>"
+                                           "</tr>")
+                                .arg(statusMessage, status == 1 ? i18n("(%1%)", progress) : ""_L1) +
+                            "</table></body></html>"_L1;
 
     document->setHtml(content);
 
     return document;
 }
 
-void ConfigAgentDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void ConfigAgentDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     if (!index.isValid()) {
         return;
     }
 
-    QTextDocument *doc = document(option, index);
+    QTextDocument* doc = document(option, index);
     if (!doc) {
         return;
     }
@@ -150,31 +148,34 @@ void ConfigAgentDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     delete doc;
 }
 
-QSize ConfigAgentDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
+QSize ConfigAgentDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex&) const
 {
-    const int iconHeight = KIconLoader::global()->currentSize(KIconLoader::Desktop) + (s_delegatePaddingSize * 2); // icon height + padding either side
-    const int textHeight =
-        option.fontMetrics.height() + qMax(option.fontMetrics.height(), 16) + (s_delegatePaddingSize * 2); // height of text + icon/text + padding either side
+    const int iconHeight = KIconLoader::global()->currentSize(KIconLoader::Desktop) +
+                           (s_delegatePaddingSize * 2); // icon height + padding either side
+    const int textHeight = option.fontMetrics.height() + qMax(option.fontMetrics.height(), 16) +
+                           (s_delegatePaddingSize * 2); // height of text + icon/text + padding either side
 
     return {1, qMax(iconHeight, textHeight)}; // any width,the view will give us the whole thing in list mode
 }
 
-QWidget *ConfigAgentDelegate::createEditor(QWidget *, const QStyleOptionViewItem &, const QModelIndex &) const
+QWidget* ConfigAgentDelegate::createEditor(QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const
 {
     return nullptr;
 }
 
-bool ConfigAgentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+bool ConfigAgentDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,
+                                      const QModelIndex& index)
 {
     Q_UNUSED(model)
     if (!index.isValid()) {
         return false;
     }
-    if (!((event->type() == QEvent::MouseButtonRelease) || (event->type() == QEvent::MouseButtonPress) || (event->type() == QEvent::MouseMove))) {
+    if (!((event->type() == QEvent::MouseButtonRelease) || (event->type() == QEvent::MouseButtonPress) ||
+          (event->type() == QEvent::MouseMove))) {
         return false;
     }
 
-    auto me = static_cast<QMouseEvent *>(event);
+    auto me = static_cast<QMouseEvent*>(event);
     const QPoint mousePos = me->pos() - option.rect.topLeft();
 
     QStyleOptionButton buttonOpt = buttonOption(option);
@@ -196,7 +197,7 @@ bool ConfigAgentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, 
     return false;
 }
 
-void ConfigAgentDelegate::drawFocus(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const
+void ConfigAgentDelegate::drawFocus(QPainter* painter, const QStyleOptionViewItem& option, const QRect& rect) const
 {
     if (option.state & QStyle::State_HasFocus) {
         QStyleOptionFocusRect o;
@@ -204,18 +205,20 @@ void ConfigAgentDelegate::drawFocus(QPainter *painter, const QStyleOptionViewIte
         o.rect = rect;
         o.state |= QStyle::State_KeyboardFocusChange;
         QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled) ? QPalette::Normal : QPalette::Disabled;
-        o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected) ? QPalette::Highlight : QPalette::Window);
+        o.backgroundColor =
+            option.palette.color(cg, (option.state & QStyle::State_Selected) ? QPalette::Highlight : QPalette::Window);
         QApplication::style()->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
     }
 }
 
-QStyleOptionButton ConfigAgentDelegate::buttonOption(const QStyleOptionViewItem &option) const
+QStyleOptionButton ConfigAgentDelegate::buttonOption(const QStyleOptionViewItem& option) const
 {
     const QString label = i18n("Retrieval Options");
     QStyleOptionButton buttonOpt;
     QRect buttonRect = option.rect;
     const int height = option.rect.height() / 2;
-    const int width = 22 + option.fontMetrics.boundingRect(label).width() + 40; // icon size + label size + arrow and padding
+    const int width =
+        22 + option.fontMetrics.boundingRect(label).width() + 40; // icon size + label size + arrow and padding
     buttonRect.setTop(0);
     buttonRect.setHeight(height);
     buttonRect.setLeft(option.rect.right() - width);

@@ -8,33 +8,33 @@
 
 #include <MessageComposer/RichTextComposerNg>
 class KMComposerWin;
-namespace KPIMTextEdit
-{
+namespace KPIMTextEdit {
 class RichTextComposerEmailQuoteHighlighter;
 }
 class KMComposerEditorNg : public MessageComposer::RichTextComposerNg
 {
     Q_OBJECT
 public:
-    explicit KMComposerEditorNg(KMComposerWin *win, QWidget *parent);
+    explicit KMComposerEditorNg(KMComposerWin* win, QWidget* parent);
     ~KMComposerEditorNg() override;
 
-    [[nodiscard]] QString smartQuote(const QString &msg) override;
+    [[nodiscard]] QString smartQuote(const QString& msg) override;
 
-    void setHighlighterColors(KPIMTextEdit::RichTextComposerEmailQuoteHighlighter *highlighter) override;
+    void setHighlighterColors(KPIMTextEdit::RichTextComposerEmailQuoteHighlighter* highlighter) override;
 
-    void showSpellConfigDialog(const QString &configFileName);
+    void showSpellConfigDialog(const QString& configFileName);
 
-    [[nodiscard]] MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus convertPlainText(MessageComposer::TextPart *textPart) override;
+    [[nodiscard]] MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus
+    convertPlainText(MessageComposer::TextPart* textPart) override;
 Q_SIGNALS:
     void insertSnippet();
 
 protected:
-    bool processModifyText(QKeyEvent *event) override;
-    void addExtraMenuEntry(QMenu *menu, QPoint pos) override;
-    bool canInsertFromMimeData(const QMimeData *source) const override;
-    void insertFromMimeData(const QMimeData *source) override;
+    bool processModifyText(QKeyEvent* event) override;
+    void addExtraMenuEntry(QMenu* menu, QPoint pos) override;
+    bool canInsertFromMimeData(const QMimeData* source) const override;
+    void insertFromMimeData(const QMimeData* source) override;
 
 private:
-    KMComposerWin *const mComposerWin;
+    KMComposerWin* const mComposerWin;
 };

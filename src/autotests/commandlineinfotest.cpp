@@ -5,14 +5,11 @@
 */
 
 #include "commandlineinfotest.h"
-#include "commandlineinfo.h"
 #include <QTest>
+#include "commandlineinfo.h"
 
 QTEST_GUILESS_MAIN(CommandLineInfoTest)
-CommandLineInfoTest::CommandLineInfoTest(QObject *parent)
-    : QObject{parent}
-{
-}
+CommandLineInfoTest::CommandLineInfoTest(QObject* parent) : QObject{parent} {}
 
 void CommandLineInfoTest::shouldHaveDefaultValues()
 {
@@ -49,16 +46,17 @@ void CommandLineInfoTest::parseCommandLineInfo_data()
     {
         QStringList args;
         args << QStringLiteral("kmail");
-        args << QStringLiteral(
-            "mailto:rostedt@goodmis.org?In-Reply-To=%3C20231105160139.660634360@goodmis.org%3E&Cc=akaher%40vmware.com%2Cakpm%40linux-foundation.org%2Cgregkh%"
-            "40linuxfoundation.org%2Clinux-kernel%40vger.kernel.org%2Cmark.rutland%40arm.com%2Cmhiramat%40kernel.org%2Cstable%40vger.kernel.org&Subject=Re%3A%"
-            "20%5Bv6.6%5D%5BPATCH%203%2F5%5D%20eventfs%3A%20Save%20ownership%20and%20mode");
+        args << QStringLiteral("mailto:rostedt@goodmis.org?In-Reply-To=%3C20231105160139.660634360@goodmis.org%3E&Cc="
+                               "akaher%40vmware.com%2Cakpm%40linux-foundation.org%2Cgregkh%"
+                               "40linuxfoundation.org%2Clinux-kernel%40vger.kernel.org%2Cmark.rutland%40arm.com%"
+                               "2Cmhiramat%40kernel.org%2Cstable%40vger.kernel.org&Subject=Re%3A%"
+                               "20%5Bv6.6%5D%5BPATCH%203%2F5%5D%20eventfs%3A%20Save%20ownership%20and%20mode");
         CommandLineInfo info;
         info.setSubject(QStringLiteral("Re: [v6.6][PATCH 3/5] eventfs: Save ownership and mode"));
         info.setTo(QStringLiteral("rostedt@goodmis.org"));
-        info.setCc(
-            QStringLiteral("akaher@vmware.com,akpm@linux-foundation.org,gregkh@linuxfoundation.org,linux-kernel@vger.kernel.org,mark.rutland@arm.com,mhiramat@"
-                           "kernel.org,stable@vger.kernel.org, "));
+        info.setCc(QStringLiteral("akaher@vmware.com,akpm@linux-foundation.org,gregkh@linuxfoundation.org,linux-kernel@"
+                                  "vger.kernel.org,mark.rutland@arm.com,mhiramat@"
+                                  "kernel.org,stable@vger.kernel.org, "));
         info.setInReplyTo(QStringLiteral("<20231105160139.660634360@goodmis.org>"));
         info.setMailto(true);
         QTest::newRow("test1") << args << QString() << info;

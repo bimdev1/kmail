@@ -12,8 +12,7 @@
 
 #include <Libkdepim/ProgressManager>
 
-namespace Akonadi
-{
+namespace Akonadi {
 class CollectionPropertiesDialog;
 }
 
@@ -23,7 +22,7 @@ class ManageShowCollectionProperties : public QObject
 {
     Q_OBJECT
 public:
-    explicit ManageShowCollectionProperties(KMMainWidget *mainWidget, QObject *parent = nullptr);
+    explicit ManageShowCollectionProperties(KMMainWidget* mainWidget, QObject* parent = nullptr);
     ~ManageShowCollectionProperties() override;
 
     void slotFolderMailingListProperties();
@@ -32,12 +31,12 @@ public:
     void slotCollectionProperties();
 
 private:
-    void slotCollectionPropertiesContinued(KJob *job);
-    void slotCollectionPropertiesFinished(KJob *job);
-    void showCollectionProperties(const QString &pageToShow);
-    void showCollectionPropertiesContinued(const QString &pageToShow, QPointer<KPIM::ProgressItem> progressItem);
+    void slotCollectionPropertiesContinued(KJob* job);
+    void slotCollectionPropertiesFinished(KJob* job);
+    void showCollectionProperties(const QString& pageToShow);
+    void showCollectionPropertiesContinued(const QString& pageToShow, QPointer<KPIM::ProgressItem> progressItem);
 
     QHash<Akonadi::Collection::Id, QPointer<Akonadi::CollectionPropertiesDialog>> mHashDialogBox;
-    KMMainWidget *const mMainWidget;
+    KMMainWidget* const mMainWidget;
     const QStringList mPages;
 };

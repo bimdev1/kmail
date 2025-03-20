@@ -7,21 +7,21 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <KMessageWidget>
+#include "kmail_private_export.h"
 class KMAILTESTS_TESTS_EXPORT PotentialPhishingEmailWarning : public KMessageWidget
 {
     Q_OBJECT
 public:
-    explicit PotentialPhishingEmailWarning(QWidget *parent = nullptr);
+    explicit PotentialPhishingEmailWarning(QWidget* parent = nullptr);
     ~PotentialPhishingEmailWarning() override;
 
-    void setPotentialPhisingEmail(const QStringList &lst);
+    void setPotentialPhisingEmail(const QStringList& lst);
 
 Q_SIGNALS:
     void sendNow();
 
 private:
-    KMAIL_NO_EXPORT void slotShowDetails(const QString &link);
+    KMAIL_NO_EXPORT void slotShowDetails(const QString& link);
     QStringList mPotentialPhishingEmails;
 };

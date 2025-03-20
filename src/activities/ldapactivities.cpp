@@ -7,15 +7,14 @@
 #include "ldapactivities.h"
 #include "activitiesmanager.h"
 
-LdapActivities::LdapActivities(ActivitiesManager *manager)
-    : KLDAPCore::LdapActivitiesAbstract{manager}
-    , mActivitiesManager(manager)
+LdapActivities::LdapActivities(ActivitiesManager* manager)
+    : KLDAPCore::LdapActivitiesAbstract{manager}, mActivitiesManager(manager)
 {
 }
 
 LdapActivities::~LdapActivities() = default;
 
-bool LdapActivities::filterAcceptsRow(const QStringList &activities) const
+bool LdapActivities::filterAcceptsRow(const QStringList& activities) const
 {
     if (mActivitiesManager && mActivitiesManager->enabled()) {
         if (!activities.isEmpty()) {

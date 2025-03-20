@@ -14,23 +14,21 @@
 #include <KToggleAction>
 #include <MessageCore/ColorUtil>
 #include <MessageCore/MessageCoreSettings>
+#include <Sonnet/ConfigDialog>
+#include <sonnet/dictionarycombobox.h>
 #include <QCheckBox>
 #include <QMenu>
 #include <QMimeData>
-#include <Sonnet/ConfigDialog>
-#include <sonnet/dictionarycombobox.h>
 
-namespace
-{
+namespace {
 inline QString textSnippetMimeType()
 {
     return QStringLiteral("text/x-kmail-textsnippet");
 }
-}
+} // namespace
 
-KMComposerEditorNg::KMComposerEditorNg(KMComposerWin *win, QWidget *parent)
-    : MessageComposer::RichTextComposerNg(parent)
-    , mComposerWin(win)
+KMComposerEditorNg::KMComposerEditorNg(KMComposerWin* win, QWidget* parent)
+    : MessageComposer::RichTextComposerNg(parent), mComposerWin(win)
 {
     setSpellCheckingConfigFileName(QStringLiteral("kmail2rc"));
     setAutocorrection(KMKernel::self()->composerAutoCorrection());
@@ -39,23 +37,23 @@ KMComposerEditorNg::KMComposerEditorNg(KMComposerWin *win, QWidget *parent)
 
 KMComposerEditorNg::~KMComposerEditorNg() = default;
 
-void KMComposerEditorNg::addExtraMenuEntry(QMenu *menu, QPoint pos)
+void KMComposerEditorNg::addExtraMenuEntry(QMenu* menu, QPoint pos)
 {
     Q_UNUSED(pos)
-    const QList<QAction *> lstAct = mComposerWin->pluginToolsActionListForPopupMenu();
-    for (QAction *a : lstAct) {
+    const QList<QAction*> lstAct = mComposerWin->pluginToolsActionListForPopupMenu();
+    for (QAction* a : lstAct) {
         menu->addSeparator();
         menu->addAction(a);
     }
 
     menu->addSeparator();
-    const QList<KToggleAction *> lstTa = mComposerWin->customToolsList();
-    for (KToggleAction *ta : lstTa) {
+    const QList<KToggleAction*> lstTa = mComposerWin->customToolsList();
+    for (KToggleAction* ta : lstTa) {
         menu->addAction(ta);
     }
 }
 
-bool KMComposerEditorNg::canInsertFromMimeData(const QMimeData *source) const
+bool KMComposerEditorNg::canInsertFromMimeData(const QMimeData* source) const
 {
     if (source->hasImage() && source->hasFormat(QStringLiteral("image/png"))) {
         return true;
@@ -74,7 +72,7 @@ bool KMComposerEditorNg::canInsertFromMimeData(const QMimeData *source) const
     return MessageComposer::RichTextComposerNg::canInsertFromMimeData(source);
 }
 
-void KMComposerEditorNg::insertFromMimeData(const QMimeData *source)
+void KMComposerEditorNg::insertFromMimeData(const QMimeData* source)
 {
     if (source->hasFormat(textSnippetMimeType())) {
         Q_EMIT insertSnippet();
@@ -86,7 +84,7 @@ void KMComposerEditorNg::insertFromMimeData(const QMimeData *source)
     }
 }
 
-void KMComposerEditorNg::setHighlighterColors(KPIMTextEdit::RichTextComposerEmailQuoteHighlighter *highlighter)
+void KMComposerEditorNg::setHighlighterColors(KPIMTextEdit::RichTextComposerEmailQuoteHighlighter* highlighter)
 {
     QColor color1 = MessageCore::ColorUtil::self()->quoteLevel1DefaultTextColor();
     QColor color2 = MessageCore::ColorUtil::self()->quoteLevel2DefaultTextColor();
@@ -102,12 +100,12 @@ void KMComposerEditorNg::setHighlighterColors(KPIMTextEdit::RichTextComposerEmai
     highlighter->setQuoteColor(Qt::black /* ignored anyway */, color1, color2, color3, misspelled);
 }
 
-QString KMComposerEditorNg::smartQuote(const QString &msg)
+QString KMComposerEditorNg::smartQuote(const QString& msg)
 {
     return mComposerWin->smartQuote(msg);
 }
 
-void KMComposerEditorNg::showSpellConfigDialog(const QString &configFileName)
+void KMComposerEditorNg::showSpellConfigDialog(const QString& configFileName)
 {
     Q_UNUSED(configFileName)
     QPointer<SpellCheckerConfigDialog> dialog = new SpellCheckerConfigDialog(this);
@@ -121,15 +119,17 @@ void KMComposerEditorNg::showSpellConfigDialog(const QString &configFileName)
     delete dialog;
 }
 
-MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus KMComposerEditorNg::convertPlainText(MessageComposer::TextPart *textPart)
+MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus
+KMComposerEditorNg::convertPlainText(MessageComposer::TextPart* textPart)
 {
-    if (mComposerWin->convertPlainText(textPart) == MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus::Converted) {
+    if (mComposerWin->convertPlainText(textPart) ==
+        MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus::Converted) {
         return MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus::Converted;
     }
     return MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus::NotConverted;
 }
 
-bool KMComposerEditorNg::processModifyText(QKeyEvent *event)
+bool KMComposerEditorNg::processModifyText(QKeyEvent* event)
 {
     if (!mComposerWin->processModifyText(event)) {
         return MessageComposer::RichTextComposerNg::processModifyText(event);

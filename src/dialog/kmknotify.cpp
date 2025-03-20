@@ -24,10 +24,8 @@
 using namespace KMail;
 using namespace Qt::Literals::StringLiterals;
 
-KMKnotify::KMKnotify(QWidget *parent)
-    : QDialog(parent)
-    , m_comboNotify(new QComboBox(this))
-    , m_notifyWidget(new KNotifyConfigWidget(this))
+KMKnotify::KMKnotify(QWidget* parent)
+    : QDialog(parent), m_comboNotify(new QComboBox(this)), m_notifyWidget(new KNotifyConfigWidget(this))
 {
     setWindowTitle(i18nc("@title:window", "Notification"));
     auto mainLayout = new QVBoxLayout(this);
@@ -41,7 +39,7 @@ KMKnotify::KMKnotify(QWidget *parent)
     mainLayout->addWidget(new KSeparator(this));
 
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &KMKnotify::accept);
@@ -76,7 +74,7 @@ void KMKnotify::slotComboChanged(int index)
     m_notifyWidget->setApplication(text);
 }
 
-void KMKnotify::setCurrentNotification(const QString &name)
+void KMKnotify::setCurrentNotification(const QString& name)
 {
     const int index = m_comboNotify->findData(name);
     if (index > -1) {
@@ -87,13 +85,17 @@ void KMKnotify::setCurrentNotification(const QString &name)
 
 void KMKnotify::initCombobox()
 {
-    const QStringList lstNotify = QStringList() << QStringLiteral("kmail2.notifyrc") << QStringLiteral("akonadi_maildispatcher_agent.notifyrc")
-                                                << QStringLiteral("akonadi_mailfilter_agent.notifyrc") << QStringLiteral("akonadi_archivemail_agent.notifyrc")
+    const QStringList lstNotify = QStringList() << QStringLiteral("kmail2.notifyrc")
+                                                << QStringLiteral("akonadi_maildispatcher_agent.notifyrc")
+                                                << QStringLiteral("akonadi_mailfilter_agent.notifyrc")
+                                                << QStringLiteral("akonadi_archivemail_agent.notifyrc")
                                                 << QStringLiteral("akonadi_sendlater_agent.notifyrc")
                                                 << QStringLiteral("akonadi_newmailnotifier_agent.notifyrc")
-                                                << QStringLiteral("akonadi_followupreminder_agent.notifyrc") << QStringLiteral("messageviewer.notifyrc");
-    for (const QString &notify : lstNotify) {
-        const QString fullPath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "knotifications6/"_L1 + notify);
+                                                << QStringLiteral("akonadi_followupreminder_agent.notifyrc")
+                                                << QStringLiteral("messageviewer.notifyrc");
+    for (const QString& notify : lstNotify) {
+        const QString fullPath =
+            QStandardPaths::locate(QStandardPaths::GenericDataLocation, "knotifications6/"_L1 + notify);
 
         if (!fullPath.isEmpty()) {
             const int slash = fullPath.lastIndexOf(QLatin1Char('/'));

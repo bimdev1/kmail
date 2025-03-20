@@ -18,32 +18,30 @@
 class QContextMenuEvent;
 class QToolButton;
 class QLabel;
-namespace MessageComposer
-{
+namespace MessageComposer {
 class AttachmentModel;
 }
 
-namespace KMail
-{
+namespace KMail {
 class AttachmentView : public QTreeView
 {
     Q_OBJECT
 
 public:
     /// can't change model afterwards.
-    explicit AttachmentView(MessageComposer::AttachmentModel *model, QWidget *parent = nullptr);
+    explicit AttachmentView(MessageComposer::AttachmentModel* model, QWidget* parent = nullptr);
     ~AttachmentView() override;
 
-    [[nodiscard]] QWidget *widget() const;
+    [[nodiscard]] QWidget* widget() const;
     void hideIfEmpty();
 
 protected:
     /** reimpl to avoid default drag cursor */
     void startDrag(Qt::DropActions supportedActions) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
     /** reimpl to avoid drags from ourselves */
-    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent* event) override;
 
 private:
     void slotShowHideAttchementList(bool);
@@ -61,10 +59,10 @@ Q_SIGNALS:
     void modified(bool);
 
 private:
-    MessageComposer::AttachmentModel *const mModel;
-    QToolButton *const mToolButton;
-    QLabel *const mInfoAttachment;
-    QWidget *const mWidget;
+    MessageComposer::AttachmentModel* const mModel;
+    QToolButton* const mToolButton;
+    QLabel* const mInfoAttachment;
+    QWidget* const mWidget;
     KConfigGroup grp;
 };
 } // namespace KMail

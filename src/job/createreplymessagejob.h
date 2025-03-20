@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <Akonadi/Item>
 #include <KMime/Message>
 #include <MessageComposer/MessageFactoryNG>
 #include <QObject>
 #include <QUrl>
+#include "kmail_private_export.h"
 
 struct KMAILTESTS_TESTS_EXPORT CreateReplyMessageJobSettings {
     CreateReplyMessageJobSettings() = default;
@@ -30,15 +30,15 @@ class KMAILTESTS_TESTS_EXPORT CreateReplyMessageJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit CreateReplyMessageJob(QObject *parent = nullptr);
+    explicit CreateReplyMessageJob(QObject* parent = nullptr);
     ~CreateReplyMessageJob() override;
 
     void start();
 
-    void setSettings(const CreateReplyMessageJobSettings &settings);
+    void setSettings(const CreateReplyMessageJobSettings& settings);
 
 private:
-    KMAIL_NO_EXPORT void slotCreateReplyDone(const MessageComposer::MessageFactoryNG::MessageReply &reply);
-    MessageComposer::MessageFactoryNG *mMessageFactory = nullptr;
+    KMAIL_NO_EXPORT void slotCreateReplyDone(const MessageComposer::MessageFactoryNG::MessageReply& reply);
+    MessageComposer::MessageFactoryNG* mMessageFactory = nullptr;
     CreateReplyMessageJobSettings mSettings;
 };

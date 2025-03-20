@@ -11,8 +11,7 @@
 #include <QStandardPaths>
 #include <QTest>
 
-FollowUpReminderConfigTest::FollowUpReminderConfigTest(QObject *parent)
-    : QObject(parent)
+FollowUpReminderConfigTest::FollowUpReminderConfigTest(QObject* parent) : QObject(parent)
 {
     QStandardPaths::setTestModeEnabled(true);
 }
@@ -29,7 +28,7 @@ void FollowUpReminderConfigTest::init()
 void FollowUpReminderConfigTest::cleanup()
 {
     const QStringList filterGroups = mConfig->groupList();
-    for (const QString &group : filterGroups) {
+    for (const QString& group : filterGroups) {
         mConfig->deleteGroup(group);
     }
     mConfig->sync();

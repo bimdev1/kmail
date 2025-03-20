@@ -12,7 +12,7 @@ class NearExpiryWarningTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit NearExpiryWarningTest(QObject *parent = nullptr);
+    explicit NearExpiryWarningTest(QObject* parent = nullptr);
     ~NearExpiryWarningTest() override = default;
 private Q_SLOTS:
     void shouldHaveDefaultValue();

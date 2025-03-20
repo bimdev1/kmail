@@ -12,13 +12,13 @@ class IdentityActivities : public KIdentityManagementCore::IdentityActivitiesAbs
 {
     Q_OBJECT
 public:
-    explicit IdentityActivities(ActivitiesManager *manager);
+    explicit IdentityActivities(ActivitiesManager* manager);
     ~IdentityActivities() override;
 
-    [[nodiscard]] bool filterAcceptsRow(const QStringList &lst) const override;
+    [[nodiscard]] bool filterAcceptsRow(const QStringList& lst) const override;
     [[nodiscard]] bool hasActivitySupport() const override;
     [[nodiscard]] QString currentActivity() const override;
 
 private:
-    ActivitiesManager *const mActivitiesManager;
+    ActivitiesManager* const mActivitiesManager;
 };

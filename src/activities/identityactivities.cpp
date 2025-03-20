@@ -7,15 +7,14 @@
 #include "identityactivities.h"
 #include "activitiesmanager.h"
 
-IdentityActivities::IdentityActivities(ActivitiesManager *manager)
-    : KIdentityManagementCore::IdentityActivitiesAbstract{manager}
-    , mActivitiesManager(manager)
+IdentityActivities::IdentityActivities(ActivitiesManager* manager)
+    : KIdentityManagementCore::IdentityActivitiesAbstract{manager}, mActivitiesManager(manager)
 {
 }
 
 IdentityActivities::~IdentityActivities() = default;
 
-bool IdentityActivities::filterAcceptsRow(const QStringList &activities) const
+bool IdentityActivities::filterAcceptsRow(const QStringList& activities) const
 {
     if (mActivitiesManager && mActivitiesManager->enabled()) {
         if (!activities.isEmpty()) {

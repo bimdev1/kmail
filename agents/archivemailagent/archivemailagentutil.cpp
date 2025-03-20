@@ -6,7 +6,7 @@
 
 #include "archivemailagentutil.h"
 
-QDate ArchiveMailAgentUtil::diffDate(ArchiveMailInfo *info)
+QDate ArchiveMailAgentUtil::diffDate(ArchiveMailInfo* info)
 {
     QDate diffDate(info->lastDateSaved());
     switch (info->archiveUnit()) {
@@ -26,7 +26,7 @@ QDate ArchiveMailAgentUtil::diffDate(ArchiveMailInfo *info)
     return diffDate;
 }
 
-bool ArchiveMailAgentUtil::timeIsInRange(const QList<int> &range, QTime time)
+bool ArchiveMailAgentUtil::timeIsInRange(const QList<int>& range, QTime time)
 {
     const int hour = time.hour();
     const int startRange = range.at(0);
@@ -44,7 +44,7 @@ bool ArchiveMailAgentUtil::timeIsInRange(const QList<int> &range, QTime time)
     }
 }
 
-bool ArchiveMailAgentUtil::needToArchive(ArchiveMailInfo *info)
+bool ArchiveMailAgentUtil::needToArchive(ArchiveMailInfo* info)
 {
     if (!info->isEnabled()) {
         return false;

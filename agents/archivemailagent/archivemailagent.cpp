@@ -6,31 +6,30 @@
 
 #include "archivemailagent.h"
 
+#include <Akonadi/ServerManager>
 #include "archivemailagentadaptor.h"
 #include "archivemailagentsettings.h"
 #include "archivemailmanager.h"
-#include <Akonadi/ServerManager>
 
 #include <Akonadi/CollectionFetchScope>
 #include <Akonadi/Monitor>
 #include <Akonadi/Session>
 #include <KMime/Message>
 #include <MailCommon/MailKernel>
+#include <chrono>
 #include <QDBusConnection>
 #include <QTimer>
-#include <chrono>
 using namespace std::chrono_literals;
 using namespace Qt::Literals::StringLiterals;
 // #define DEBUG_ARCHIVEMAILAGENT 1
 
-ArchiveMailAgent::ArchiveMailAgent(const QString &id)
-    : Akonadi::AgentWidgetBase(id)
-    , mTimer(new QTimer(this))
-    , mArchiveManager(new ArchiveMailManager(this))
+ArchiveMailAgent::ArchiveMailAgent(const QString& id)
+    : Akonadi::AgentWidgetBase(id), mTimer(new QTimer(this)), mArchiveManager(new ArchiveMailManager(this))
 {
     connect(this, &Akonadi::AgentBase::reloadConfiguration, this, &ArchiveMailAgent::reload);
 
-    connect(mArchiveManager, &ArchiveMailManager::needUpdateConfigDialogBox, this, &ArchiveMailAgent::needUpdateConfigDialogBox);
+    connect(mArchiveManager, &ArchiveMailManager::needUpdateConfigDialogBox, this,
+            &ArchiveMailAgent::needUpdateConfigDialogBox);
 
     auto collectionMonitor = new Akonadi::Monitor(this);
     collectionMonitor->setObjectName("ArchiveMailCollectionMonitor"_L1);
@@ -40,9 +39,11 @@ ArchiveMailAgent::ArchiveMailAgent(const QString &id)
     collectionMonitor->setMimeTypeMonitored(KMime::Message::mimeType());
 
     new ArchiveMailAgentAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/ArchiveMailAgent"), this, QDBusConnection::ExportAdaptors);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/ArchiveMailAgent"), this,
+                                                 QDBusConnection::ExportAdaptors);
 
-    const QString service = Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, identifier());
+    const QString service =
+        Akonadi::ServerManager::self()->agentServiceName(Akonadi::ServerManager::Agent, identifier());
 
     QDBusConnection::sessionBus().registerService(service);
     connect(collectionMonitor, &Akonadi::Monitor::collectionRemoved, this, &ArchiveMailAgent::mailCollectionRemoved);
@@ -81,7 +82,7 @@ bool ArchiveMailAgent::enabledAgent() const
     return ArchiveMailAgentSettings::enabled();
 }
 
-void ArchiveMailAgent::mailCollectionRemoved(const Akonadi::Collection &collection)
+void ArchiveMailAgent::mailCollectionRemoved(const Akonadi::Collection& collection)
 {
     mArchiveManager->removeCollection(collection);
 }
@@ -127,7 +128,7 @@ QString ArchiveMailAgent::printCurrentListInfo() const
     return mArchiveManager->printCurrentListInfo();
 }
 
-void ArchiveMailAgent::archiveFolder(const QString &path, Akonadi::Collection::Id collectionId)
+void ArchiveMailAgent::archiveFolder(const QString& path, Akonadi::Collection::Id collectionId)
 {
     mArchiveManager->archiveFolder(path, collectionId);
 }

@@ -18,14 +18,14 @@ class ConfigureDialog : public KCMultiDialog
     Q_OBJECT
 
 public:
-    explicit ConfigureDialog(QWidget *parent = nullptr, bool modal = true);
+    explicit ConfigureDialog(QWidget* parent = nullptr, bool modal = true);
     ~ConfigureDialog() override;
 
 Q_SIGNALS:
     void configChanged();
 
 protected:
-    void hideEvent(QHideEvent *i) override;
+    void hideEvent(QHideEvent* i) override;
 
     QSize sizeHint() const override;
 protected Q_SLOTS:

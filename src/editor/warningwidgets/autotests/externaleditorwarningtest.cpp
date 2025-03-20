@@ -5,16 +5,13 @@
 */
 
 #include "externaleditorwarningtest.h"
-#include "../externaleditorwarning.h"
 #include <QHBoxLayout>
 #include <QTest>
+#include "../externaleditorwarning.h"
 
 QTEST_MAIN(ExternalEditorWarningTest)
 
-ExternalEditorWarningTest::ExternalEditorWarningTest(QObject *parent)
-    : QObject(parent)
-{
-}
+ExternalEditorWarningTest::ExternalEditorWarningTest(QObject* parent) : QObject(parent) {}
 
 void ExternalEditorWarningTest::shouldHaveDefaultValue()
 {

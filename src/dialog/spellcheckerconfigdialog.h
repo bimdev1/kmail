@@ -12,7 +12,7 @@ class SpellCheckerConfigDialog : public Sonnet::ConfigDialog
 {
     Q_OBJECT
 public:
-    explicit SpellCheckerConfigDialog(QWidget *parent = nullptr);
+    explicit SpellCheckerConfigDialog(QWidget* parent = nullptr);
     ~SpellCheckerConfigDialog() override;
 
 private:

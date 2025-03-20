@@ -4,13 +4,13 @@
    SPDX-License-Identifier: GPL-2.0-or-later
 */
 
-#include "filterlogdialog.h"
 #include <MailCommon/FilterLog>
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QStandardPaths>
+#include "filterlogdialog.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QStandardPaths::setTestModeEnabled(true);

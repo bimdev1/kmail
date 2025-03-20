@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "archivemailinfo.h"
 #include <QWidget>
+#include "archivemailinfo.h"
 class QUrl;
 class QCheckBox;
 class KUrlRequester;
@@ -17,34 +17,33 @@ class QPushButton;
 class FormatComboBox;
 class UnitComboBox;
 class ArchiveMailRangeWidget;
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderRequester;
 }
 class AddArchiveMailWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AddArchiveMailWidget(ArchiveMailInfo *info, QWidget *parent = nullptr);
+    explicit AddArchiveMailWidget(ArchiveMailInfo* info, QWidget* parent = nullptr);
     ~AddArchiveMailWidget() override;
 
-    void load(ArchiveMailInfo *info);
-    [[nodiscard]] ArchiveMailInfo *info();
+    void load(ArchiveMailInfo* info);
+    [[nodiscard]] ArchiveMailInfo* info();
 Q_SIGNALS:
     void enableOkButton(bool state);
 
 private:
     void slotUpdateOkButton();
-    void slotFolderChanged(const Akonadi::Collection &collection);
+    void slotFolderChanged(const Akonadi::Collection& collection);
 
-    MailCommon::FolderRequester *const mFolderRequester;
-    FormatComboBox *const mFormatComboBox;
-    UnitComboBox *const mUnits;
-    QCheckBox *const mRecursiveCheckBox;
-    KUrlRequester *const mPath;
-    QSpinBox *const mDays;
-    QSpinBox *const mMaximumArchive;
-    ArchiveMailRangeWidget *const mArchiveMailRangeWidget;
+    MailCommon::FolderRequester* const mFolderRequester;
+    FormatComboBox* const mFormatComboBox;
+    UnitComboBox* const mUnits;
+    QCheckBox* const mRecursiveCheckBox;
+    KUrlRequester* const mPath;
+    QSpinBox* const mDays;
+    QSpinBox* const mMaximumArchive;
+    ArchiveMailRangeWidget* const mArchiveMailRangeWidget;
 
-    ArchiveMailInfo *mInfo = nullptr;
+    ArchiveMailInfo* mInfo = nullptr;
 };

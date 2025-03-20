@@ -32,7 +32,7 @@ set(sendlateragent_SRCS
     sendlateragent.h
 )
 
-qt_add_dbus_adaptor(sendlateragent_SRCS org.freedesktop.Akonadi.SendLaterAgent.xml sendlateragent.h SendLaterAgent)
+qt5_add_dbus_adaptor(sendlateragent_SRCS org.freedesktop.Akonadi.SendLaterAgent.xml sendlateragent.h SendLaterAgent)
 
 
 ki18n_wrap_ui(libsendlateragent_SRCS ui/sendlaterconfigurewidget.ui)
@@ -45,25 +45,25 @@ set_property(TARGET sendlateragent PROPERTY POSITION_INDEPENDENT_CODE ON)
 #endif()
 
 target_link_libraries(sendlateragent
-    KPim6::AkonadiCore
-    KPim6::AkonadiMime
-    KPim6::MailTransport
-    KPim6::Mime
-    KPim6::MessageComposer
-    KPim6::MessageCore
-    KPim6::PimCommon
-    KF6::DBusAddons
-    KF6::WindowSystem
-    KF6::XmlGui
-    KF6::Notifications
-    KF6::I18n
+    KPim5::AkonadiCore
+    KPim5::AkonadiMime
+    KPim5::MailTransport
+    KPim5::Mime
+    KPim5::MessageComposer
+    KPim5::MessageCore
+    KPim5::PimCommon
+    KF5::DBusAddons
+    KF5::WindowSystem
+    KF5::XmlGui
+    KF5::Notifications
+    KF5::I18n
 )
 
 
 add_executable(akonadi_sendlater_agent ${sendlateragent_SRCS})
 target_link_libraries(akonadi_sendlater_agent
     sendlateragent
-    KPim6::AkonadiAgentWidgetBase
+    KPim5::AkonadiAgentWidgetBase
 )
 
 if(APPLE)
@@ -92,8 +92,8 @@ kcoreaddons_add_plugin(sendlateragentconfig
 )
 target_link_libraries(sendlateragentconfig
     sendlateragent
-    KPim6::AkonadiCore
-    KF6::XmlGui
-    KF6::I18n
+    KPim5::AkonadiCore
+    KF5::XmlGui
+    KF5::I18n
 )
 

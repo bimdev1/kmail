@@ -6,16 +6,15 @@
 
 #include "addarchivemaildialog.h"
 
-#include "addarchivemailwidget.h"
 #include <KLocalizedString>
 #include <KSeparator>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include "addarchivemailwidget.h"
 using namespace Qt::Literals::StringLiterals;
-AddArchiveMailDialog::AddArchiveMailDialog(ArchiveMailInfo *info, QWidget *parent)
-    : QDialog(parent)
-    , mAddArchiveMailWidget(new AddArchiveMailWidget(info, this))
+AddArchiveMailDialog::AddArchiveMailDialog(ArchiveMailInfo* info, QWidget* parent)
+    : QDialog(parent), mAddArchiveMailWidget(new AddArchiveMailWidget(info, this))
 {
     if (info) {
         setWindowTitle(i18nc("@title:window", "Modify Archive Mail"));
@@ -30,9 +29,8 @@ AddArchiveMailDialog::AddArchiveMailDialog(ArchiveMailInfo *info, QWidget *paren
 
     mAddArchiveMailWidget->setObjectName("mAddArchiveMailWidget"_L1);
     topLayout->addWidget(mAddArchiveMailWidget);
-    connect(mAddArchiveMailWidget, &AddArchiveMailWidget::enableOkButton, this, [this](bool state) {
-        mOkButton->setEnabled(state);
-    });
+    connect(mAddArchiveMailWidget, &AddArchiveMailWidget::enableOkButton, this,
+            [this](bool state) { mOkButton->setEnabled(state); });
 
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     mOkButton = buttonBox->button(QDialogButtonBox::Ok);
@@ -53,7 +51,7 @@ AddArchiveMailDialog::AddArchiveMailDialog(ArchiveMailInfo *info, QWidget *paren
 
 AddArchiveMailDialog::~AddArchiveMailDialog() = default;
 
-ArchiveMailInfo *AddArchiveMailDialog::info()
+ArchiveMailInfo* AddArchiveMailDialog::info()
 {
     return mAddArchiveMailWidget->info();
 }

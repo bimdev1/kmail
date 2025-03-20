@@ -15,14 +15,12 @@
 
 #include "configuredialog/configuredialog_p.h"
 #include "ui_identityngpage.h"
-namespace KIdentityManagementCore
-{
+namespace KIdentityManagementCore {
 class IdentityManager;
 class Identity;
-}
+} // namespace KIdentityManagementCore
 
-namespace KMail
-{
+namespace KMail {
 class IdentityDialog;
 class IdentityTreeWidget;
 
@@ -30,7 +28,7 @@ class KMAIL_EXPORT IdentityNgPage : public ConfigModuleTab
 {
     Q_OBJECT
 public:
-    explicit IdentityNgPage(QWidget *parent = nullptr);
+    explicit IdentityNgPage(QWidget* parent = nullptr);
     ~IdentityNgPage() override;
 
     [[nodiscard]] QString helpAnchor() const;
@@ -45,16 +43,16 @@ private:
     KMAIL_NO_EXPORT void slotModifyIdentity();
     KMAIL_NO_EXPORT void slotRemoveIdentity();
     KMAIL_NO_EXPORT void slotRenameIdentity();
-    KMAIL_NO_EXPORT void slotContextMenu(const QPoint &);
+    KMAIL_NO_EXPORT void slotContextMenu(const QPoint&);
     KMAIL_NO_EXPORT void slotSetAsDefault();
 
     KMAIL_NO_EXPORT void updateButtons();
-    KMAIL_NO_EXPORT void modifyIdentity(KIdentityManagementCore::Identity &identity);
+    KMAIL_NO_EXPORT void modifyIdentity(KIdentityManagementCore::Identity& identity);
 
 private: // data members
     Ui_IdentityNgPage mIPage;
-    KMail::IdentityDialog *mIdentityDialog = nullptr;
+    KMail::IdentityDialog* mIdentityDialog = nullptr;
     int mOldNumberOfIdentities = 0;
-    KIdentityManagementCore::IdentityManager *mIdentityManager = nullptr;
+    KIdentityManagementCore::IdentityManager* mIdentityManager = nullptr;
 };
-}
+} // namespace KMail

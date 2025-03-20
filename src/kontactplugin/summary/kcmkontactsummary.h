@@ -16,7 +16,7 @@ class PluginView : public QTreeWidget
     Q_OBJECT
 
 public:
-    explicit PluginView(QWidget *parent);
+    explicit PluginView(QWidget* parent);
     ~PluginView() override;
 };
 
@@ -25,11 +25,11 @@ class KCMKontactSummary : public KCModule
     Q_OBJECT
 
 public:
-    explicit KCMKontactSummary(QObject *parent, const KPluginMetaData &data);
+    explicit KCMKontactSummary(QObject* parent, const KPluginMetaData& data);
 
     void load() override;
     void save() override;
 
 private:
-    PluginView *const mPluginView;
+    PluginView* const mPluginView;
 };

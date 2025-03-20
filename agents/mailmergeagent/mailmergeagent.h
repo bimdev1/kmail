@@ -13,7 +13,7 @@ class MailMergeAgent : public Akonadi::AgentWidgetBase, public Akonadi::AgentBas
 {
     Q_OBJECT
 public:
-    explicit MailMergeAgent(const QString &id);
+    explicit MailMergeAgent(const QString& id);
     ~MailMergeAgent() override;
 
     [[nodiscard]] QString printDebugInfo() const;
@@ -30,13 +30,15 @@ public Q_SLOTS:
     void configure(WId windowId) override;
 
 protected:
-    void addItem(qint64 timestamp, bool recurrence, int recurrenceValue, int recurrenceUnit, Akonadi::Item::Id id, const QString &subject, const QString &to);
-    void itemsRemoved(const Akonadi::Item::List &item) override;
-    void itemsMoved(const Akonadi::Item::List &items, const Akonadi::Collection &sourceCollection, const Akonadi::Collection &destinationCollection) override;
+    void addItem(qint64 timestamp, bool recurrence, int recurrenceValue, int recurrenceUnit, Akonadi::Item::Id id,
+                 const QString& subject, const QString& to);
+    void itemsRemoved(const Akonadi::Item::List& item) override;
+    void itemsMoved(const Akonadi::Item::List& items, const Akonadi::Collection& sourceCollection,
+                    const Akonadi::Collection& destinationCollection) override;
     void doSetOnline(bool online) override;
 
 private:
     void slotStartAgent();
-    MailMergeManager *const mManager;
+    MailMergeManager* const mManager;
     bool mAgentInitialized = false;
 };

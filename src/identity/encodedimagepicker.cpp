@@ -29,9 +29,7 @@ using namespace KMail;
 using KContacts::Addressee;
 using namespace Qt::Literals::StringLiterals;
 
-EncodedImagePicker::EncodedImagePicker(QWidget *parent)
-    : QGroupBox(parent)
-    , mUi(new Ui::EncodedImagePicker)
+EncodedImagePicker::EncodedImagePicker(QWidget* parent) : QGroupBox(parent), mUi(new Ui::EncodedImagePicker)
 {
     mUi->setupUi(this);
 
@@ -42,12 +40,13 @@ EncodedImagePicker::EncodedImagePicker(QWidget *parent)
 
     connect(mUi->openImageButton, &QAbstractButton::clicked, this, &EncodedImagePicker::selectFile);
     connect(mUi->selectContactsButton, &QPushButton::released, this, &EncodedImagePicker::selectFromAddressBook);
-    connect(mUi->source->editor(), &TextCustomEditor::PlainTextEditor::textChanged, this, &EncodedImagePicker::sourceChanged);
+    connect(mUi->source->editor(), &TextCustomEditor::PlainTextEditor::textChanged, this,
+            &EncodedImagePicker::sourceChanged);
 }
 
 EncodedImagePicker::~EncodedImagePicker() = default;
 
-void EncodedImagePicker::setInfo(const QString &info)
+void EncodedImagePicker::setInfo(const QString& info)
 {
     mUi->infoLabel->setText(info);
 }
@@ -57,12 +56,12 @@ QString EncodedImagePicker::source() const
     return mUi->source->editor()->toPlainText();
 }
 
-void EncodedImagePicker::setSource(const QString &source)
+void EncodedImagePicker::setSource(const QString& source)
 {
     mUi->source->editor()->setPlainText(source);
 }
 
-void EncodedImagePicker::setImage(const QImage &image)
+void EncodedImagePicker::setImage(const QImage& image)
 {
     if (image.isNull()) {
         mUi->image->clear();
@@ -76,7 +75,7 @@ void EncodedImagePicker::selectFile()
 {
     QString filter;
     const QList<QByteArray> supportedImage = QImageReader::supportedImageFormats();
-    for (const QByteArray &ba : supportedImage) {
+    for (const QByteArray& ba : supportedImage) {
         if (!filter.isEmpty()) {
             filter += QLatin1Char(' ');
         }
@@ -91,7 +90,7 @@ void EncodedImagePicker::selectFile()
     }
 }
 
-void EncodedImagePicker::setFromFile(const QUrl &url)
+void EncodedImagePicker::setFromFile(const QUrl& url)
 {
     auto job = KIO::storedGet(url);
     KJobWidgets::setWindow(job, this);
@@ -99,9 +98,9 @@ void EncodedImagePicker::setFromFile(const QUrl &url)
     job->start();
 }
 
-void EncodedImagePicker::setFromFileDone(KJob *job)
+void EncodedImagePicker::setFromFileDone(KJob* job)
 {
-    const KIO::StoredTransferJob *kioJob = qobject_cast<KIO::StoredTransferJob *>(job);
+    const KIO::StoredTransferJob* kioJob = qobject_cast<KIO::StoredTransferJob*>(job);
 
     if (kioJob->error() == 0) {
         const QImage image = QImage::fromData(kioJob->data());
@@ -126,12 +125,13 @@ void EncodedImagePicker::selectFromAddressBook()
     connect(job, &KJob::result, this, &EncodedImagePicker::selectFromAddressBookDone);
 }
 
-void EncodedImagePicker::selectFromAddressBookDone(KJob *job)
+void EncodedImagePicker::selectFromAddressBookDone(KJob* job)
 {
-    const Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob *>(job);
+    const Akonadi::ContactSearchJob* searchJob = qobject_cast<Akonadi::ContactSearchJob*>(job);
 
     if (searchJob->contacts().isEmpty()) {
-        KMessageBox::information(this, i18n("You do not have your own contact defined in the address book."), i18nc("@title:window", "No Picture"));
+        KMessageBox::information(this, i18n("You do not have your own contact defined in the address book."),
+                                 i18nc("@title:window", "No Picture"));
         return;
     }
 
@@ -141,7 +141,8 @@ void EncodedImagePicker::selectFromAddressBookDone(KJob *job)
         const QImage photo = contact.photo().data();
 
         if (photo.isNull()) {
-            KMessageBox::information(this, i18n("No picture set for your address book entry."), i18nc("@title:window", "No Picture"));
+            KMessageBox::information(this, i18n("No picture set for your address book entry."),
+                                     i18nc("@title:window", "No Picture"));
         } else {
             Q_EMIT imageSelected(photo);
         }
@@ -149,7 +150,8 @@ void EncodedImagePicker::selectFromAddressBookDone(KJob *job)
         const QUrl url(contact.photo().url());
 
         if (url.isEmpty()) {
-            KMessageBox::information(this, i18n("No picture set for your address book entry."), i18nc("@title:window", "No Picture"));
+            KMessageBox::information(this, i18n("No picture set for your address book entry."),
+                                     i18nc("@title:window", "No Picture"));
         } else {
             setFromFile(url);
         }

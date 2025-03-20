@@ -8,16 +8,15 @@
 
 #include <QDialog>
 class QPushButton;
-namespace Akonadi
-{
+namespace Akonadi {
 class EmailAddressSelectionWidget;
 class Item;
-}
+} // namespace Akonadi
 class AddEmailToExistingContactDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AddEmailToExistingContactDialog(QWidget *parent);
+    explicit AddEmailToExistingContactDialog(QWidget* parent);
     ~AddEmailToExistingContactDialog() override;
 
     [[nodiscard]] Akonadi::Item selectedContact() const;
@@ -28,6 +27,6 @@ private:
     void slotDoubleClicked();
     void readConfig();
     void writeConfig();
-    Akonadi::EmailAddressSelectionWidget *mEmailSelectionWidget = nullptr;
-    QPushButton *mOkButton = nullptr;
+    Akonadi::EmailAddressSelectionWidget* mEmailSelectionWidget = nullptr;
+    QPushButton* mOkButton = nullptr;
 };

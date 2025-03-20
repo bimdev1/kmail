@@ -5,17 +5,17 @@
  */
 
 #include "aimanager.h"
-#include "localaiservice.h"
 #include "kmail_debug.h"
+#include "localaiservice.h"
 
 #include <KConfigGroup>
 #include <KSharedConfig>
 
 namespace KMail {
 
-AIManager *AIManager::s_self = nullptr;
+AIManager* AIManager::s_self = nullptr;
 
-AIManager *AIManager::self()
+AIManager* AIManager::self()
 {
     if (!s_self) {
         s_self = new AIManager();
@@ -29,9 +29,7 @@ void AIManager::destroy()
     s_self = nullptr;
 }
 
-AIManager::AIManager(QObject *parent)
-    : QObject(parent)
-    , m_enabled(false)
+AIManager::AIManager(QObject* parent) : QObject(parent), m_enabled(false)
 {
     // Read configuration
     KConfigGroup config(KSharedConfig::openConfig(), QStringLiteral("AI"));
@@ -41,9 +39,7 @@ AIManager::AIManager(QObject *parent)
     initialize();
 }
 
-AIManager::~AIManager()
-{
-}
+AIManager::~AIManager() {}
 
 bool AIManager::initialize()
 {
@@ -64,7 +60,7 @@ bool AIManager::initialize()
     return false;
 }
 
-AIServiceInterface *AIManager::service() const
+AIServiceInterface* AIManager::service() const
 {
     return m_service.get();
 }

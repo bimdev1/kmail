@@ -8,8 +8,6 @@
 
 #include <PimCommon/ConfigureImmutableWidgetUtils>
 using namespace PimCommon::ConfigureImmutableWidgetUtils;
-#include "configuredialog/colorlistbox.h"
-#include "kmkernel.h"
 #include <KLineEditEventHandler>
 #include <MailCommon/TagWidget>
 #include <MessageList/AggregationComboBox>
@@ -17,6 +15,8 @@ using namespace PimCommon::ConfigureImmutableWidgetUtils;
 #include <MessageList/ThemeComboBox>
 #include <MessageList/ThemeConfigButton>
 #include <messagelist/messagelistsettings.h>
+#include "configuredialog/colorlistbox.h"
+#include "kmkernel.h"
 
 #include <MailCommon/FolderTreeWidget>
 
@@ -27,10 +27,10 @@ using namespace PimCommon::ConfigureImmutableWidgetUtils;
 #include <MessageViewer/ConfigureWidget>
 #include <MessageViewer/MessageViewerSettings>
 
-#include "settings/kmailsettings.h"
 #include <MessageCore/ColorUtil>
 #include <MessageCore/MessageCoreSettings>
 #include <MessageList/MessageListUtil>
+#include "settings/kmailsettings.h"
 
 #include <MailCommon/MailUtil>
 
@@ -76,8 +76,7 @@ QString AppearancePage::helpAnchor() const
     return QStringLiteral("configure-appearance");
 }
 
-AppearancePage::AppearancePage(QObject *parent, const KPluginMetaData &data)
-    : ConfigModuleWithTabs(parent, data)
+AppearancePage::AppearancePage(QObject* parent, const KPluginMetaData& data) : ConfigModuleWithTabs(parent, data)
 {
     //
     // "General" tab:
@@ -123,7 +122,7 @@ QString AppearancePageFontsTab::helpAnchor() const
 }
 
 static const struct {
-    const char *configName;
+    const char* configName;
     const KLazyLocalizedString displayName;
     bool enableFamilyAndSize;
     bool onlyFixed;
@@ -139,11 +138,9 @@ static const struct {
 };
 static const int numFontNames = sizeof fontNames / sizeof *fontNames;
 
-AppearancePageFontsTab::AppearancePageFontsTab(QWidget *parent)
-    : ConfigModuleTab(parent)
-    , mCustomFontCheck(new QCheckBox(i18nc("@option:check", "&Use custom fonts"), this))
-    , mFontLocationCombo(new QComboBox(this))
-    , mFontChooser(new KFontChooser(KFontChooser::DisplayFrame, this))
+AppearancePageFontsTab::AppearancePageFontsTab(QWidget* parent)
+    : ConfigModuleTab(parent), mCustomFontCheck(new QCheckBox(i18nc("@option:check", "&Use custom fonts"), this)),
+      mFontLocationCombo(new QComboBox(this)), mFontChooser(new KFontChooser(KFontChooser::DisplayFrame, this))
 {
     assert(numFontNames == sizeof mFont / sizeof *mFont);
 
@@ -297,7 +294,7 @@ QString AppearancePageColorsTab::helpAnchor() const
 }
 
 static const struct {
-    const char *configName;
+    const char* configName;
     const KLazyLocalizedString displayName;
 } colorNames[] = { // adjust doLoadOther if you change this:
     {"QuotedText1", kli18n("Quoted Text - First Level")},
@@ -313,13 +310,12 @@ static const struct {
     {"ColorbarForegroundHTML", kli18n("HTML Status Bar Foreground - HTML Message")}};
 static const int numColorNames = sizeof colorNames / sizeof *colorNames;
 
-AppearancePageColorsTab::AppearancePageColorsTab(QWidget *parent)
-    : ConfigModuleTab(parent)
-    , mCustomColorCheck(new QCheckBox(i18nc("@option:check", "&Use custom colors"), this))
-    , mColorList(new ColorListBox(this))
-    , mRecycleColorCheck(new QCheckBox(i18nc("@option:check", "Recycle colors on deep &quoting"), this))
-    , mCloseToQuotaThreshold(new QSpinBox(this))
-    , mUseInlineStyle(new QCheckBox(i18nc("@option:check", "&Do not change color from original HTML mail"), this))
+AppearancePageColorsTab::AppearancePageColorsTab(QWidget* parent)
+    : ConfigModuleTab(parent), mCustomColorCheck(new QCheckBox(i18nc("@option:check", "&Use custom colors"), this)),
+      mColorList(new ColorListBox(this)),
+      mRecycleColorCheck(new QCheckBox(i18nc("@option:check", "Recycle colors on deep &quoting"), this)),
+      mCloseToQuotaThreshold(new QSpinBox(this)),
+      mUseInlineStyle(new QCheckBox(i18nc("@option:check", "&Do not change color from original HTML mail"), this))
 {
     // "use custom colors" check box
     auto vlay = new QVBoxLayout(this);
@@ -379,14 +375,14 @@ void AppearancePageColorsTab::loadColor(bool loadFromConfig)
             MessageCore::ColorUtil::self()->quoteLevel1DefaultTextColor(),
             MessageCore::ColorUtil::self()->quoteLevel2DefaultTextColor(),
             MessageCore::ColorUtil::self()->quoteLevel3DefaultTextColor(),
-            MessageCore::ColorUtil::self()->linkColor(), // link
-            MessageList::Util::unreadDefaultMessageColor(), // unread mgs
+            MessageCore::ColorUtil::self()->linkColor(),       // link
+            MessageList::Util::unreadDefaultMessageColor(),    // unread mgs
             MessageList::Util::importantDefaultMessageColor(), // important msg
-            MessageList::Util::todoDefaultMessageColor(), // action item mgs
-            Qt::lightGray, // colorbar plain bg
-            Qt::black, // colorbar plain fg
-            Qt::black, // colorbar html  bg
-            Qt::white // colorbar html  fg
+            MessageList::Util::todoDefaultMessageColor(),      // action item mgs
+            Qt::lightGray,                                     // colorbar plain bg
+            Qt::black,                                         // colorbar plain fg
+            Qt::black,                                         // colorbar html  bg
+            Qt::white                                          // colorbar html  fg
         };
 
         for (int i = 0; i < numColorNames; ++i) {
@@ -452,8 +448,7 @@ QString AppearancePageLayoutTab::helpAnchor() const
     return QStringLiteral("configure-appearance-layout");
 }
 
-AppearancePageLayoutTab::AppearancePageLayoutTab(QWidget *parent)
-    : ConfigModuleTab(parent)
+AppearancePageLayoutTab::AppearancePageLayoutTab(QWidget* parent) : ConfigModuleTab(parent)
 {
     auto formLayout = new QFormLayout(this);
 
@@ -485,18 +480,21 @@ AppearancePageLayoutTab::AppearancePageLayoutTab(QWidget *parent)
     connect(mFavoriteFoldersViewGroup, &QButtonGroup::buttonClicked, this, &ConfigModuleTab::slotEmitChanged);
 
     auto favoriteFoldersViewHiddenRadio = new QRadioButton(i18nc("@option:radio", "Never"), this);
-    mFavoriteFoldersViewGroup->addButton(favoriteFoldersViewHiddenRadio,
-                                         static_cast<int>(MailCommon::MailCommonSettings::EnumFavoriteCollectionViewMode::HiddenMode));
+    mFavoriteFoldersViewGroup->addButton(
+        favoriteFoldersViewHiddenRadio,
+        static_cast<int>(MailCommon::MailCommonSettings::EnumFavoriteCollectionViewMode::HiddenMode));
     formLayout->addRow(i18nc("@label", "Show favorite folders view:"), favoriteFoldersViewHiddenRadio);
 
     auto favoriteFoldersViewIconsRadio = new QRadioButton(i18nc("@option:radio", "As icons"), this);
-    mFavoriteFoldersViewGroup->addButton(favoriteFoldersViewIconsRadio,
-                                         static_cast<int>(MailCommon::MailCommonSettings::EnumFavoriteCollectionViewMode::IconMode));
+    mFavoriteFoldersViewGroup->addButton(
+        favoriteFoldersViewIconsRadio,
+        static_cast<int>(MailCommon::MailCommonSettings::EnumFavoriteCollectionViewMode::IconMode));
     formLayout->addRow(nullptr, favoriteFoldersViewIconsRadio);
 
     auto favoriteFoldersViewListRadio = new QRadioButton(i18nc("@option:radio", "As list"), this);
-    mFavoriteFoldersViewGroup->addButton(favoriteFoldersViewListRadio,
-                                         static_cast<int>(MailCommon::MailCommonSettings::EnumFavoriteCollectionViewMode::ListMode));
+    mFavoriteFoldersViewGroup->addButton(
+        favoriteFoldersViewListRadio,
+        static_cast<int>(MailCommon::MailCommonSettings::EnumFavoriteCollectionViewMode::ListMode));
     formLayout->addRow(nullptr, favoriteFoldersViewListRadio);
 
     // "folder tooltips" radio buttons:
@@ -561,7 +559,8 @@ void AppearancePageLayoutTab::save()
     saveButtonGroup(mFolderListGroup, KMailSettings::self()->folderListItem());
     saveButtonGroup(mReaderWindowModeGroup, KMailSettings::self()->readerWindowModeItem());
     if (KMKernel::self()) {
-        saveButtonGroup(mFavoriteFoldersViewGroup, KMKernel::self()->mailCommonSettings()->favoriteCollectionViewModeItem());
+        saveButtonGroup(mFavoriteFoldersViewGroup,
+                        KMKernel::self()->mailCommonSettings()->favoriteCollectionViewModeItem());
     }
     saveCheckBox(mFolderQuickSearchCB, KMailSettings::self()->enableFolderQuickSearchItem());
     KMailSettings::self()->setToolTipDisplayPolicy(mFolderToolTipsGroup->checkedId());
@@ -585,12 +584,12 @@ static const struct {
                          {kli18n("C&ustom format:"), MessageCore::DateFormatter::Custom}};
 static const int numDateDisplayConfig = sizeof dateDisplayConfig / sizeof *dateDisplayConfig;
 
-AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget *parent)
-    : ConfigModuleTab(parent)
+AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget* parent) : ConfigModuleTab(parent)
 {
     auto formLayout = new QFormLayout(this);
 
-    mDisplayMessageToolTips = new QCheckBox(MessageList::MessageListSettings::self()->messageToolTipEnabledItem()->label(), this);
+    mDisplayMessageToolTips =
+        new QCheckBox(MessageList::MessageListSettings::self()->messageToolTipEnabledItem()->label(), this);
     formLayout->addRow(QString(), mDisplayMessageToolTips);
 
     connect(mDisplayMessageToolTips, &QCheckBox::checkStateChanged, this, &ConfigModuleTab::slotEmitChanged);
@@ -607,11 +606,10 @@ AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget *parent)
     aggregationLayout->addWidget(aggregationConfigButton, 0);
     formLayout->addRow(i18n("Default aggregation:"), aggregationLayout);
 
-    connect(aggregationConfigButton,
-            &MessageList::Utils::AggregationConfigButton::configureDialogCompleted,
-            this,
+    connect(aggregationConfigButton, &MessageList::Utils::AggregationConfigButton::configureDialogCompleted, this,
             &AppearancePageHeadersTab::slotSelectDefaultAggregation);
-    connect(mAggregationComboBox, &MessageList::Utils::AggregationComboBox::activated, this, &ConfigModuleTab::slotEmitChanged);
+    connect(mAggregationComboBox, &MessageList::Utils::AggregationComboBox::activated, this,
+            &ConfigModuleTab::slotEmitChanged);
 
     // "Theme"
     using MessageList::Utils::ThemeComboBox;
@@ -625,7 +623,8 @@ AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget *parent)
     themeLayout->addWidget(themeConfigButton, 0);
     formLayout->addRow(i18n("Default theme:"), themeLayout);
 
-    connect(themeConfigButton, &MessageList::Utils::ThemeConfigButton::configureDialogCompleted, this, &AppearancePageHeadersTab::slotSelectDefaultTheme);
+    connect(themeConfigButton, &MessageList::Utils::ThemeConfigButton::configureDialogCompleted, this,
+            &AppearancePageHeadersTab::slotSelectDefaultTheme);
     connect(mThemeComboBox, &MessageList::Utils::ThemeComboBox::activated, this, &ConfigModuleTab::slotEmitChanged);
 
     // "Date Display" group:
@@ -637,9 +636,10 @@ AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget *parent)
 
         QString buttonLabel;
         if (label.contains("%1"_L1)) {
-            buttonLabel = KLocalizedString(dateDisplayConfig[i].displayName)
-                              .subs(DateFormatter::formatCurrentDate(dateDisplayConfig[i].dateDisplay))
-                              .toString(); // i18n(label, DateFormatter::formatCurrentDate(dateDisplayConfig[i].dateDisplay));
+            buttonLabel =
+                KLocalizedString(dateDisplayConfig[i].displayName)
+                    .subs(DateFormatter::formatCurrentDate(dateDisplayConfig[i].dateDisplay))
+                    .toString(); // i18n(label, DateFormatter::formatCurrentDate(dateDisplayConfig[i].dateDisplay));
         } else {
             buttonLabel = KLocalizedString(dateDisplayConfig[i].displayName).toString();
         }
@@ -660,43 +660,44 @@ AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget *parent)
             connect(radio, &QAbstractButton::toggled, mCustomDateFormatEdit, &QWidget::setEnabled);
             connect(mCustomDateFormatEdit, &QLineEdit::textChanged, this, &ConfigModuleTab::slotEmitChanged);
 
-            auto formatHelp = new QLabel(i18nc("@label:textbox", "<qt><a href=\"whatsthis1\">Custom format information…</a></qt>"), hbox);
+            auto formatHelp = new QLabel(
+                i18nc("@label:textbox", "<qt><a href=\"whatsthis1\">Custom format information…</a></qt>"), hbox);
             formatHelp->setContextMenuPolicy(Qt::NoContextMenu);
             connect(formatHelp, &QLabel::linkActivated, this, &AppearancePageHeadersTab::slotLinkClicked);
             hboxHBoxLayout->addWidget(formatHelp);
 
-            mCustomDateWhatsThis = i18n(
-                "<qt><p><strong>These expressions may be used for the date:"
-                "</strong></p>"
-                "<ul>"
-                "<li>d - the day as a number without a leading zero (1-31)</li>"
-                "<li>dd - the day as a number with a leading zero (01-31)</li>"
-                "<li>ddd - the abbreviated day name (Mon - Sun)</li>"
-                "<li>dddd - the long day name (Monday - Sunday)</li>"
-                "<li>M - the month as a number without a leading zero (1-12)</li>"
-                "<li>MM - the month as a number with a leading zero (01-12)</li>"
-                "<li>MMM - the abbreviated month name (Jan - Dec)</li>"
-                "<li>MMMM - the long month name (January - December)</li>"
-                "<li>yy - the year as a two digit number (00-99)</li>"
-                "<li>yyyy - the year as a four digit number (0000-9999)</li>"
-                "</ul>"
-                "<p><strong>These expressions may be used for the time:"
-                "</strong></p> "
-                "<ul>"
-                "<li>h - the hour without a leading zero (0-23 or 1-12 if AM/PM display)</li>"
-                "<li>hh - the hour with a leading zero (00-23 or 01-12 if AM/PM display)</li>"
-                "<li>m - the minutes without a leading zero (0-59)</li>"
-                "<li>mm - the minutes with a leading zero (00-59)</li>"
-                "<li>s - the seconds without a leading zero (0-59)</li>"
-                "<li>ss - the seconds with a leading zero (00-59)</li>"
-                "<li>z - the milliseconds without leading zeroes (0-999)</li>"
-                "<li>zzz - the milliseconds with leading zeroes (000-999)</li>"
-                "<li>AP - switch to AM/PM display. AP will be replaced by either \"AM\" or \"PM\".</li>"
-                "<li>ap - switch to AM/PM display. ap will be replaced by either \"am\" or \"pm\".</li>"
-                "<li>Z - time zone in numeric form (-0500)</li>"
-                "</ul>"
-                "<p><strong>All other input characters will be ignored."
-                "</strong></p></qt>");
+            mCustomDateWhatsThis =
+                i18n("<qt><p><strong>These expressions may be used for the date:"
+                     "</strong></p>"
+                     "<ul>"
+                     "<li>d - the day as a number without a leading zero (1-31)</li>"
+                     "<li>dd - the day as a number with a leading zero (01-31)</li>"
+                     "<li>ddd - the abbreviated day name (Mon - Sun)</li>"
+                     "<li>dddd - the long day name (Monday - Sunday)</li>"
+                     "<li>M - the month as a number without a leading zero (1-12)</li>"
+                     "<li>MM - the month as a number with a leading zero (01-12)</li>"
+                     "<li>MMM - the abbreviated month name (Jan - Dec)</li>"
+                     "<li>MMMM - the long month name (January - December)</li>"
+                     "<li>yy - the year as a two digit number (00-99)</li>"
+                     "<li>yyyy - the year as a four digit number (0000-9999)</li>"
+                     "</ul>"
+                     "<p><strong>These expressions may be used for the time:"
+                     "</strong></p> "
+                     "<ul>"
+                     "<li>h - the hour without a leading zero (0-23 or 1-12 if AM/PM display)</li>"
+                     "<li>hh - the hour with a leading zero (00-23 or 01-12 if AM/PM display)</li>"
+                     "<li>m - the minutes without a leading zero (0-59)</li>"
+                     "<li>mm - the minutes with a leading zero (00-59)</li>"
+                     "<li>s - the seconds without a leading zero (0-59)</li>"
+                     "<li>ss - the seconds with a leading zero (00-59)</li>"
+                     "<li>z - the milliseconds without leading zeroes (0-999)</li>"
+                     "<li>zzz - the milliseconds with leading zeroes (000-999)</li>"
+                     "<li>AP - switch to AM/PM display. AP will be replaced by either \"AM\" or \"PM\".</li>"
+                     "<li>ap - switch to AM/PM display. ap will be replaced by either \"am\" or \"pm\".</li>"
+                     "<li>Z - time zone in numeric form (-0500)</li>"
+                     "</ul>"
+                     "<p><strong>All other input characters will be ignored."
+                     "</strong></p></qt>");
             mCustomDateFormatEdit->setWhatsThis(mCustomDateWhatsThis);
             radio->setWhatsThis(mCustomDateWhatsThis);
             formLayout->addRow(QString(), hbox);
@@ -714,7 +715,7 @@ AppearancePageHeadersTab::AppearancePageHeadersTab(QWidget *parent)
     connect(mDateDisplay, &QButtonGroup::buttonClicked, this, &ConfigModuleTab::slotEmitChanged);
 }
 
-void AppearancePageHeadersTab::slotLinkClicked(const QString &link)
+void AppearancePageHeadersTab::slotLinkClicked(const QString& link)
 {
     if (link == "whatsthis1"_L1) {
         QWhatsThis::showText(QCursor::pos(), mCustomDateWhatsThis);
@@ -745,7 +746,8 @@ void AppearancePageHeadersTab::doLoadOther()
     slotSelectDefaultTheme();
 
     // "Date Display":
-    setDateDisplay(MessageCore::MessageCoreSettings::self()->dateFormat(), MessageCore::MessageCoreSettings::self()->customDateFormat());
+    setDateDisplay(MessageCore::MessageCoreSettings::self()->dateFormat(),
+                   MessageCore::MessageCoreSettings::self()->customDateFormat());
 }
 
 void AppearancePageHeadersTab::doLoadFromGlobalSettings()
@@ -757,10 +759,11 @@ void AppearancePageHeadersTab::doLoadFromGlobalSettings()
     // "Theme":
     slotSelectDefaultTheme();
 
-    setDateDisplay(MessageCore::MessageCoreSettings::self()->dateFormat(), MessageCore::MessageCoreSettings::self()->customDateFormat());
+    setDateDisplay(MessageCore::MessageCoreSettings::self()->dateFormat(),
+                   MessageCore::MessageCoreSettings::self()->customDateFormat());
 }
 
-void AppearancePageHeadersTab::setDateDisplay(int num, const QString &format)
+void AppearancePageHeadersTab::setDateDisplay(int num, const QString& format)
 {
     auto dateDisplay = static_cast<DateFormatter::FormatType>(num);
 
@@ -806,9 +809,8 @@ QString AppearancePageGeneralTab::helpAnchor() const
     return QStringLiteral("configure-appearance-reader");
 }
 
-AppearancePageGeneralTab::AppearancePageGeneralTab(QWidget *parent)
-    : ConfigModuleTab(parent)
-    , mDisplayOwnIdentity(new QCheckBox(i18nc("@option:check", "Display Own Identity"), this))
+AppearancePageGeneralTab::AppearancePageGeneralTab(QWidget* parent)
+    : ConfigModuleTab(parent), mDisplayOwnIdentity(new QCheckBox(i18nc("@option:check", "Display Own Identity"), this))
 
 {
     auto topLayout = new QVBoxLayout(this);
@@ -819,8 +821,10 @@ AppearancePageGeneralTab::AppearancePageGeneralTab(QWidget *parent)
     auto readerBoxLayout = new QVBoxLayout(readerBox);
 
     // "Close message window after replying or forwarding" check box:
-    populateCheckBox(mCloseAfterReplyOrForwardCheck = new QCheckBox(this), MessageViewer::MessageViewerSettings::self()->closeAfterReplyOrForwardItem());
-    mCloseAfterReplyOrForwardCheck->setToolTip(i18nc("@info:tooltip", "Close the standalone message window after replying or forwarding the message"));
+    populateCheckBox(mCloseAfterReplyOrForwardCheck = new QCheckBox(this),
+                     MessageViewer::MessageViewerSettings::self()->closeAfterReplyOrForwardItem());
+    mCloseAfterReplyOrForwardCheck->setToolTip(
+        i18nc("@info:tooltip", "Close the standalone message window after replying or forwarding the message"));
     readerBoxLayout->addWidget(mCloseAfterReplyOrForwardCheck);
     connect(mCloseAfterReplyOrForwardCheck, &QCheckBox::checkStateChanged, this, &ConfigModuleTab::slotEmitChanged);
 
@@ -883,7 +887,8 @@ void AppearancePageGeneralTab::doLoadOther()
     loadWidget(mSystemTrayCheck, KMailSettings::self()->systemTrayEnabledItem());
     loadWidget(mStartInTrayCheck, KMailSettings::self()->startInTrayItem());
     loadWidget(mShowNumberInTaskBar, KMailSettings::self()->showUnreadInTaskbarItem());
-    loadWidget(mCloseAfterReplyOrForwardCheck, MessageViewer::MessageViewerSettings::self()->closeAfterReplyOrForwardItem());
+    loadWidget(mCloseAfterReplyOrForwardCheck,
+               MessageViewer::MessageViewerSettings::self()->closeAfterReplyOrForwardItem());
     loadWidget(mDisplayOwnIdentity, MessageCore::MessageCoreSettings::self()->displayOwnIdentityItem());
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
     loadWidget(mEnablePlasmaActivities, KMailSettings::self()->plasmaActivitySupportItem());
@@ -897,7 +902,8 @@ void AppearancePageGeneralTab::save()
     saveCheckBox(mStartInTrayCheck, KMailSettings::self()->startInTrayItem());
     saveCheckBox(mShowNumberInTaskBar, KMailSettings::self()->showUnreadInTaskbarItem());
     KMailSettings::self()->save();
-    saveCheckBox(mCloseAfterReplyOrForwardCheck, MessageViewer::MessageViewerSettings::self()->closeAfterReplyOrForwardItem());
+    saveCheckBox(mCloseAfterReplyOrForwardCheck,
+                 MessageViewer::MessageViewerSettings::self()->closeAfterReplyOrForwardItem());
 
     saveCheckBox(mDisplayOwnIdentity, MessageCore::MessageCoreSettings::self()->displayOwnIdentityItem());
 #if KMAIL_HAVE_ACTIVITY_SUPPORT
@@ -911,19 +917,16 @@ QString AppearancePageMessageTagTab::helpAnchor() const
     return QStringLiteral("configure-appearance-messagetag");
 }
 
-TagListWidgetItem::TagListWidgetItem(QListWidget *parent)
-    : QListWidgetItem(parent)
-{
-}
+TagListWidgetItem::TagListWidgetItem(QListWidget* parent) : QListWidgetItem(parent) {}
 
-TagListWidgetItem::TagListWidgetItem(const QIcon &icon, const QString &text, QListWidget *parent)
+TagListWidgetItem::TagListWidgetItem(const QIcon& icon, const QString& text, QListWidget* parent)
     : QListWidgetItem(icon, text, parent)
 {
 }
 
 TagListWidgetItem::~TagListWidgetItem() = default;
 
-void TagListWidgetItem::setKMailTag(const MailCommon::Tag::Ptr &tag)
+void TagListWidgetItem::setKMailTag(const MailCommon::Tag::Ptr& tag)
 {
     mTag = tag;
 }
@@ -933,8 +936,7 @@ MailCommon::Tag::Ptr TagListWidgetItem::kmailTag() const
     return mTag;
 }
 
-AppearancePageMessageTagTab::AppearancePageMessageTagTab(QWidget *parent)
-    : ConfigModuleTab(parent)
+AppearancePageMessageTagTab::AppearancePageMessageTagTab(QWidget* parent) : ConfigModuleTab(parent)
 {
     mPreviousTag = -1;
     auto maingrid = new QHBoxLayout(this);
@@ -986,7 +988,8 @@ AppearancePageMessageTagTab::AppearancePageMessageTagTab(QWidget *parent)
     mTagListBox = new QListWidget(mTagsGroupBox);
     mTagListBox->setDragDropMode(QAbstractItemView::InternalMove);
     connect(mTagListBox->model(), &QAbstractItemModel::rowsMoved, this, &AppearancePageMessageTagTab::slotRowsMoved);
-    connect(mTagListBox, &QListWidget::customContextMenuRequested, this, &AppearancePageMessageTagTab::slotCustomMenuRequested);
+    connect(mTagListBox, &QListWidget::customContextMenuRequested, this,
+            &AppearancePageMessageTagTab::slotCustomMenuRequested);
 
     mTagListBox->setMinimumWidth(150);
     listboxgrid->addWidget(mTagListBox);
@@ -1001,7 +1004,7 @@ AppearancePageMessageTagTab::AppearancePageMessageTagTab(QWidget *parent)
     // Groupbox frame
     mTagSettingGroupBox = new QGroupBox(i18n("Ta&g Settings"), this);
     tagsettinggrid->addWidget(mTagSettingGroupBox);
-    QList<KActionCollection *> actionCollections;
+    QList<KActionCollection*> actionCollections;
     if (kmkernel->getKMMainWidget()) {
         actionCollections = kmkernel->getKMMainWidget()->actionCollections();
     }
@@ -1016,7 +1019,8 @@ AppearancePageMessageTagTab::AppearancePageMessageTagTab(QWidget *parent)
     connect(mTagAddLineEdit, &QLineEdit::textChanged, this, &AppearancePageMessageTagTab::slotAddLineTextChanged);
 
     // For on-the-fly updating of tag name in editbox
-    connect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this, &AppearancePageMessageTagTab::slotNameLineTextChanged);
+    connect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this,
+            &AppearancePageMessageTagTab::slotNameLineTextChanged);
 
     connect(mTagWidget, &TagWidget::iconNameChanged, this, &AppearancePageMessageTagTab::slotIconNameChanged);
 
@@ -1044,17 +1048,19 @@ void AppearancePageMessageTagTab::slotEmitChangeCheck()
     slotEmitChanged();
 }
 
-void AppearancePageMessageTagTab::slotCustomMenuRequested(const QPoint &)
+void AppearancePageMessageTagTab::slotCustomMenuRequested(const QPoint&)
 {
     const int currentIndex = mTagListBox->currentRow();
     if (currentIndex >= 0) {
         QMenu menu(this);
-        menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18n("Delete"), this, &AppearancePageMessageTagTab::slotRemoveTag);
+        menu.addAction(QIcon::fromTheme(QStringLiteral("edit-delete")), i18n("Delete"), this,
+                       &AppearancePageMessageTagTab::slotRemoveTag);
         menu.exec(QCursor::pos());
     }
 }
 
-void AppearancePageMessageTagTab::slotRowsMoved(const QModelIndex &, int sourcestart, int sourceEnd, const QModelIndex &, int destinationRow)
+void AppearancePageMessageTagTab::slotRowsMoved(const QModelIndex&, int sourcestart, int sourceEnd, const QModelIndex&,
+                                                int destinationRow)
 {
     Q_UNUSED(sourceEnd)
     Q_UNUSED(sourcestart)
@@ -1098,7 +1104,7 @@ void AppearancePageMessageTagTab::slotMoveTagDown()
 void AppearancePageMessageTagTab::swapTagsInListBox(const int first, const int second)
 {
     disconnect(mTagListBox, &QListWidget::currentItemChanged, this, &AppearancePageMessageTagTab::slotSelectionChanged);
-    QListWidgetItem *item = mTagListBox->takeItem(first);
+    QListWidgetItem* item = mTagListBox->takeItem(first);
     // now selected item is at idx(idx-1), so
     // insert the other item at idx, ie. above(below).
     mPreviousTag = second;
@@ -1113,8 +1119,8 @@ void AppearancePageMessageTagTab::slotRecordTagSettings(int aIndex)
     if ((aIndex < 0) || (aIndex >= int(mTagListBox->count()))) {
         return;
     }
-    QListWidgetItem *item = mTagListBox->item(aIndex);
-    auto tagItem = static_cast<TagListWidgetItem *>(item);
+    QListWidgetItem* item = mTagListBox->item(aIndex);
+    auto tagItem = static_cast<TagListWidgetItem*>(item);
 
     MailCommon::Tag::Ptr tmp_desc = tagItem->kmailTag();
 
@@ -1138,15 +1144,17 @@ void AppearancePageMessageTagTab::slotUpdateTagSettingWidgets(int aIndex)
     mTagRemoveButton->setEnabled(true);
     mTagUpButton->setEnabled((0 != aIndex));
     mTagDownButton->setEnabled(((int(mTagListBox->count()) - 1) != aIndex));
-    QListWidgetItem *item = mTagListBox->currentItem();
-    auto tagItem = static_cast<TagListWidgetItem *>(item);
+    QListWidgetItem* item = mTagListBox->currentItem();
+    auto tagItem = static_cast<TagListWidgetItem*>(item);
     MailCommon::Tag::Ptr tmp_desc = tagItem->kmailTag();
 
-    disconnect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this, &AppearancePageMessageTagTab::slotNameLineTextChanged);
+    disconnect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this,
+               &AppearancePageMessageTagTab::slotNameLineTextChanged);
 
     mTagWidget->tagNameLineEdit()->setEnabled(!tmp_desc->isImmutable);
     mTagWidget->tagNameLineEdit()->setText(tmp_desc->tagName);
-    connect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this, &AppearancePageMessageTagTab::slotNameLineTextChanged);
+    connect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this,
+            &AppearancePageMessageTagTab::slotNameLineTextChanged);
 
     mTagWidget->setTagTextColor(tmp_desc->textColor);
 
@@ -1177,14 +1185,12 @@ void AppearancePageMessageTagTab::slotRemoveTag()
 {
     const int tmp_index = mTagListBox->currentRow();
     if (tmp_index >= 0) {
-        if (KMessageBox::ButtonCode::PrimaryAction
-            == KMessageBox::questionTwoActions(this,
-                                               i18n("Do you want to remove tag \'%1\'?", mTagListBox->item(mTagListBox->currentRow())->text()),
-                                               i18nc("@title:window", "Remove Tag"),
-                                               KStandardGuiItem::remove(),
-                                               KStandardGuiItem::cancel())) {
-            QListWidgetItem *item = mTagListBox->takeItem(mTagListBox->currentRow());
-            auto tagItem = static_cast<TagListWidgetItem *>(item);
+        if (KMessageBox::ButtonCode::PrimaryAction ==
+            KMessageBox::questionTwoActions(
+                this, i18n("Do you want to remove tag \'%1\'?", mTagListBox->item(mTagListBox->currentRow())->text()),
+                i18nc("@title:window", "Remove Tag"), KStandardGuiItem::remove(), KStandardGuiItem::cancel())) {
+            QListWidgetItem* item = mTagListBox->takeItem(mTagListBox->currentRow());
+            auto tagItem = static_cast<TagListWidgetItem*>(item);
             MailCommon::Tag::Ptr tmp_desc = tagItem->kmailTag();
             if (tmp_desc->tag().isValid()) {
                 new Akonadi::TagDeleteJob(tmp_desc->tag());
@@ -1196,10 +1202,12 @@ void AppearancePageMessageTagTab::slotRemoveTag()
             // Before deleting the current item, make sure the selectionChanged signal
             // is disconnected, so that the widgets will not get updated while the
             // deletion takes place.
-            disconnect(mTagListBox, &QListWidget::currentItemChanged, this, &AppearancePageMessageTagTab::slotSelectionChanged);
+            disconnect(mTagListBox, &QListWidget::currentItemChanged, this,
+                       &AppearancePageMessageTagTab::slotSelectionChanged);
 
             delete item;
-            connect(mTagListBox, &QListWidget::currentItemChanged, this, &AppearancePageMessageTagTab::slotSelectionChanged);
+            connect(mTagListBox, &QListWidget::currentItemChanged, this,
+                    &AppearancePageMessageTagTab::slotSelectionChanged);
 
             slotSelectionChanged();
             slotEmitChangeCheck();
@@ -1207,14 +1215,14 @@ void AppearancePageMessageTagTab::slotRemoveTag()
     }
 }
 
-void AppearancePageMessageTagTab::slotDeleteTagJob(KJob *job)
+void AppearancePageMessageTagTab::slotDeleteTagJob(KJob* job)
 {
     if (job->error()) {
         qCWarning(KMAIL_LOG) << "Failed to delete tag " << job->errorString();
     }
 }
 
-void AppearancePageMessageTagTab::slotNameLineTextChanged(const QString &aText)
+void AppearancePageMessageTagTab::slotNameLineTextChanged(const QString& aText)
 {
     // If deleted all, leave the first character for the sake of not having an
     // empty tag name
@@ -1226,9 +1234,11 @@ void AppearancePageMessageTagTab::slotNameLineTextChanged(const QString &aText)
     for (int i = 0; i < count; ++i) {
         if (mTagListBox->item(i)->text() == aText) {
             KMessageBox::error(this, i18n("We cannot create tag. A tag with same name already exists."));
-            disconnect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this, &AppearancePageMessageTagTab::slotNameLineTextChanged);
+            disconnect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this,
+                       &AppearancePageMessageTagTab::slotNameLineTextChanged);
             mTagWidget->tagNameLineEdit()->setText(mTagListBox->currentItem()->text());
-            connect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this, &AppearancePageMessageTagTab::slotNameLineTextChanged);
+            connect(mTagWidget->tagNameLineEdit(), &QLineEdit::textChanged, this,
+                    &AppearancePageMessageTagTab::slotNameLineTextChanged);
             return;
         }
     }
@@ -1241,12 +1251,12 @@ void AppearancePageMessageTagTab::slotNameLineTextChanged(const QString &aText)
     connect(mTagListBox, &QListWidget::currentItemChanged, this, &AppearancePageMessageTagTab::slotSelectionChanged);
 }
 
-void AppearancePageMessageTagTab::slotIconNameChanged(const QString &iconName)
+void AppearancePageMessageTagTab::slotIconNameChanged(const QString& iconName)
 {
     mTagListBox->currentItem()->setIcon(QIcon::fromTheme(iconName));
 }
 
-void AppearancePageMessageTagTab::slotAddLineTextChanged(const QString &aText)
+void AppearancePageMessageTagTab::slotAddLineTextChanged(const QString& aText)
 {
     mTagAddButton->setEnabled(!aText.trimmed().isEmpty());
 }
@@ -1287,25 +1297,25 @@ void AppearancePageMessageTagTab::doLoadFromGlobalSettings()
     connect(fetchJob, &KJob::result, this, &AppearancePageMessageTagTab::slotTagsFetched);
 }
 
-void AppearancePageMessageTagTab::slotTagsFetched(KJob *job)
+void AppearancePageMessageTagTab::slotTagsFetched(KJob* job)
 {
     if (job->error()) {
         qCWarning(KMAIL_LOG) << "Failed to load tags " << job->errorString();
         return;
     }
-    auto fetchJob = static_cast<Akonadi::TagFetchJob *>(job);
+    auto fetchJob = static_cast<Akonadi::TagFetchJob*>(job);
 
     QList<MailCommon::TagPtr> msgTagList;
     const Akonadi::Tag::List tagList = fetchJob->tags();
     msgTagList.reserve(tagList.count());
-    for (const Akonadi::Tag &akonadiTag : tagList) {
+    for (const Akonadi::Tag& akonadiTag : tagList) {
         MailCommon::Tag::Ptr tag = MailCommon::Tag::fromAkonadi(akonadiTag);
         msgTagList.append(tag);
     }
 
     std::sort(msgTagList.begin(), msgTagList.end(), MailCommon::Tag::compare);
 
-    for (const MailCommon::Tag::Ptr &tag : std::as_const(msgTagList)) {
+    for (const MailCommon::Tag::Ptr& tag : std::as_const(msgTagList)) {
         auto newItem = new TagListWidgetItem(QIcon::fromTheme(tag->iconName), tag->tagName, mTagListBox);
         newItem->setKMailTag(tag);
         if (tag->priority == -1) {
@@ -1324,7 +1334,7 @@ void AppearancePageMessageTagTab::slotTagsFetched(KJob *job)
 
     // Save the original list
     mOriginalMsgTagList.clear();
-    for (const MailCommon::TagPtr &tag : std::as_const(msgTagList)) {
+    for (const MailCommon::TagPtr& tag : std::as_const(msgTagList)) {
         mOriginalMsgTagList.append(MailCommon::TagPtr(new MailCommon::Tag(*tag)));
     }
 }
@@ -1341,14 +1351,14 @@ void AppearancePageMessageTagTab::save()
         return;
     }
 
-    QListWidgetItem *item = mTagListBox->currentItem();
+    QListWidgetItem* item = mTagListBox->currentItem();
     if (!item) {
         return;
     }
     slotRecordTagSettings(currentRow);
     const int numberOfMsgTagList = count;
     for (int i = 0; i < numberOfMsgTagList; ++i) {
-        auto tagItem = static_cast<TagListWidgetItem *>(mTagListBox->item(i));
+        auto tagItem = static_cast<TagListWidgetItem*>(mTagListBox->item(i));
         if ((i >= mOriginalMsgTagList.count()) || *(tagItem->kmailTag()) != *(mOriginalMsgTagList[i])) {
             MailCommon::Tag::Ptr tag = tagItem->kmailTag();
             tag->priority = i;

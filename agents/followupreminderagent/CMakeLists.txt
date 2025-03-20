@@ -17,7 +17,7 @@ ecm_qt_declare_logging_category(followupreminderagent HEADER followupreminderage
         EXPORT KMAIL
 )
 
-qt_add_dbus_adaptor(followupreminderagent_SRCS org.freedesktop.Akonadi.FollowUpReminder.xml followupreminderagent.h FollowUpReminderAgent)
+qt5_add_dbus_adaptor(followupreminderagent_SRCS org.freedesktop.Akonadi.FollowUpReminder.xml followupreminderagent.h FollowUpReminderAgent)
 
 qt_add_dbus_interface(followupreminderagent_SRCS org.freedesktop.Notifications.xml notifications_interface)
 qt_add_dbus_interface(followupreminderagent_SRCS org.freedesktop.DBus.Properties.xml dbusproperties)
@@ -49,17 +49,17 @@ target_sources(followupreminderagent PRIVATE
 #endif()
 
 target_link_libraries(followupreminderagent
-    KPim6::AkonadiCore
-    KPim6::IdentityManagementCore
-    KPim6::AkonadiMime
-    KPim6::AkonadiAgentWidgetBase
-    KF6::DBusAddons
-    KF6::XmlGui
-    KF6::KIOWidgets
-    KF6::Notifications
-    KPim6::MailCommon
-    KF6::I18n
-    KF6::CalendarCore
+    KPim5::AkonadiCore
+    KPim5::IdentityManagementCore
+    KPim5::AkonadiMime
+    KPim5::AkonadiAgentWidgetBase
+    KF5::DBusAddons
+    KF5::XmlGui
+    KF5::KIOWidgets
+    KF5::Notifications
+    KPim5::MailCommon
+    KF5::I18n
+    KF5::CalendarCore
 )
 
 
@@ -68,17 +68,17 @@ add_executable(akonadi_followupreminder_agent followupreminderagent.cpp followup
 
 target_link_libraries(akonadi_followupreminder_agent
     followupreminderagent
-    KPim6::AkonadiCore
-    KPim6::AkonadiMime
-    KPim6::AkonadiAgentWidgetBase
-    KPim6::Mime
-    KF6::CalendarCore
-    KF6::DBusAddons
+    KPim5::AkonadiCore
+    KPim5::AkonadiMime
+    KPim5::AkonadiAgentWidgetBase
+    KPim5::Mime
+    KF5::CalendarCore
+    KF5::DBusAddons
     Qt::Widgets
-    KF6::Notifications
-    KF6::I18n
-    KF6::XmlGui
-    KF6::Service
+    KF5::Notifications
+    KF5::I18n
+    KF5::XmlGui
+    KF5::Service
 )
 
 if(APPLE)
@@ -110,7 +110,7 @@ kcoreaddons_add_plugin(followupreminderagentconfig
 )
 target_link_libraries(followupreminderagentconfig
     followupreminderagent
-    KPim6::AkonadiCore
-    KF6::XmlGui
-    KF6::I18n
+    KPim5::AkonadiCore
+    KF5::XmlGui
+    KF5::I18n
 )

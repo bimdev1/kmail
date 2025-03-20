@@ -10,41 +10,39 @@
 
 #pragma once
 
-#include <QGroupBox>
 #include <memory>
+#include <QGroupBox>
 class KJob;
 
-namespace Ui
-{
+namespace Ui {
 class EncodedImagePicker;
 }
 
-namespace KMail
-{
+namespace KMail {
 class EncodedImagePicker : public QGroupBox
 {
     Q_OBJECT
 public:
-    explicit EncodedImagePicker(QWidget *parent = nullptr);
+    explicit EncodedImagePicker(QWidget* parent = nullptr);
     ~EncodedImagePicker() override;
 
-    void setInfo(const QString &info);
+    void setInfo(const QString& info);
 
     [[nodiscard]] QString source() const;
-    void setSource(const QString &source);
-    void setImage(const QImage &image);
+    void setSource(const QString& source);
+    void setImage(const QImage& image);
 
 Q_SIGNALS:
-    void imageSelected(const QImage &);
+    void imageSelected(const QImage&);
     void sourceChanged();
 
 private:
-    void setFromFile(const QUrl &url);
+    void setFromFile(const QUrl& url);
 
     void selectFile();
-    void setFromFileDone(KJob *);
+    void setFromFileDone(KJob*);
     void selectFromAddressBook();
-    void selectFromAddressBookDone(KJob *);
+    void selectFromAddressBookDone(KJob*);
     std::unique_ptr<Ui::EncodedImagePicker> mUi;
 };
 } // namespace KMail

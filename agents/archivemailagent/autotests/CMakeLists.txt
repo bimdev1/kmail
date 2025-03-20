@@ -18,7 +18,7 @@ macro(archivemail_agent _source)
     add_executable(${_name} ${_test} ${_name}.h)
     add_test(NAME ${_name} COMMAND ${_name})
     ecm_mark_as_test(archivemailagent-${_name})
-    target_link_libraries(${_name} archivemailagent Qt::Test Qt::Core KPim6::MailCommon KPim6::AkonadiCore KF6::XmlGui KF6::KIOWidgets KF6::I18n)
+    target_link_libraries(${_name} archivemailagent Qt::Test Qt::Core KPim5::MailCommon KPim5::AkonadiCore KF5::XmlGui KF5::KIOWidgets KF5::I18n)
 endmacro()
 
 archivemail_agent(archivemailinfotest.cpp)
@@ -32,7 +32,7 @@ set(_test2 ${_source} ../widgets/hourcombobox.cpp
     ../widgets/formatcombobox.cpp
     ../widgets/unitcombobox.cpp ${autotest_categories_SRCS})
 ki18n_wrap_ui(_test2 ../ui/archivemailwidget.ui)
-add_akonadi_isolated_test_advanced(archivemailwidgettest.cpp "${_test2}" "archivemailagent;Qt::Test;Qt::Core;KPim6::MailCommon;KPim6::AkonadiCore;KF6::XmlGui;KF6::KIOWidgets;KF6::I18n")
+add_akonadi_isolated_test_advanced(archivemailwidgettest.cpp "${_test2}" "archivemailagent;Qt::Test;Qt::Core;KPim5::MailCommon;KPim5::AkonadiCore;KF5::XmlGui;KF5::KIOWidgets;KF5::I18n")
 archivemail_agent(formatcomboboxtest.cpp)
 archivemail_agent(unitcomboboxtest.cpp)
 archivemail_agent(archivemailrangewidgettest.cpp)

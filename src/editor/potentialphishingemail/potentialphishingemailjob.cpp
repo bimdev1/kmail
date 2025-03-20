@@ -9,19 +9,16 @@
 #include <KEmailAddress>
 #include <PimCommon/PimUtil>
 
-PotentialPhishingEmailJob::PotentialPhishingEmailJob(QObject *parent)
-    : QObject(parent)
-{
-}
+PotentialPhishingEmailJob::PotentialPhishingEmailJob(QObject* parent) : QObject(parent) {}
 
 PotentialPhishingEmailJob::~PotentialPhishingEmailJob() = default;
 
-void PotentialPhishingEmailJob::setEmailWhiteList(const QStringList &emails)
+void PotentialPhishingEmailJob::setEmailWhiteList(const QStringList& emails)
 {
     mEmailWhiteList = emails;
 }
 
-void PotentialPhishingEmailJob::setPotentialPhishingEmails(const QStringList &list)
+void PotentialPhishingEmailJob::setPotentialPhishingEmails(const QStringList& list)
 {
     mEmails = PimCommon::Util::generateEmailList(list);
 }
@@ -44,13 +41,14 @@ bool PotentialPhishingEmailJob::start()
         deleteLater();
         return false;
     }
-    for (const QString &addr : std::as_const(mEmails)) {
+    for (const QString& addr : std::as_const(mEmails)) {
         if (!mEmailWhiteList.contains(addr.trimmed())) {
             QString tname;
             QString temail;
             KEmailAddress::extractEmailAddressAndName(addr, temail, tname); // ignore return value
             // which is always false
-            if (tname.startsWith(QLatin1Char('@'))) { // Special case when name is just @foo <…> it mustn't recognize as a valid email
+            if (tname.startsWith(QLatin1Char(
+                    '@'))) { // Special case when name is just @foo <…> it mustn't recognize as a valid email
                 continue;
             }
             if (tname.contains(QLatin1Char('@'))) { // Potential address

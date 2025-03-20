@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "archivemailinfo.h"
 #include <QComboBox>
+#include "archivemailinfo.h"
 
 class UnitComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    explicit UnitComboBox(QWidget *parent = nullptr);
+    explicit UnitComboBox(QWidget* parent = nullptr);
     ~UnitComboBox() override;
 
     [[nodiscard]] ArchiveMailInfo::ArchiveUnit unit() const;

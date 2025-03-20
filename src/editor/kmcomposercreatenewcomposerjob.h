@@ -14,10 +14,10 @@ class KMComposerCreateNewComposerJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit KMComposerCreateNewComposerJob(QObject *parent = nullptr);
+    explicit KMComposerCreateNewComposerJob(QObject* parent = nullptr);
     ~KMComposerCreateNewComposerJob() override;
     void start();
-    void setCollectionForNewMessage(const Akonadi::Collection &collectionForNewMessage);
+    void setCollectionForNewMessage(const Akonadi::Collection& collectionForNewMessage);
 
     void setCurrentIdentity(uint currentIdentity);
 

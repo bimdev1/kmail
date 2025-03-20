@@ -23,9 +23,8 @@
 using namespace Qt::Literals::StringLiterals;
 using namespace MailCommon;
 
-CollectionShortcutPage::CollectionShortcutPage(QWidget *parent)
-    : CollectionPropertiesPage(parent)
-    , mKeySeqWidget(new KKeySequenceWidget(this))
+CollectionShortcutPage::CollectionShortcutPage(QWidget* parent)
+    : CollectionPropertiesPage(parent), mKeySeqWidget(new KKeySequenceWidget(this))
 {
     setObjectName("KMail::CollectionShortcutPage"_L1);
     setPageTitle(i18nc("@title:tab Shortcut settings for a folder.", "Shortcut"));
@@ -33,18 +32,17 @@ CollectionShortcutPage::CollectionShortcutPage(QWidget *parent)
 
 CollectionShortcutPage::~CollectionShortcutPage() = default;
 
-void CollectionShortcutPage::init(const Akonadi::Collection &col)
+void CollectionShortcutPage::init(const Akonadi::Collection& col)
 {
     mCurrentCollection = col;
     mFolder = FolderSettings::forCollection(col, false);
 
     auto topLayout = new QVBoxLayout(this);
 
-    auto label = new QLabel(i18nc("@label:textbox",
-                                  "<qt>To choose a key or a combination "
-                                  "of keys which select the current folder, "
-                                  "click the button below and then press the key(s) "
-                                  "you wish to associate with this folder.</qt>"),
+    auto label = new QLabel(i18nc("@label:textbox", "<qt>To choose a key or a combination "
+                                                    "of keys which select the current folder, "
+                                                    "click the button below and then press the key(s) "
+                                                    "you wish to associate with this folder.</qt>"),
                             this);
     label->setWordWrap(true);
     topLayout->addWidget(label);
@@ -62,7 +60,7 @@ void CollectionShortcutPage::init(const Akonadi::Collection &col)
     mKeySeqWidget->setCheckActionCollections(KMKernel::self()->getKMMainWidget()->actionCollections());
 }
 
-void CollectionShortcutPage::load(const Akonadi::Collection &col)
+void CollectionShortcutPage::load(const Akonadi::Collection& col)
 {
     init(col);
     if (mFolder) {
@@ -71,7 +69,7 @@ void CollectionShortcutPage::load(const Akonadi::Collection &col)
     }
 }
 
-void CollectionShortcutPage::save(Akonadi::Collection & /*col*/)
+void CollectionShortcutPage::save(Akonadi::Collection& /*col*/)
 {
     if (mFolder) {
         if (mShortcutChanged) {

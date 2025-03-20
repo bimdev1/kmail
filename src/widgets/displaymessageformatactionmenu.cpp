@@ -13,8 +13,7 @@
 #include <QMenu>
 
 using namespace Qt::Literals::StringLiterals;
-DisplayMessageFormatActionMenu::DisplayMessageFormatActionMenu(QObject *parent)
-    : KActionMenu(parent)
+DisplayMessageFormatActionMenu::DisplayMessageFormatActionMenu(QObject* parent) : KActionMenu(parent)
 {
     setText(i18n("Message Default Format"));
     delete menu();
@@ -40,15 +39,17 @@ DisplayMessageFormatActionMenu::DisplayMessageFormatActionMenu(QObject *parent)
     act->setData(MessageViewer::Viewer::UseGlobalSetting);
     actionGroup->addAction(act);
     subMenu->addAction(act);
-    connect(actionGroup, &QActionGroup::triggered, this, &DisplayMessageFormatActionMenu::slotChangeDisplayMessageFormat);
+    connect(actionGroup, &QActionGroup::triggered, this,
+            &DisplayMessageFormatActionMenu::slotChangeDisplayMessageFormat);
     updateMenu();
 }
 
 DisplayMessageFormatActionMenu::~DisplayMessageFormatActionMenu() = default;
 
-void DisplayMessageFormatActionMenu::slotChangeDisplayMessageFormat(QAction *act)
+void DisplayMessageFormatActionMenu::slotChangeDisplayMessageFormat(QAction* act)
 {
-    MessageViewer::Viewer::DisplayFormatMessage format = static_cast<MessageViewer::Viewer::DisplayFormatMessage>(act->data().toInt());
+    MessageViewer::Viewer::DisplayFormatMessage format =
+        static_cast<MessageViewer::Viewer::DisplayFormatMessage>(act->data().toInt());
     if (format != mDisplayMessageFormat) {
         mDisplayMessageFormat = format;
         Q_EMIT changeDisplayMessageFormat(format);
@@ -60,7 +61,8 @@ MessageViewer::Viewer::DisplayFormatMessage DisplayMessageFormatActionMenu::disp
     return mDisplayMessageFormat;
 }
 
-void DisplayMessageFormatActionMenu::setDisplayMessageFormat(MessageViewer::Viewer::DisplayFormatMessage displayMessageFormat)
+void DisplayMessageFormatActionMenu::setDisplayMessageFormat(
+    MessageViewer::Viewer::DisplayFormatMessage displayMessageFormat)
 {
     if (mDisplayMessageFormat != displayMessageFormat) {
         mDisplayMessageFormat = displayMessageFormat;
@@ -70,9 +72,10 @@ void DisplayMessageFormatActionMenu::setDisplayMessageFormat(MessageViewer::View
 
 void DisplayMessageFormatActionMenu::updateMenu()
 {
-    const QList<QAction *> actList = menu()->actions();
-    for (QAction *act : actList) {
-        MessageViewer::Viewer::DisplayFormatMessage format = static_cast<MessageViewer::Viewer::DisplayFormatMessage>(act->data().toInt());
+    const QList<QAction*> actList = menu()->actions();
+    for (QAction* act : actList) {
+        MessageViewer::Viewer::DisplayFormatMessage format =
+            static_cast<MessageViewer::Viewer::DisplayFormatMessage>(act->data().toInt());
         if (format == mDisplayMessageFormat) {
             act->setChecked(true);
             break;

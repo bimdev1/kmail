@@ -5,10 +5,10 @@
 */
 
 #include "spellcheckerconfigdialog.h"
-#include "kmail_debug.h"
-#include "kmkernel.h"
 #include <QCheckBox>
 #include <QLabel>
+#include "kmail_debug.h"
+#include "kmkernel.h"
 
 #include <Sonnet/DictionaryComboBox>
 
@@ -17,28 +17,29 @@
 #include <KWindowConfig>
 #include <QWindow>
 
-SpellCheckerConfigDialog::SpellCheckerConfigDialog(QWidget *parent)
-    : Sonnet::ConfigDialog(parent)
+SpellCheckerConfigDialog::SpellCheckerConfigDialog(QWidget* parent) : Sonnet::ConfigDialog(parent)
 {
     // Hackish way to hide the "Enable spell check by default" checkbox
     // Our highlighter ignores this setting, so we should not expose its UI
-    auto enabledByDefaultCB = findChild<QCheckBox *>(QStringLiteral("kcfg_autodetectLanguage"));
+    auto enabledByDefaultCB = findChild<QCheckBox*>(QStringLiteral("kcfg_autodetectLanguage"));
     if (enabledByDefaultCB) {
         enabledByDefaultCB->hide();
     } else {
-        qCWarning(KMAIL_LOG) << "Could not find any checkbox named 'm_checkerEnabledByDefaultCB'. Sonnet::ConfigDialog must have changed!";
+        qCWarning(KMAIL_LOG) << "Could not find any checkbox named 'm_checkerEnabledByDefaultCB'. Sonnet::ConfigDialog "
+                                "must have changed!";
     }
-    auto textLabel = findChild<QLabel *>(QStringLiteral("textLabel1"));
+    auto textLabel = findChild<QLabel*>(QStringLiteral("textLabel1"));
     if (textLabel) {
         textLabel->hide();
     } else {
         qCWarning(KMAIL_LOG) << "Could not find any label named 'textLabel'. Sonnet::ConfigDialog must have changed!";
     }
-    auto dictionaryComboBox = findChild<Sonnet::DictionaryComboBox *>(QStringLiteral("m_langCombo"));
+    auto dictionaryComboBox = findChild<Sonnet::DictionaryComboBox*>(QStringLiteral("m_langCombo"));
     if (dictionaryComboBox) {
         dictionaryComboBox->hide();
     } else {
-        qCWarning(KMAIL_LOG) << "Could not find any Sonnet::DictionaryComboBox named 'dictionaryComboBox'. Sonnet::ConfigDialog must have changed!";
+        qCWarning(KMAIL_LOG) << "Could not find any Sonnet::DictionaryComboBox named 'dictionaryComboBox'. "
+                                "Sonnet::ConfigDialog must have changed!";
     }
     readConfig();
 }

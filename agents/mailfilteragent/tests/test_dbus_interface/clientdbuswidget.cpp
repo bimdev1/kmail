@@ -10,8 +10,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-ClientDbusWidget::ClientDbusWidget(QWidget *parent)
-    : QWidget{parent}
+ClientDbusWidget::ClientDbusWidget(QWidget* parent) : QWidget{parent}
 {
     const QString path = QStringLiteral("/ServerDbusTest");
     const QString service = QStringLiteral("org.kde.server_dbus_test");

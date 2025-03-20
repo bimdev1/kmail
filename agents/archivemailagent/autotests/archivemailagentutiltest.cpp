@@ -5,13 +5,10 @@
 */
 
 #include "archivemailagentutiltest.h"
-#include "archivemailagentutil.h"
 #include <QTest>
+#include "archivemailagentutil.h"
 QTEST_GUILESS_MAIN(ArchiveMailAgentUtilTest)
-ArchiveMailAgentUtilTest::ArchiveMailAgentUtilTest(QObject *parent)
-    : QObject{parent}
-{
-}
+ArchiveMailAgentUtilTest::ArchiveMailAgentUtilTest(QObject* parent) : QObject{parent} {}
 
 void ArchiveMailAgentUtilTest::shouldTestTimeIsInRange()
 {

@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include <QWidget>
 #include <memory>
-namespace Ui
-{
+#include <QWidget>
+namespace Ui {
 class MailMergeConfigureWidget;
 }
 
@@ -17,7 +16,7 @@ class MailMergeConfigureWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MailMergeConfigureWidget(QWidget *parent = nullptr);
+    explicit MailMergeConfigureWidget(QWidget* parent = nullptr);
     ~MailMergeConfigureWidget() override;
 
 private:

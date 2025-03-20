@@ -21,12 +21,15 @@ endif()
 
 generate_export_header(mailfilteragentprivate BASE_NAME mailfilteragentprivate)
 target_link_libraries(mailfilteragentprivate
-    KF6::I18n
+    KF5::I18n
     Qt::Widgets
-    KF6::TextCustomEditor
-    KPim6::PimCommon
-    KPim6::MailCommon
+    KPim5::PimCommon
+    KPim5::MailCommon
 )
+
+if(TARGET KF5::TextCustomEditor)
+    target_link_libraries(mailfilteragentprivate KF5::TextCustomEditor)
+endif()
 
 set_target_properties(mailfilteragentprivate
     PROPERTIES OUTPUT_NAME mailfilteragentprivate VERSION ${KDEPIM_LIB_VERSION} SOVERSION ${KDEPIM_LIB_SOVERSION}
@@ -37,7 +40,7 @@ install(TARGETS mailfilteragentprivate ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRA
 add_executable(akonadi_mailfilter_agent)
 set(dbusobjectmanager_xml org.freedesktop.Akonadi.MailFilterAgent.xml)
 set_source_files_properties(${dbusobjectmanager_xml} PROPERTIES INCLUDE "dbusoperators.h")
-qt_add_dbus_adaptor(akonadi_mailfilter_agent_SRCS ${dbusobjectmanager_xml} mailfilteragent.h MailFilterAgent)
+qt5_add_dbus_adaptor(akonadi_mailfilter_agent_SRCS ${dbusobjectmanager_xml} mailfilteragent.h MailFilterAgent)
 
 target_sources(akonadi_mailfilter_agent PRIVATE
     dummykernel.cpp
@@ -70,20 +73,26 @@ endif()
 
 
 target_link_libraries(akonadi_mailfilter_agent
-    KPim6::MailCommon
-    KPim6::MessageComposer
-    KPim6::PimCommon
-    KPim6::AkonadiCore
-    KPim6::AkonadiMime
-    KPim6::AkonadiAgentWidgetBase
-    KPim6::Mime
-    KPim6::IdentityManagementCore
-    KF6::DBusAddons
-    KF6::Notifications
-    KF6::WindowSystem
-    KF6::I18n
+    KPim5::MailCommon
+    KPim5::MessageComposer
+    KPim5::PimCommon
+    KPim5::AkonadiCore
+    KPim5::AkonadiMime
+    KPim5::Mime
+    KF5::DBusAddons
+    KF5::Notifications
+    KF5::WindowSystem
+    KF5::I18n
     mailfilteragentprivate
 )
+
+if(TARGET KPim5::AkonadiAgentWidgetBase)
+    target_link_libraries(akonadi_mailfilter_agent KPim5::AkonadiAgentWidgetBase)
+endif()
+
+if(TARGET KPim5::IdentityManagementCore)
+    target_link_libraries(akonadi_mailfilter_agent KPim5::IdentityManagementCore)
+endif()
 
 install(TARGETS akonadi_mailfilter_agent ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES mailfilteragent.desktop DESTINATION "${KDE_INSTALL_DATAROOTDIR}/akonadi/agents")

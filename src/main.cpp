@@ -6,10 +6,10 @@
  *
  */
 
+#include <kontactinterface/pimuniqueapplication.h>
 #include "config-kmail.h"
 #include "kmail_options.h"
 #include "kmkernel.h" //control center
-#include <kontactinterface/pimuniqueapplication.h>
 
 #include "kmail_debug.h"
 #undef Status // stupid X headers
@@ -27,8 +27,8 @@
 #include <QWebEngineUrlScheme>
 
 #if KMAIL_WITH_KUSERFEEDBACK
-#include "userfeedback/kmailuserfeedbackprovider.h"
 #include <KUserFeedback/Provider>
+#include "userfeedback/kmailuserfeedbackprovider.h"
 #endif
 
 #include <KIconTheme>
@@ -40,25 +40,23 @@
 class KMailApplication : public KontactInterface::PimUniqueApplication
 {
 public:
-    KMailApplication(int &argc, char **argv[])
-        : KontactInterface::PimUniqueApplication(argc, argv)
-    {
-    }
+    KMailApplication(int& argc, char** argv[]) : KontactInterface::PimUniqueApplication(argc, argv) {}
 
-    int activate(const QStringList &args, const QString &workingDir) override;
-    void commitData(QSessionManager &sm);
+    int activate(const QStringList& args, const QString& workingDir) override;
+    void commitData(QSessionManager& sm);
     void setEventLoopReached();
-    void delayedInstanceCreation(const QStringList &args, const QString &workingDir);
+    void delayedInstanceCreation(const QStringList& args, const QString& workingDir);
 
 public Q_SLOTS:
-    int newInstance(const QByteArray &startupId, const QStringList &arguments, const QString &workingDirectory) override;
+    int newInstance(const QByteArray& startupId, const QStringList& arguments,
+                    const QString& workingDirectory) override;
 
 protected:
     bool mDelayedInstanceCreation = false;
     bool mEventLoopReached = false;
 };
 
-void KMailApplication::commitData(QSessionManager &)
+void KMailApplication::commitData(QSessionManager&)
 {
     kmkernel->dumpDeadLetters();
     kmkernel->setShuttingDown(true); // Prevent further dumpDeadLetters calls
@@ -69,7 +67,8 @@ void KMailApplication::setEventLoopReached()
     mEventLoopReached = true;
 }
 
-int KMailApplication::newInstance(const QByteArray &startupId, const QStringList &arguments, const QString &workingDirectory)
+int KMailApplication::newInstance(const QByteArray& startupId, const QStringList& arguments,
+                                  const QString& workingDirectory)
 {
 #if !defined(Q_OS_WIN)
     if (KWindowSystem::isPlatformX11()) {
@@ -87,7 +86,7 @@ int KMailApplication::newInstance(const QByteArray &startupId, const QStringList
     }
 }
 
-int KMailApplication::activate(const QStringList &args, const QString &workingDir)
+int KMailApplication::activate(const QStringList& args, const QString& workingDir)
 {
     // If the event loop hasn't been reached yet, the kernel is probably not
     // fully initialized. Creating an instance would therefore fail, this is why
@@ -116,21 +115,21 @@ int KMailApplication::activate(const QStringList &args, const QString &workingDi
     return 0;
 }
 
-void KMailApplication::delayedInstanceCreation(const QStringList &args, const QString &workingDir)
+void KMailApplication::delayedInstanceCreation(const QStringList& args, const QString& workingDir)
 {
     if (mDelayedInstanceCreation) {
         activate(args, workingDir);
     }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     KIconTheme::initTheme();
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts, true);
     // Necessary for "cid" support in kmail.
     QWebEngineUrlScheme cidScheme("cid");
-    cidScheme.setFlags(QWebEngineUrlScheme::SecureScheme | QWebEngineUrlScheme::ContentSecurityPolicyIgnored | QWebEngineUrlScheme::LocalScheme
-                       | QWebEngineUrlScheme::LocalAccessAllowed);
+    cidScheme.setFlags(QWebEngineUrlScheme::SecureScheme | QWebEngineUrlScheme::ContentSecurityPolicyIgnored |
+                       QWebEngineUrlScheme::LocalScheme | QWebEngineUrlScheme::LocalAccessAllowed);
     cidScheme.setSyntax(QWebEngineUrlScheme::Syntax::Path);
     QWebEngineUrlScheme::registerScheme(cidScheme);
 
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
     app.setAboutData(about);
     KCrash::initialize();
 
-    QCommandLineParser *cmdArgs = app.cmdArgs();
+    QCommandLineParser* cmdArgs = app.cmdArgs();
     kmail_options(cmdArgs);
 
     const QStringList args = QApplication::arguments();

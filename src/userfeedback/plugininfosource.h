@@ -5,8 +5,8 @@
 */
 
 #pragma once
-#include "kmail_private_export.h"
 #include <KUserFeedback/AbstractDataSource>
+#include "kmail_private_export.h"
 
 class KMAILTESTS_TESTS_EXPORT PluginInfoSource : public KUserFeedback::AbstractDataSource
 {

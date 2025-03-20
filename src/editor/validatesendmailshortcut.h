@@ -11,12 +11,12 @@ class KActionCollection;
 class ValidateSendMailShortcut
 {
 public:
-    explicit ValidateSendMailShortcut(KActionCollection *actionCollection, QWidget *parent = nullptr);
+    explicit ValidateSendMailShortcut(KActionCollection* actionCollection, QWidget* parent = nullptr);
     ~ValidateSendMailShortcut();
 
     [[nodiscard]] bool validate();
 
 private:
-    QWidget *const mParent;
-    KActionCollection *const mActionCollection;
+    QWidget* const mParent;
+    KActionCollection* const mActionCollection;
 };

@@ -23,9 +23,8 @@
 
 // Other headers:
 
-ConfigModuleWithTabs::ConfigModuleWithTabs(QObject *parent, const KPluginMetaData &data)
-    : ConfigModule(parent, data)
-    , mTabWidget(new QTabWidget(widget()))
+ConfigModuleWithTabs::ConfigModuleWithTabs(QObject* parent, const KPluginMetaData& data)
+    : ConfigModule(parent, data), mTabWidget(new QTabWidget(widget()))
 {
     auto vlay = new QVBoxLayout(widget());
     vlay->setContentsMargins({});
@@ -36,12 +35,10 @@ ConfigModuleWithTabs::ConfigModuleWithTabs(QObject *parent, const KPluginMetaDat
     addConfig(KMailSettings::self(), mTabWidget);
 }
 
-void ConfigModuleWithTabs::addTab(ConfigModuleTab *tab, const QString &title)
+void ConfigModuleWithTabs::addTab(ConfigModuleTab* tab, const QString& title)
 {
     mTabWidget->addTab(tab, title);
-    connect(tab, &ConfigModuleTab::changed, this, [this](bool state) {
-        setNeedsSave(state);
-    });
+    connect(tab, &ConfigModuleTab::changed, this, [this](bool state) { setNeedsSave(state); });
 
     for (const auto configs = KCModule::configs(); auto config : configs) {
         config->addWidget(tab);
@@ -52,7 +49,7 @@ void ConfigModuleWithTabs::load()
 {
     const int numberOfTab = mTabWidget->count();
     for (int i = 0; i < numberOfTab; ++i) {
-        auto tab = qobject_cast<ConfigModuleTab *>(mTabWidget->widget(i));
+        auto tab = qobject_cast<ConfigModuleTab*>(mTabWidget->widget(i));
         if (tab) {
             tab->load();
         }
@@ -67,7 +64,7 @@ void ConfigModuleWithTabs::save()
         KCModule::save();
         const int numberOfTab = mTabWidget->count();
         for (int i = 0; i < numberOfTab; ++i) {
-            auto tab = qobject_cast<ConfigModuleTab *>(mTabWidget->widget(i));
+            auto tab = qobject_cast<ConfigModuleTab*>(mTabWidget->widget(i));
             if (tab) {
                 tab->save();
             }
@@ -77,7 +74,7 @@ void ConfigModuleWithTabs::save()
 
 void ConfigModuleWithTabs::defaults()
 {
-    auto tab = qobject_cast<ConfigModuleTab *>(mTabWidget->currentWidget());
+    auto tab = qobject_cast<ConfigModuleTab*>(mTabWidget->currentWidget());
     if (tab) {
         tab->defaults();
     }

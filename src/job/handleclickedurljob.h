@@ -6,23 +6,23 @@
 
 #pragma once
 
-#include "kmail_private_export.h"
 #include <MailCommon/FolderSettings>
 #include <QObject>
 #include <QSharedPointer>
+#include "kmail_private_export.h"
 
 class KMAILTESTS_TESTS_EXPORT HandleClickedUrlJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit HandleClickedUrlJob(QObject *parent = nullptr);
+    explicit HandleClickedUrlJob(QObject* parent = nullptr);
     ~HandleClickedUrlJob() override;
 
     void start();
 
-    void setUrl(const QUrl &url);
-    void setFolder(const QSharedPointer<MailCommon::FolderSettings> &folder);
-    void setCurrentCollection(const Akonadi::Collection &currentCollection);
+    void setUrl(const QUrl& url);
+    void setFolder(const QSharedPointer<MailCommon::FolderSettings>& folder);
+    void setCurrentCollection(const Akonadi::Collection& currentCollection);
 
 private:
     KMAIL_NO_EXPORT void slotOpenComposer();

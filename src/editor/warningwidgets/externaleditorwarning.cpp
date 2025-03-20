@@ -8,8 +8,7 @@
 
 #include <KLocalizedString>
 
-ExternalEditorWarning::ExternalEditorWarning(QWidget *parent)
-    : KMessageWidget(parent)
+ExternalEditorWarning::ExternalEditorWarning(QWidget* parent) : KMessageWidget(parent)
 {
     setPosition(KMessageWidget::Header);
     setVisible(false);

@@ -9,8 +9,7 @@
 #include <Akonadi/Item>
 #include <QList>
 #include <QObject>
-namespace MessageViewer
-{
+namespace MessageViewer {
 class MessageViewerCheckBeforeDeletingInterface;
 }
 class QAction;
@@ -19,23 +18,23 @@ class KMailPluginCheckBeforeDeletingManagerInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit KMailPluginCheckBeforeDeletingManagerInterface(QObject *parent = nullptr);
+    explicit KMailPluginCheckBeforeDeletingManagerInterface(QObject* parent = nullptr);
     ~KMailPluginCheckBeforeDeletingManagerInterface() override;
     void initializePlugins();
 
-    [[nodiscard]] QWidget *parentWidget() const;
-    void setParentWidget(QWidget *newParentWidget);
+    [[nodiscard]] QWidget* parentWidget() const;
+    void setParentWidget(QWidget* newParentWidget);
 
-    [[nodiscard]] Akonadi::Item::List confirmBeforeDeleting(const Akonadi::Item::List &list);
+    [[nodiscard]] Akonadi::Item::List confirmBeforeDeleting(const Akonadi::Item::List& list);
 
-    void setActionCollection(KActionCollection *ac);
+    void setActionCollection(KActionCollection* ac);
 
-    const QList<QAction *> actions() const;
+    const QList<QAction*> actions() const;
 
 private:
-    QList<QAction *> mActions;
-    QList<MessageViewer::MessageViewerCheckBeforeDeletingInterface *> mListPluginInterface;
-    QWidget *mParentWidget = nullptr;
-    KActionCollection *mActionCollection = nullptr;
+    QList<QAction*> mActions;
+    QList<MessageViewer::MessageViewerCheckBeforeDeletingInterface*> mListPluginInterface;
+    QWidget* mParentWidget = nullptr;
+    KActionCollection* mActionCollection = nullptr;
     bool mWasInitialized = false;
 };

@@ -6,19 +6,16 @@
 
 #include "handleclickedurljob.h"
 
-#include "kmail_debug.h"
-#include "kmkernel.h"
 #include <KMime/Message>
 #include <MessageComposer/ComposerJob>
 #include <MessageComposer/MessageHelper>
 #include <MessageCore/StringUtil>
 #include <TemplateParser/TemplateParserJob>
+#include "kmail_debug.h"
+#include "kmkernel.h"
 using namespace Qt::Literals::StringLiterals;
 
-HandleClickedUrlJob::HandleClickedUrlJob(QObject *parent)
-    : QObject(parent)
-{
-}
+HandleClickedUrlJob::HandleClickedUrlJob(QObject* parent) : QObject(parent) {}
 
 HandleClickedUrlJob::~HandleClickedUrlJob() = default;
 
@@ -71,24 +68,24 @@ void HandleClickedUrlJob::start()
 
 void HandleClickedUrlJob::slotOpenComposer()
 {
-    KMail::Composer *win = KMail::makeComposer(mMsg, false, false, KMail::Composer::TemplateContext::New, mIdentity);
+    KMail::Composer* win = KMail::makeComposer(mMsg, false, false, KMail::Composer::TemplateContext::New, mIdentity);
     win->setFocusToSubject();
     win->setCollectionForNewMessage(mCurrentCollection);
     win->show();
     deleteLater();
 }
 
-void HandleClickedUrlJob::setUrl(const QUrl &url)
+void HandleClickedUrlJob::setUrl(const QUrl& url)
 {
     mUrl = url;
 }
 
-void HandleClickedUrlJob::setFolder(const QSharedPointer<MailCommon::FolderSettings> &folder)
+void HandleClickedUrlJob::setFolder(const QSharedPointer<MailCommon::FolderSettings>& folder)
 {
     mFolder = folder;
 }
 
-void HandleClickedUrlJob::setCurrentCollection(const Akonadi::Collection &currentCollection)
+void HandleClickedUrlJob::setCurrentCollection(const Akonadi::Collection& currentCollection)
 {
     mCurrentCollection = currentCollection;
 }

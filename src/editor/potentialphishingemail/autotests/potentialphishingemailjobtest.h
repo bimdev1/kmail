@@ -13,7 +13,7 @@ class PotentialPhishingEmailJobTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit PotentialPhishingEmailJobTest(QObject *parent = nullptr);
+    explicit PotentialPhishingEmailJobTest(QObject* parent = nullptr);
     ~PotentialPhishingEmailJobTest() override;
 
 private Q_SLOTS:

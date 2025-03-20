@@ -8,9 +8,9 @@
 */
 
 #include "collectionmailinglistpage.h"
-#include "util.h"
 #include <MailCommon/MailKernel>
 #include <MailCommon/MailUtil>
+#include "util.h"
 
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
@@ -23,20 +23,18 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include "kmail_debug.h"
 #include <KEditListWidget>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KSqueezedTextLabel>
 #include <QComboBox>
+#include "kmail_debug.h"
 
 using namespace MailCommon;
-using namespace Qt::Literals::StringLiterals;
 
-CollectionMailingListPage::CollectionMailingListPage(QWidget *parent)
-    : CollectionPropertiesPage(parent)
+CollectionMailingListPage::CollectionMailingListPage(QWidget* parent) : CollectionPropertiesPage(parent)
 {
-    setObjectName("KMail::CollectionMailingListPage"_L1);
+    setObjectName(QLatin1String("KMail::CollectionMailingListPage"));
     setPageTitle(i18nc("@title:tab Mailing list settings for a folder.", "Mailing List"));
 }
 
@@ -47,13 +45,14 @@ void CollectionMailingListPage::slotConfigChanged()
     changed = true;
 }
 
-bool CollectionMailingListPage::canHandle(const Akonadi::Collection &col) const
+bool CollectionMailingListPage::canHandle(const Akonadi::Collection& col) const
 {
     QSharedPointer<FolderSettings> fd = FolderSettings::forCollection(col, false);
-    return !CommonKernel->isSystemFolderCollection(col) && !fd->isStructural() && !MailCommon::Util::isVirtualCollection(col);
+    return !CommonKernel->isSystemFolderCollection(col) && !fd->isStructural() &&
+           !MailCommon::Util::isVirtualCollection(col);
 }
 
-void CollectionMailingListPage::init(const Akonadi::Collection &col)
+void CollectionMailingListPage::init(const Akonadi::Collection& col)
 {
     mCurrentCollection = col;
     mFolder = FolderSettings::forCollection(col, false);
@@ -109,7 +108,8 @@ void CollectionMailingListPage::init(const Akonadi::Collection &col)
 
     // Order is important because the activate handler and fillMLFromWidgets
     // depend on it
-    const QStringList el{i18n("Post to List"), i18n("Subscribe to List"), i18n("Unsubscribe From List"), i18n("List Archives"), i18n("List Help")};
+    const QStringList el{i18n("Post to List"), i18n("Subscribe to List"), i18n("Unsubscribe From List"),
+                         i18n("List Archives"), i18n("List Help")};
     mAddressCombo->addItems(el);
     connect(mAddressCombo, &QComboBox::activated, this, &CollectionMailingListPage::slotAddressChanged);
 
@@ -120,7 +120,7 @@ void CollectionMailingListPage::init(const Akonadi::Collection &col)
     mEditList->setEnabled(false);
 }
 
-void CollectionMailingListPage::load(const Akonadi::Collection &col)
+void CollectionMailingListPage::load(const Akonadi::Collection& col)
 {
     init(col);
 
@@ -138,7 +138,7 @@ void CollectionMailingListPage::load(const Akonadi::Collection &col)
     changed = false;
 }
 
-void CollectionMailingListPage::save(Akonadi::Collection &col)
+void CollectionMailingListPage::save(Akonadi::Collection& col)
 {
     Q_UNUSED(col)
     if (changed) {
@@ -187,13 +187,13 @@ void CollectionMailingListPage::slotDetectMailingList()
     }
 }
 
-void CollectionMailingListPage::slotFetchDone(KJob *job)
+void CollectionMailingListPage::slotFetchDone(KJob* job)
 {
     mDetectButton->setEnabled(true);
     if (MailCommon::Util::showJobErrorMessage(job)) {
         return;
     }
-    auto fjob = qobject_cast<Akonadi::ItemFetchJob *>(job);
+    auto fjob = qobject_cast<Akonadi::ItemFetchJob*>(job);
     Q_ASSERT(fjob);
     Akonadi::Item::List items = fjob->items();
     const int maxchecks = 5;
@@ -212,9 +212,8 @@ void CollectionMailingListPage::slotFetchDone(KJob *job)
         if (mMailingList.features() == MailingList::None) {
             KMessageBox::error(this, i18n("KMail was unable to detect any mailing list in this folder."));
         } else {
-            KMessageBox::error(this,
-                               i18n("KMail was unable to fully detect a mailing list in this folder. "
-                                    "Please fill in the addresses by hand."));
+            KMessageBox::error(this, i18n("KMail was unable to fully detect a mailing list in this folder. "
+                                          "Please fill in the addresses by hand."));
         }
     } else {
         mMLId->setText((mMailingList.id().isEmpty() ? i18n("Not available.") : mMailingList.id()));
@@ -245,16 +244,16 @@ void CollectionMailingListPage::fillMLFromWidgets()
         return;
     }
 
-    // make sure that email addresses are prepended by "mailto:"
+    // make sure that email addresses are prepended by mailto:
     bool listChanged = false;
     const QStringList oldList = mEditList->items();
     QStringList newList; // the correct string list
     QStringList::ConstIterator end = oldList.constEnd();
     for (QStringList::ConstIterator it = oldList.constBegin(); it != end; ++it) {
-        if (!(*it).startsWith(QLatin1StringView("http:")) && !(*it).startsWith("https:"_L1) && !(*it).startsWith("mailto:"_L1)
-            && ((*it).contains(QLatin1Char('@')))) {
+        if (!(*it).startsWith(QLatin1String("http:")) && !(*it).startsWith(QLatin1String("https:")) &&
+            !(*it).startsWith(QLatin1String("mailto:"))) {
             listChanged = true;
-            newList << QStringLiteral("mailto:") + *it;
+            newList << QLatin1String("mailto:") + *it;
         } else {
             newList << *it;
         }

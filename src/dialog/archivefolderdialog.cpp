@@ -7,10 +7,10 @@
 
 #include "archivefolderdialog.h"
 
-#include "kmmainwidget.h"
 #include <MailCommon/BackupJob>
 #include <MailCommon/FolderRequester>
 #include <MessageViewer/MessageViewerUtil>
+#include "kmmainwidget.h"
 
 #include <Akonadi/Collection>
 
@@ -33,20 +33,19 @@ using namespace KMail;
 using namespace MailCommon;
 using namespace Qt::Literals::StringLiterals;
 
-QString ArchiveFolderDialog::standardArchivePath(const QString &folderName)
+QString ArchiveFolderDialog::standardArchivePath(const QString& folderName)
 {
     QString currentPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     const QDir dir(currentPath);
     if (!dir.exists()) {
         currentPath = QDir::homePath();
     }
-    return currentPath + QLatin1Char('/') + i18nc("Start of the filename for a mail archive file", "Archive") + QLatin1Char('_') + folderName + QLatin1Char('_')
-        + QDate::currentDate().toString(Qt::ISODate) + ".tar.bz2"_L1;
+    return currentPath + QLatin1Char('/') + i18nc("Start of the filename for a mail archive file", "Archive") +
+           QLatin1Char('_') + folderName + QLatin1Char('_') + QDate::currentDate().toString(Qt::ISODate) +
+           ".tar.bz2"_L1;
 }
 
-ArchiveFolderDialog::ArchiveFolderDialog(QWidget *parent)
-    : QDialog(parent)
-    , mParentWidget(parent)
+ArchiveFolderDialog::ArchiveFolderDialog(QWidget* parent) : QDialog(parent), mParentWidget(parent)
 {
     setObjectName("archive_folder_dialog"_L1);
     setWindowTitle(i18nc("@title:window for archiving a folder", "Archive Folder"));
@@ -106,7 +105,8 @@ ArchiveFolderDialog::ArchiveFolderDialog(QWidget *parent)
     row++;
 
     // TODO: Make this appear more dangerous!
-    mDeleteCheckBox = new QCheckBox(i18nc("@option:check", "&Delete folder and subfolders after completion"), mainWidget);
+    mDeleteCheckBox =
+        new QCheckBox(i18nc("@option:check", "&Delete folder and subfolders after completion"), mainWidget);
     mainLayout->addWidget(mDeleteCheckBox, row, 0, 1, 2, Qt::AlignLeft);
     row++;
 
@@ -129,11 +129,12 @@ ArchiveFolderDialog::ArchiveFolderDialog(QWidget *parent)
     resize(500, minimumSize().height());
 }
 
-bool canRemoveFolder(const Akonadi::Collection &col)
+bool canRemoveFolder(const Akonadi::Collection& col)
 {
     const QSharedPointer<FolderSettings> folder = FolderSettings::forCollection(col, false);
-    return !folder.isNull() && col.isValid() && !col.isVirtual() && (col.rights() & Akonadi::Collection::CanDeleteCollection) && !folder->isStructural()
-        && !folder->isSystemFolder();
+    return !folder.isNull() && col.isValid() && !col.isVirtual() &&
+           (col.rights() & Akonadi::Collection::CanDeleteCollection) && !folder->isStructural() &&
+           !folder->isSystemFolder();
 }
 
 void ArchiveFolderDialog::slotRecursiveCheckboxClicked()
@@ -141,17 +142,17 @@ void ArchiveFolderDialog::slotRecursiveCheckboxClicked()
     slotFolderChanged(mFolderRequester->collection());
 }
 
-void ArchiveFolderDialog::slotFolderChanged(const Akonadi::Collection &folder)
+void ArchiveFolderDialog::slotFolderChanged(const Akonadi::Collection& folder)
 {
     mDeleteCheckBox->setEnabled(allowToDeleteFolders(folder));
 }
 
-bool ArchiveFolderDialog::allowToDeleteFolders(const Akonadi::Collection &folder) const
+bool ArchiveFolderDialog::allowToDeleteFolders(const Akonadi::Collection& folder) const
 {
     return canRemoveFolder(folder) && mRecursiveCheckBox->isChecked();
 }
 
-void ArchiveFolderDialog::setFolder(const Akonadi::Collection &defaultCollection)
+void ArchiveFolderDialog::setFolder(const Akonadi::Collection& defaultCollection)
 {
     mFolderRequester->setCollection(defaultCollection);
     // TODO: what if the file already exists?
@@ -168,7 +169,8 @@ void ArchiveFolderDialog::slotAccepted()
     }
 
     if (!mFolderRequester->hasCollection()) {
-        KMessageBox::information(this, i18n("Please select the folder that should be archived."), i18nc("@title:window", "No folder selected"));
+        KMessageBox::information(this, i18n("Please select the folder that should be archived."),
+                                 i18nc("@title:window", "No folder selected"));
         return;
     }
 
@@ -186,11 +188,12 @@ void ArchiveFolderDialog::slotFixFileExtension()
 {
     const int numExtensions = 4;
     // The extensions here are also sorted, like the enum order of BackupJob::ArchiveType
-    const char *extensions[numExtensions] = {".zip", ".tar", ".tar.bz2", ".tar.gz"};
+    const char* extensions[numExtensions] = {".zip", ".tar", ".tar.bz2", ".tar.gz"};
 
     QString fileName = mUrlRequester->url().path();
     if (fileName.isEmpty()) {
-        fileName = standardArchivePath(mFolderRequester->hasCollection() ? mFolderRequester->collection().name() : QString());
+        fileName =
+            standardArchivePath(mFolderRequester->hasCollection() ? mFolderRequester->collection().name() : QString());
     }
 
     QMimeDatabase db;
@@ -204,7 +207,7 @@ void ArchiveFolderDialog::slotFixFileExtension()
     mUrlRequester->setUrl(QUrl::fromLocalFile(fileName));
 }
 
-void ArchiveFolderDialog::slotUrlChanged(const QString &url)
+void ArchiveFolderDialog::slotUrlChanged(const QString& url)
 {
     mOkButton->setEnabled(!url.isEmpty());
 }

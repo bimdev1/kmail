@@ -8,12 +8,12 @@
 #include <QCommandLineParser>
 #include <QStandardPaths>
 
-#include "sieveimapinterface/kmailsieveimapinstanceinterface.h"
-#include "sieveimapinterface/kmsieveimappasswordprovider.h"
 #include <KSieveCore/MultiImapVacationManager>
 #include <KSieveCore/SieveImapInstanceInterfaceManager>
 #include <KSieveUi/MultiImapVacationDialog>
-int main(int argc, char **argv)
+#include "sieveimapinterface/kmailsieveimapinstanceinterface.h"
+#include "sieveimapinterface/kmsieveimappasswordprovider.h"
+int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QStandardPaths::setTestModeEnabled(true);
@@ -25,7 +25,8 @@ int main(int argc, char **argv)
     parser.process(app);
 
     app.setQuitOnLastWindowClosed(true);
-    KSieveCore::SieveImapInstanceInterfaceManager::self()->setSieveImapInstanceInterface(new KMailSieveImapInstanceInterface);
+    KSieveCore::SieveImapInstanceInterfaceManager::self()->setSieveImapInstanceInterface(
+        new KMailSieveImapInstanceInterface);
     KMSieveImapPasswordProvider provider(nullptr);
     KSieveCore::MultiImapVacationManager manager(&provider);
     KSieveUi::MultiImapVacationDialog dlg(&manager);

@@ -7,15 +7,14 @@
 #pragma once
 
 #include <KMessageWidget>
-namespace KMail
-{
+namespace KMail {
 class IdentityInvalidFolder : public KMessageWidget
 {
     Q_OBJECT
 public:
-    explicit IdentityInvalidFolder(QWidget *parent = nullptr);
+    explicit IdentityInvalidFolder(QWidget* parent = nullptr);
     ~IdentityInvalidFolder() override;
 
-    void setErrorMessage(const QString &msg);
+    void setErrorMessage(const QString& msg);
 };
-}
+} // namespace KMail

@@ -8,13 +8,12 @@
 
 #include <MailCommon/SearchPatternEdit>
 
-namespace KMail
-{
+namespace KMail {
 class KMailSearchPatternEdit : public MailCommon::SearchPatternEdit
 {
     Q_OBJECT
 public:
-    explicit KMailSearchPatternEdit(QWidget *parent = nullptr);
+    explicit KMailSearchPatternEdit(QWidget* parent = nullptr);
     ~KMailSearchPatternEdit() override;
 };
-}
+} // namespace KMail

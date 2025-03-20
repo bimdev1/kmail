@@ -10,15 +10,13 @@
 #pragma once
 #include <KCModule>
 #include <KViewStateMaintainer>
-namespace Akonadi
-{
+namespace Akonadi {
 class ETMViewStateSaver;
 }
 
 class QCheckBox;
 
-namespace PimCommon
-{
+namespace PimCommon {
 class CheckedCollectionWidget;
 }
 
@@ -27,7 +25,7 @@ class KCMKMailSummary : public KCModule
     Q_OBJECT
 
 public:
-    explicit KCMKMailSummary(QObject *parent, const KPluginMetaData &data);
+    explicit KCMKMailSummary(QObject* parent, const KPluginMetaData& data);
 
     void load() override;
     void save() override;
@@ -40,7 +38,7 @@ private:
     void loadFolders();
     void storeFolders();
 
-    PimCommon::CheckedCollectionWidget *const mCheckedCollectionWidget;
-    QCheckBox *const mFullPath;
-    KViewStateMaintainer<Akonadi::ETMViewStateSaver> *mModelState = nullptr;
+    PimCommon::CheckedCollectionWidget* const mCheckedCollectionWidget;
+    QCheckBox* const mFullPath;
+    KViewStateMaintainer<Akonadi::ETMViewStateSaver>* mModelState = nullptr;
 };

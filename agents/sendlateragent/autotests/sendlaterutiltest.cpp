@@ -15,8 +15,7 @@
 #include <QStandardPaths>
 #include <QTest>
 
-SendLaterUtilTest::SendLaterUtilTest(QObject *parent)
-    : QObject(parent)
+SendLaterUtilTest::SendLaterUtilTest(QObject* parent) : QObject(parent)
 {
     QStandardPaths::setTestModeEnabled(true);
 }

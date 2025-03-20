@@ -25,18 +25,18 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 
+#include <cassert>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <cassert>
 
 using namespace KMail;
 
-NewIdentityDialog::NewIdentityDialog(KIdentityManagementCore::IdentityManager *manager, QWidget *parent)
-    : QDialog(parent)
-    , mIdentityManager(manager)
+NewIdentityDialog::NewIdentityDialog(KIdentityManagementCore::IdentityManager* manager, QWidget* parent)
+    : QDialog(parent), mIdentityManager(manager)
 {
     setWindowTitle(i18nc("@title:window", "New Identity"));
-    auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, this);
+    auto buttonBox =
+        new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, this);
     auto mainLayout = new QVBoxLayout(this);
     mOkButton = buttonBox->button(QDialogButtonBox::Ok);
     mOkButton->setDefault(true);
@@ -109,17 +109,19 @@ NewIdentityDialog::NewIdentityDialog(KIdentityManagementCore::IdentityManager *m
 
 void NewIdentityDialog::slotHelp()
 {
-    PimCommon::Util::invokeHelp(QStringLiteral("kmail2/configure-identity.html"), QStringLiteral("configure-identity-newidentitydialog"));
+    PimCommon::Util::invokeHelp(QStringLiteral("kmail2/configure-identity.html"),
+                                QStringLiteral("configure-identity-newidentitydialog"));
 }
 
 NewIdentityDialog::DuplicateMode NewIdentityDialog::duplicateMode() const
 {
     const int id = mButtonGroup->checkedId();
-    assert(id == static_cast<int>(Empty) || id == static_cast<int>(ControlCenter) || id == static_cast<int>(ExistingEntry));
+    assert(id == static_cast<int>(Empty) || id == static_cast<int>(ControlCenter) ||
+           id == static_cast<int>(ExistingEntry));
     return static_cast<DuplicateMode>(id);
 }
 
-void NewIdentityDialog::slotEnableOK(const QString &proposedIdentityName)
+void NewIdentityDialog::slotEnableOK(const QString& proposedIdentityName)
 {
     // OK button is disabled if
     const QString name = proposedIdentityName.trimmed();

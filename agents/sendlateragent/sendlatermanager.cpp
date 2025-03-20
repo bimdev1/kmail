@@ -12,22 +12,20 @@
 #include <MessageComposer/SendLaterInfo>
 #include <MessageComposer/Util>
 
-#include "sendlateragent_debug.h"
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include "sendlateragent_debug.h"
 
+#include <chrono>
 #include <QRegularExpression>
 #include <QStringList>
 #include <QTimer>
-#include <chrono>
 using namespace std::chrono_literals;
 
-SendLaterManager::SendLaterManager(QObject *parent)
-    : QObject(parent)
-    , mConfig(SendLaterUtil::defaultConfig())
-    , mTimer(new QTimer(this))
-    , mSender(new MessageComposer::AkonadiSender)
+SendLaterManager::SendLaterManager(QObject* parent)
+    : QObject(parent), mConfig(SendLaterUtil::defaultConfig()), mTimer(new QTimer(this)),
+      mSender(new MessageComposer::AkonadiSender)
 {
     connect(mTimer, &QTimer::timeout, this, &SendLaterManager::slotCreateJob);
 }
@@ -91,7 +89,7 @@ void SendLaterManager::createSendInfoList()
             mTimer->stop();
         }
     } else {
-        MessageComposer::SendLaterInfo *info = searchInfo(mSendLaterQueue.dequeue());
+        MessageComposer::SendLaterInfo* info = searchInfo(mSendLaterQueue.dequeue());
         if (info) {
             mCurrentInfo = info;
             slotCreateJob();
@@ -108,9 +106,9 @@ void SendLaterManager::stopTimer()
     }
 }
 
-MessageComposer::SendLaterInfo *SendLaterManager::searchInfo(Akonadi::Item::Id id)
+MessageComposer::SendLaterInfo* SendLaterManager::searchInfo(Akonadi::Item::Id id)
 {
-    for (MessageComposer::SendLaterInfo *info : std::as_const(mListSendLaterInfo)) {
+    for (MessageComposer::SendLaterInfo* info : std::as_const(mListSendLaterInfo)) {
         if (info->itemId() == id) {
             return info;
         }
@@ -121,7 +119,7 @@ MessageComposer::SendLaterInfo *SendLaterManager::searchInfo(Akonadi::Item::Id i
 void SendLaterManager::sendNow(Akonadi::Item::Id id)
 {
     if (!mCurrentJob) {
-        MessageComposer::SendLaterInfo *info = searchInfo(id);
+        MessageComposer::SendLaterInfo* info = searchInfo(id);
         if (info) {
             mCurrentInfo = info;
             slotCreateJob();
@@ -165,7 +163,7 @@ void SendLaterManager::removeInfo(Akonadi::Item::Id id)
     group.sync();
 }
 
-void SendLaterManager::sendError(MessageComposer::SendLaterInfo *info, ErrorType type)
+void SendLaterManager::sendError(MessageComposer::SendLaterInfo* info, ErrorType type)
 {
     mCurrentJob = nullptr;
     if (info) {
@@ -189,11 +187,9 @@ void SendLaterManager::sendError(MessageComposer::SendLaterInfo *info, ErrorType
         case TooManyItemFound:
         case CanNotFetchItem:
         case CanNotCreateTransport: {
-            const int answer = KMessageBox::questionTwoActions(nullptr,
-                                                               i18n("An error was found. Do you want to resend it?"),
-                                                               i18nc("@title:window", "Error found"),
-                                                               KGuiItem(i18nc("@action:button", "Resend"), QStringLiteral("mail-send")),
-                                                               KStandardGuiItem::cancel());
+            const int answer = KMessageBox::questionTwoActions(
+                nullptr, i18n("An error was found. Do you want to resend it?"), i18nc("@title:window", "Error found"),
+                KGuiItem(i18nc("@action:button", "Resend"), QStringLiteral("mail-send")), KStandardGuiItem::cancel());
             if (answer == KMessageBox::ButtonCode::SecondaryAction) {
                 removeLaterInfo(info);
             }
@@ -211,7 +207,7 @@ void SendLaterManager::recreateSendList()
     QTimer::singleShot(0, this, &SendLaterManager::createSendInfoList);
 }
 
-void SendLaterManager::sendDone(MessageComposer::SendLaterInfo *info)
+void SendLaterManager::sendDone(MessageComposer::SendLaterInfo* info)
 {
     if (info) {
         if (info->isRecurrence()) {
@@ -224,7 +220,7 @@ void SendLaterManager::sendDone(MessageComposer::SendLaterInfo *info)
     recreateSendList();
 }
 
-void SendLaterManager::removeLaterInfo(MessageComposer::SendLaterInfo *info)
+void SendLaterManager::removeLaterInfo(MessageComposer::SendLaterInfo* info)
 {
     mListSendLaterInfo.removeAll(mCurrentInfo);
     mCurrentInfo = nullptr;
@@ -237,7 +233,7 @@ QString SendLaterManager::printDebugInfo() const
     if (mListSendLaterInfo.isEmpty()) {
         infoStr = QStringLiteral("No mail");
     } else {
-        for (MessageComposer::SendLaterInfo *info : std::as_const(mListSendLaterInfo)) {
+        for (MessageComposer::SendLaterInfo* info : std::as_const(mListSendLaterInfo)) {
             if (!infoStr.isEmpty()) {
                 infoStr += QLatin1Char('\n');
             }
@@ -247,9 +243,10 @@ QString SendLaterManager::printDebugInfo() const
     return infoStr;
 }
 
-QString SendLaterManager::infoToStr(MessageComposer::SendLaterInfo *info) const
+QString SendLaterManager::infoToStr(MessageComposer::SendLaterInfo* info) const
 {
-    QString infoStr = QLatin1StringView("Recursive ") + (info->isRecurrence() ? QStringLiteral("true") : QStringLiteral("false"));
+    QString infoStr =
+        QLatin1StringView("Recursive ") + (info->isRecurrence() ? QStringLiteral("true") : QStringLiteral("false"));
     infoStr += QLatin1StringView("Item id :") + QString::number(info->itemId());
     infoStr += QLatin1StringView("Send date:") + info->dateTime().toString();
     infoStr += QLatin1StringView("Last saved date: ") + info->lastDateTimeSend().toString();
@@ -258,7 +255,7 @@ QString SendLaterManager::infoToStr(MessageComposer::SendLaterInfo *info) const
     return infoStr;
 }
 
-MessageComposer::AkonadiSender *SendLaterManager::sender() const
+MessageComposer::AkonadiSender* SendLaterManager::sender() const
 {
     return mSender;
 }

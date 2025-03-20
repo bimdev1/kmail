@@ -26,21 +26,24 @@ using namespace Qt::Literals::StringLiterals;
 // explained here: https://quimby.gnus.org/circus/face/
 #define FACE_MAX_SIZE 725
 
-XFaceConfigurator::XFaceConfigurator(QWidget *parent)
-    : QWidget(parent)
-    , mUi(new Ui::XFaceConfigurator)
-    , mPngquantProc(new QProcess(this))
+XFaceConfigurator::XFaceConfigurator(QWidget* parent)
+    : QWidget(parent), mUi(new Ui::XFaceConfigurator), mPngquantProc(new QProcess(this))
 {
     mUi->setupUi(this);
 
     mPngquantProc->setInputChannelMode(QProcess::ManagedInputChannel);
     mPngquantProc->setProgram(QStringLiteral("pngquant"));
-    mPngquantProc->setArguments(QStringList() << QStringLiteral("--strip") << QStringLiteral("7") << QStringLiteral("-"));
+    mPngquantProc->setArguments(QStringList()
+                                << QStringLiteral("--strip") << QStringLiteral("7") << QStringLiteral("-"));
 
     mUi->faceConfig->setTitle(i18n("Face"));
     mUi->xFaceConfig->setTitle(i18n("X-Face"));
-    mUi->faceConfig->setInfo(i18n("More information under <a href=\"https://quimby.gnus.org/circus/face/\">https://quimby.gnus.org/circus/face/</a>."));
-    mUi->xFaceConfig->setInfo(i18n("Examples are available at <a href=\"https://ace.home.xs4all.nl/X-Faces/\">https://ace.home.xs4all.nl/X-Faces/</a>."));
+    mUi->faceConfig->setInfo(
+        i18n("More information under <a "
+             "href=\"https://quimby.gnus.org/circus/face/\">https://quimby.gnus.org/circus/face/</a>."));
+    mUi->xFaceConfig->setInfo(
+        i18n("Examples are available at <a "
+             "href=\"https://ace.home.xs4all.nl/X-Faces/\">https://ace.home.xs4all.nl/X-Faces/</a>."));
 
     connect(mUi->enableComboBox, &QComboBox::currentIndexChanged, this, &XFaceConfigurator::modeChanged);
     connect(mUi->faceConfig, &EncodedImagePicker::imageSelected, this, &XFaceConfigurator::compressFace);
@@ -96,7 +99,7 @@ QString XFaceConfigurator::xface() const
     return str;
 }
 
-void XFaceConfigurator::setXFace(const QString &text)
+void XFaceConfigurator::setXFace(const QString& text)
 {
     mUi->xFaceConfig->setSource(text);
 }
@@ -110,7 +113,7 @@ QString XFaceConfigurator::face() const
     return str;
 }
 
-void XFaceConfigurator::setFace(const QString &text)
+void XFaceConfigurator::setFace(const QString& text)
 {
     mUi->faceConfig->setSource(text);
 }
@@ -158,20 +161,21 @@ void XFaceConfigurator::updateXFace()
     }
 }
 
-void XFaceConfigurator::compressFace(const QImage &image)
+void XFaceConfigurator::compressFace(const QImage& image)
 {
     if (!pngquant(image)) {
         crunch(image);
     }
 }
 
-void XFaceConfigurator::compressFaceDone(const QByteArray &data, bool fromPngquant)
+void XFaceConfigurator::compressFaceDone(const QByteArray& data, bool fromPngquant)
 {
     if (data.isNull()) {
         if (fromPngquant) {
             KMessageBox::error(this, i18n("Failed to reduce image size to fit in header."));
         } else {
-            KMessageBox::error(this, i18n("Failed to reduce image size to fit in header. Install pngquant to obtain better compression results."));
+            KMessageBox::error(this, i18n("Failed to reduce image size to fit in header. Install pngquant to obtain "
+                                          "better compression results."));
         }
         return;
     }
@@ -183,7 +187,7 @@ void XFaceConfigurator::compressFaceDone(const QByteArray &data, bool fromPngqua
     }
 }
 
-void XFaceConfigurator::compressXFace(const QImage &image)
+void XFaceConfigurator::compressXFace(const QImage& image)
 {
     KXFace xf;
     const QString xFaceString = xf.fromImage(image);
@@ -192,7 +196,7 @@ void XFaceConfigurator::compressXFace(const QImage &image)
 
 // The builtin image compressor. It's pretty bad and pngquant is preferred when
 // available.
-void XFaceConfigurator::crunch(const QImage &image)
+void XFaceConfigurator::crunch(const QImage& image)
 {
     QImage output;
     QByteArray ba;
@@ -200,12 +204,8 @@ void XFaceConfigurator::crunch(const QImage &image)
     int maxCrunchLevel = 6 * 5; // 6 formats, 5 sizes
 
     const QImage::Format formats[6] = {
-        QImage::Format_RGB32,
-        QImage::Format_RGB888,
-        QImage::Format_RGB16,
-        QImage::Format_RGB666,
-        QImage::Format_RGB555,
-        QImage::Format_RGB444,
+        QImage::Format_RGB32,  QImage::Format_RGB888, QImage::Format_RGB16,
+        QImage::Format_RGB666, QImage::Format_RGB555, QImage::Format_RGB444,
     };
 
     int sizes[5] = {48, 24, 12, 6, 3};
@@ -239,7 +239,7 @@ void XFaceConfigurator::crunch(const QImage &image)
     }
 }
 
-bool XFaceConfigurator::pngquant(const QImage &image)
+bool XFaceConfigurator::pngquant(const QImage& image)
 {
     const QImage small = image.scaled(48, 48);
 

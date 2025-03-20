@@ -6,10 +6,10 @@
 */
 
 #include "filterlogdialog.h"
-#include "mailfilterpurposemenuwidget.h"
 #include <MailCommon/FilterLog>
 #include <PimCommon/PurposeMenuMessageWidget>
 #include <TextCustomEditor/PlainTextEditorWidget>
+#include "mailfilterpurposemenuwidget.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -30,17 +30,15 @@
 #include <KConfigGroup>
 #include <KGuiItem>
 #include <KSharedConfig>
+#include <cerrno>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <cerrno>
 
 using namespace MailCommon;
 
-FilterLogDialog::FilterLogDialog(QWidget *parent)
-    : QDialog(parent)
-    , mUser1Button(new QPushButton(this))
-    , mUser2Button(new QPushButton(this))
+FilterLogDialog::FilterLogDialog(QWidget* parent)
+    : QDialog(parent), mUser1Button(new QPushButton(this)), mUser2Button(new QPushButton(this))
 {
     setWindowTitle(i18nc("@title:window", "Filter Log Viewer"));
     auto mainLayout = new QVBoxLayout(this);
@@ -74,8 +72,10 @@ FilterLogDialog::FilterLogDialog(QWidget *parent)
     mTextEdit->editor()->appendHtml(log);
 
     auto purposeMenu = new MailfilterPurposeMenuWidget(this, this);
-    connect(purposeMenu, &MailfilterPurposeMenuWidget::shareError, purposeMenuMessageWidget, &PimCommon::PurposeMenuMessageWidget::slotShareError);
-    connect(purposeMenu, &MailfilterPurposeMenuWidget::shareSuccess, purposeMenuMessageWidget, &PimCommon::PurposeMenuMessageWidget::slotShareSuccess);
+    connect(purposeMenu, &MailfilterPurposeMenuWidget::shareError, purposeMenuMessageWidget,
+            &PimCommon::PurposeMenuMessageWidget::slotShareError);
+    connect(purposeMenu, &MailfilterPurposeMenuWidget::shareSuccess, purposeMenuMessageWidget,
+            &PimCommon::PurposeMenuMessageWidget::slotShareSuccess);
     auto mShareButton = new QPushButton(i18nc("@action:button", "Share…"), this);
     mShareButton->setMenu(purposeMenu->menu());
     mShareButton->setIcon(QIcon::fromTheme(QStringLiteral("document-share")));
@@ -86,10 +86,9 @@ FilterLogDialog::FilterLogDialog(QWidget *parent)
     pageVBoxLayout->addWidget(mLogActiveBox);
     mLogActiveBox->setChecked(FilterLog::instance()->isLogging());
     connect(mLogActiveBox, &QCheckBox::clicked, this, &FilterLogDialog::slotSwitchLogState);
-    mLogActiveBox->setWhatsThis(
-        i18n("You can turn logging of filter activities on and off here. "
-             "Of course, log data is collected and shown only when logging "
-             "is turned on. "));
+    mLogActiveBox->setWhatsThis(i18n("You can turn logging of filter activities on and off here. "
+                                     "Of course, log data is collected and shown only when logging "
+                                     "is turned on. "));
 
     mLogDetailsBox = new QGroupBox(i18n("Logging Details"), page);
     pageVBoxLayout->addWidget(mLogDetailsBox);
@@ -107,13 +106,12 @@ FilterLogDialog::FilterLogDialog(QWidget *parent)
     layout->addWidget(mLogRuleEvaluationBox);
     mLogRuleEvaluationBox->setChecked(FilterLog::instance()->isContentTypeEnabled(FilterLog::RuleResult));
     connect(mLogRuleEvaluationBox, &QCheckBox::clicked, this, &FilterLogDialog::slotChangeLogDetail);
-    mLogRuleEvaluationBox->setWhatsThis(
-        i18n("You can control the feedback in the log concerning the "
-             "evaluation of the filter rules of applied filters: "
-             "having this option checked will give detailed feedback "
-             "for each single filter rule; alternatively, only "
-             "feedback about the result of the evaluation of all rules "
-             "of a single filter will be given."));
+    mLogRuleEvaluationBox->setWhatsThis(i18n("You can control the feedback in the log concerning the "
+                                             "evaluation of the filter rules of applied filters: "
+                                             "having this option checked will give detailed feedback "
+                                             "for each single filter rule; alternatively, only "
+                                             "feedback about the result of the evaluation of all rules "
+                                             "of a single filter will be given."));
 
     mLogPatternResultBox = new QCheckBox(i18nc("@option:check", "Log filter pattern evaluation"), mLogDetailsBox);
     layout->addWidget(mLogPatternResultBox);
@@ -139,14 +137,14 @@ FilterLogDialog::FilterLogDialog(QWidget *parent)
     // value in the QSpinBox is in KB while it's in Byte in the FilterLog
     mLogMemLimitSpin->setValue(FilterLog::instance()->maxLogSize() / 1024);
     mLogMemLimitSpin->setSuffix(i18n(" KB"));
-    mLogMemLimitSpin->setSpecialValueText(i18nc("@label:spinbox Set the size of the logfile to unlimited.", "unlimited"));
+    mLogMemLimitSpin->setSpecialValueText(
+        i18nc("@label:spinbox Set the size of the logfile to unlimited.", "unlimited"));
     connect(mLogMemLimitSpin, &QSpinBox::valueChanged, this, &FilterLogDialog::slotChangeLogMemLimit);
-    mLogMemLimitSpin->setWhatsThis(
-        i18n("Collecting log data uses memory to temporarily store the "
-             "log data; here you can limit the maximum amount of memory "
-             "to be used: if the size of the collected log data exceeds "
-             "this limit then the oldest data will be discarded until "
-             "the limit is no longer exceeded. "));
+    mLogMemLimitSpin->setWhatsThis(i18n("Collecting log data uses memory to temporarily store the "
+                                        "log data; here you can limit the maximum amount of memory "
+                                        "to be used: if the size of the collected log data exceeds "
+                                        "this limit then the oldest data will be discarded until "
+                                        "the limit is no longer exceeded. "));
 
     connect(mLogActiveBox, &QCheckBox::toggled, mLogMemLimitSpin, &QSpinBox::setEnabled);
     mLogMemLimitSpin->setEnabled(mLogActiveBox->isChecked());
@@ -159,7 +157,8 @@ FilterLogDialog::FilterLogDialog(QWidget *parent)
 
     connect(mUser1Button, &QPushButton::clicked, this, &FilterLogDialog::slotUser1);
     connect(mUser2Button, &QPushButton::clicked, this, &FilterLogDialog::slotUser2);
-    connect(mTextEdit->editor(), &TextCustomEditor::PlainTextEditor::textChanged, this, &FilterLogDialog::slotTextChanged);
+    connect(mTextEdit->editor(), &TextCustomEditor::PlainTextEditor::textChanged, this,
+            &FilterLogDialog::slotTextChanged);
 
     slotTextChanged();
     readConfig();
@@ -214,7 +213,8 @@ void FilterLogDialog::readConfig()
 
 FilterLogDialog::~FilterLogDialog()
 {
-    disconnect(mTextEdit->editor(), &TextCustomEditor::PlainTextEditor::textChanged, this, &FilterLogDialog::slotTextChanged);
+    disconnect(mTextEdit->editor(), &TextCustomEditor::PlainTextEditor::textChanged, this,
+               &FilterLogDialog::slotTextChanged);
     KConfigGroup myGroup(KSharedConfig::openConfig(), QStringLiteral("Geometry"));
     myGroup.writeEntry("filterLogSize", size());
     myGroup.sync();
@@ -229,7 +229,8 @@ void FilterLogDialog::writeConfig()
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     KConfigGroup group(config, QStringLiteral("FilterLog"));
     group.writeEntry("Enabled", FilterLog::instance()->isLogging());
-    group.writeEntry("LogPatternDescription", FilterLog::instance()->isContentTypeEnabled(FilterLog::PatternDescription));
+    group.writeEntry("LogPatternDescription",
+                     FilterLog::instance()->isContentTypeEnabled(FilterLog::PatternDescription));
     group.writeEntry("LogRuleResult", FilterLog::instance()->isContentTypeEnabled(FilterLog::RuleResult));
     group.writeEntry("LogPatternResult", FilterLog::instance()->isContentTypeEnabled(FilterLog::PatternResult));
     group.writeEntry("LogAppliedAction", FilterLog::instance()->isContentTypeEnabled(FilterLog::AppliedAction));
@@ -237,7 +238,7 @@ void FilterLogDialog::writeConfig()
     group.sync();
 }
 
-void FilterLogDialog::slotLogEntryAdded(const QString &logEntry)
+void FilterLogDialog::slotLogEntryAdded(const QString& logEntry)
 {
     mTextEdit->editor()->appendHtml(logEntry);
 }
@@ -298,7 +299,7 @@ void FilterLogDialog::slotSwitchLogState()
 void FilterLogDialog::slotChangeLogMemLimit(int value)
 {
     mTextEdit->editor()->document()->setMaximumBlockCount(0); // Reset value
-    if (value == 1) { // unilimited
+    if (value == 1) {                                         // unilimited
         FilterLog::instance()->setMaxLogSize(-1);
     } else {
         FilterLog::instance()->setMaxLogSize(value * 1024);
@@ -325,27 +326,23 @@ void FilterLogDialog::slotUser2()
             KMessageBox::error(this,
                                i18n("Could not write the file %1:\n"
                                     "\"%2\" is the detailed error description.",
-                                    fileName.at(0),
-                                    QString::fromLocal8Bit(strerror(errno))),
+                                    fileName.at(0), QString::fromLocal8Bit(strerror(errno))),
                                i18nc("@title:window", "KMail Error"));
         }
     }
     delete fdlg;
 }
 
-FilterLogTextEdit::FilterLogTextEdit(QWidget *parent)
-    : TextCustomEditor::PlainTextEditor(parent)
-{
-}
+FilterLogTextEdit::FilterLogTextEdit(QWidget* parent) : TextCustomEditor::PlainTextEditor(parent) {}
 
-void FilterLogTextEdit::addExtraMenuEntry(QMenu *menu, QPoint pos)
+void FilterLogTextEdit::addExtraMenuEntry(QMenu* menu, QPoint pos)
 {
     Q_UNUSED(pos)
     if (!document()->isEmpty()) {
         auto sep = new QAction(menu);
         sep->setSeparator(true);
         menu->addAction(sep);
-        QAction *clearAllAction = KStandardActions::clear(this, &FilterLogTextEdit::clear, menu);
+        QAction* clearAllAction = KStandardActions::clear(this, &FilterLogTextEdit::clear, menu);
         menu->addAction(clearAllAction);
     }
 }

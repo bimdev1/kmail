@@ -1,0 +1,1 @@
+#cmakedefine KDEPIM_ENTERPRISE_BUILD 

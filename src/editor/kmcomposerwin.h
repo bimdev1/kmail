@@ -13,9 +13,9 @@
 #pragma once
 
 // KMail includes
+#include <MessageComposer/PluginEditorConvertTextInterface>
 #include "editor/composer.h"
 #include "editor/encryptionstate.h"
-#include <MessageComposer/PluginEditorConvertTextInterface>
 // Qt includes
 #include <QFont>
 #include <QList>
@@ -64,55 +64,46 @@ class KHamburgerMenu;
 class TooManyRecipientsWarning;
 class SubjectLineEditWithAutoCorrection;
 class QVBoxLayout;
-namespace MailTransport
-{
+namespace MailTransport {
 class Transport;
 }
 
-namespace KIdentityManagementCore
-{
+namespace KIdentityManagementCore {
 class Identity;
 }
 
-namespace Kleo
-{
+namespace Kleo {
 class KeyCache;
 }
 
-namespace TextCustomEditor
-{
+namespace TextCustomEditor {
 class RichTextEditorWidget;
 }
 
-namespace KIO
-{
+namespace KIO {
 class Job;
 }
 
-namespace MessageComposer
-{
+namespace MessageComposer {
 class ComposerLineEdit;
 class ComposerJob;
 class StatusBarLabelToggledState;
 class RecipientLineNG;
-}
+} // namespace MessageComposer
 
-namespace MailCommon
-{
+namespace MailCommon {
 class FolderRequester;
 class SnippetTreeView;
 struct SnippetInfo;
-}
+} // namespace MailCommon
 
-namespace PimCommon
-{
+namespace PimCommon {
 class CustomToolsWidgetNg;
 class LineEditWithAutoCorrection;
 class PurposeMenuMessageWidget;
-}
+} // namespace PimCommon
 
-namespace GpgME
-{
+namespace GpgME {
 class Key;
 }
 
@@ -125,13 +116,9 @@ class KMComposerWin : public KMail::Composer
     friend class ::KMComposerEditor;
 
 private: // mailserviceimpl, kmkernel, kmcommands, callback, kmmainwidget
-    explicit KMComposerWin(const KMime::Message::Ptr &msg,
-                           bool lastSignState,
-                           bool lastEncryptState,
-                           TemplateContext context = TemplateContext::NoTemplate,
-                           uint identity = 0,
-                           const QString &textSelection = QString(),
-                           const QString &customTemplate = QString());
+    explicit KMComposerWin(const KMime::Message::Ptr& msg, bool lastSignState, bool lastEncryptState,
+                           TemplateContext context = TemplateContext::NoTemplate, uint identity = 0,
+                           const QString& textSelection = QString(), const QString& customTemplate = QString());
     ~KMComposerWin() override;
 
 public:
@@ -141,16 +128,12 @@ public:
     };
     Q_ENUM(ModeType)
 
-    static Composer *create(const KMime::Message::Ptr &msg,
-                            bool lastSignState,
-                            bool lastEncryptState,
-                            TemplateContext context = TemplateContext::NoTemplate,
-                            uint identity = 0,
-                            const QString &textSelection = QString(),
-                            const QString &customTemplate = QString());
+    static Composer* create(const KMime::Message::Ptr& msg, bool lastSignState, bool lastEncryptState,
+                            TemplateContext context = TemplateContext::NoTemplate, uint identity = 0,
+                            const QString& textSelection = QString(), const QString& customTemplate = QString());
 
     [[nodiscard]] QString dbusObjectPath() const override;
-    [[nodiscard]] QString smartQuote(const QString &msg);
+    [[nodiscard]] QString smartQuote(const QString& msg);
 
     /**
      * Start of D-Bus callable stuff. The D-Bus methods need to be public slots,
@@ -163,30 +146,23 @@ public Q_SLOTS:
      * End of D-Bus callable stuff
      */
 
-    void addAttachmentsAndSend(const QList<QUrl> &urls, const QString &comment, int how) override;
+    void addAttachmentsAndSend(const QList<QUrl>& urls, const QString& comment, int how) override;
 
-    void addAttachment(const QList<KMail::Composer::AttachmentInfo> &infos, bool showWarning) override;
+    void addAttachment(const QList<KMail::Composer::AttachmentInfo>& infos, bool showWarning) override;
 
-    void addAttachment(const QString &name,
-                       KMime::Headers::contentEncoding cte,
-                       const QString &charset,
-                       const QByteArray &data,
-                       const QByteArray &mimeType) override;
+    void addAttachment(const QString& name, KMime::Headers::contentEncoding cte, const QString& charset,
+                       const QByteArray& data, const QByteArray& mimeType) override;
 
 Q_SIGNALS:
-    void identityChanged(const KIdentityManagementCore::Identity &identity);
+    void identityChanged(const KIdentityManagementCore::Identity& identity);
 
 public: // kmkernel, kmcommands, callback
     /**
      * Set the message the composer shall work with. This discards
      * previous messages without calling applyChanges() on them before.
      */
-    void setMessage(const KMime::Message::Ptr &newMsg,
-                    bool lastSignState = false,
-                    bool lastEncryptState = false,
-                    bool mayAutoSign = true,
-                    bool allowDecryption = false,
-                    bool isModified = false) override;
+    void setMessage(const KMime::Message::Ptr& newMsg, bool lastSignState = false, bool lastEncryptState = false,
+                    bool mayAutoSign = true, bool allowDecryption = false, bool isModified = false) override;
 
     void setCurrentTransport(int transportId) override;
 
@@ -195,7 +171,7 @@ public: // kmkernel, kmcommands, callback
      * Else show an error message and use the default sent-mail folder as
      * sent-mail folder.
      */
-    void setFcc(const QString &idString) override;
+    void setFcc(const QString& idString) override;
 
     /**
      * Disables word wrap completely. No wrapping at all will occur, not even
@@ -226,7 +202,7 @@ public: // kmkernel, kmcommands, callback
      * If this folder is set, the original message is inserted back after
      * canceling
      */
-    void setFolder(const Akonadi::Collection &aFolder) override;
+    void setFolder(const Akonadi::Collection& aFolder) override;
     /**
      * Sets the focus to the edit-widget.
      */
@@ -238,14 +214,15 @@ public: // kmkernel, kmcommands, callback
      */
     void setFocusToSubject() override;
 
-    bool insertFromMimeData(const QMimeData *source, bool forceAttachment = false);
+    bool insertFromMimeData(const QMimeData* source, bool forceAttachment = false);
 
-    void setCollectionForNewMessage(const Akonadi::Collection &folder) override;
+    void setCollectionForNewMessage(const Akonadi::Collection& folder) override;
 
-    void addExtraCustomHeaders(const QMap<QByteArray, QString> &header) override;
+    void addExtraCustomHeaders(const QMap<QByteArray, QString>& header) override;
 
-    [[nodiscard]] MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus convertPlainText(MessageComposer::TextPart *textPart);
-    [[nodiscard]] bool processModifyText(QKeyEvent *event);
+    [[nodiscard]] MessageComposer::PluginEditorConvertTextInterface::ConvertTextStatus
+    convertPlainText(MessageComposer::TextPart* textPart);
+    [[nodiscard]] bool processModifyText(QKeyEvent* event);
 
 private:
     /**
@@ -276,7 +253,7 @@ public Q_SLOTS: // kmkernel, callback
      * Set whether the message should be treated as modified or not.
      */
     void setModified(bool modified) override;
-    void slotFetchJob(KJob *);
+    void slotFetchJob(KJob*);
 
 private Q_SLOTS:
     /**
@@ -296,12 +273,12 @@ private Q_SLOTS:
     void slotPrint();
     void slotPrintPreview();
 
-    void slotInsertRecentFile(const QUrl &);
+    void slotInsertRecentFile(const QUrl&);
     void slotRecentListFileClear();
 
-    void slotSendNowVia(MailTransport::Transport *transport);
+    void slotSendNowVia(MailTransport::Transport* transport);
     void slotSendLater();
-    void slotSendLaterVia(MailTransport::Transport *transport);
+    void slotSendLaterVia(MailTransport::Transport* transport);
 
     /**
      * Returns true when saving was successful.
@@ -310,9 +287,9 @@ private Q_SLOTS:
     void slotSaveTemplate();
     void slotNewComposer();
     void slotPasteAsAttachment();
-    void slotFolderRemoved(const Akonadi::Collection &);
-    void slotDictionaryLanguageChanged(const QString &language);
-    void slotFccFolderChanged(const Akonadi::Collection &);
+    void slotFolderRemoved(const Akonadi::Collection&);
+    void slotDictionaryLanguageChanged(const QString& language);
+    void slotFccFolderChanged(const Akonadi::Collection&);
     void slotEditorTextChanged();
     void slotOverwriteModeChanged();
     /**
@@ -370,20 +347,20 @@ private Q_SLOTS:
 
     void slotCursorPositionChanged();
 
-    void slotSpellCheckingStatus(const QString &status);
+    void slotSpellCheckingStatus(const QString& status);
 
-    void slotDelayedApplyTemplate(KJob *);
+    void slotDelayedApplyTemplate(KJob*);
 
     void recipientEditorSizeHintChanged();
     void setMaximumHeaderSize();
-    void slotDoDelayedSend(KJob *);
+    void slotDoDelayedSend(KJob*);
 
     void slotCompletionModeChanged(KCompletion::CompletionMode);
     void slotConfigChanged();
 
-    void slotPrintComposeResult(KJob *job);
+    void slotPrintComposeResult(KJob* job);
 
-    void slotSendFailed(const QString &msg, MessageComposer::ComposerViewBase::FailedType type);
+    void slotSendFailed(const QString& msg, MessageComposer::ComposerViewBase::FailedType type);
     void slotSendSuccessful(Akonadi::Item::Id id);
 
     /**
@@ -393,8 +370,8 @@ private Q_SLOTS:
 
     void showAndActivateComposer() override;
 
-    void setAutoSaveFileName(const QString &fileName) override;
-    void slotSpellCheckingLanguage(const QString &language);
+    void setAutoSaveFileName(const QString& fileName) override;
+    void slotSpellCheckingLanguage(const QString& language);
     void forceAutoSaveMessage();
     void slotSaveAsFile();
 
@@ -406,33 +383,34 @@ private Q_SLOTS:
     void slotExternalEditorStarted();
     void slotExternalEditorClosed();
 
-    void slotInsertShortUrl(const QString &url);
+    void slotInsertShortUrl(const QString& url);
 
     void slotTransportChanged();
     void slotFollowUpMail(bool toggled);
     void slotSendNowByShortcut();
     void slotSnippetWidgetVisibilityChanged(bool b);
     void slotOverwriteModeWasChanged(bool state);
-    void slotExpandGroupResult(KJob *job);
+    void slotExpandGroupResult(KJob* job);
     void slotCheckSendNowStep2();
-    void slotPotentialPhishingEmailsFound(const QStringList &list);
-    void slotInsertTextFile(KJob *job);
+    void slotPotentialPhishingEmailsFound(const QStringList& list);
+    void slotInsertTextFile(KJob* job);
 
-    void slotRecipientEditorLineAdded(KPIM::MultiplyingLine *line);
+    void slotRecipientEditorLineAdded(KPIM::MultiplyingLine* line);
     void slotRecipientEditorFocusChanged();
-    void slotRecipientAdded(MessageComposer::RecipientLineNG *line);
-    void slotRecipientLineIconClicked(MessageComposer::RecipientLineNG *line);
-    void slotRecipientFocusLost(MessageComposer::RecipientLineNG *line);
+    void slotRecipientAdded(MessageComposer::RecipientLineNG* line);
+    void slotRecipientLineIconClicked(MessageComposer::RecipientLineNG* line);
+    void slotRecipientFocusLost(MessageComposer::RecipientLineNG* line);
 
     void slotDelayedCheckSendNow();
-    void slotUpdateComposer(const KIdentityManagementCore::Identity &ident, const KMime::Message::Ptr &msg, uint uoid, uint uoldId, bool wasModified);
+    void slotUpdateComposer(const KIdentityManagementCore::Identity& ident, const KMime::Message::Ptr& msg, uint uoid,
+                            uint uoldId, bool wasModified);
 
     void slotEncryptionButtonIconUpdate();
 
 public: // kmcommand
-    void addAttach(KMime::Content *msgPart) override;
+    void addAttach(KMime::Content* msgPart) override;
 
-    const KIdentityManagementCore::Identity &identity() const;
+    const KIdentityManagementCore::Identity& identity() const;
     [[nodiscard]] bool pgpAutoSign() const;
     [[nodiscard]] bool pgpAutoEncrypt() const;
 
@@ -440,14 +418,14 @@ public: // kmcommand
     void disableForgottenAttachmentsCheck() override;
 
     [[nodiscard]] uint currentIdentity() const;
-    QList<KToggleAction *> customToolsList() const;
-    QList<QAction *> pluginToolsActionListForPopupMenu() const;
+    QList<KToggleAction*> customToolsList() const;
+    QList<QAction*> pluginToolsActionListForPopupMenu() const;
 
     [[nodiscard]] ModeType modeType() const;
     void setModeType(KMComposerWin::ModeType modeType);
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
     void enableDisablePluginActions(bool richText);
@@ -467,7 +445,7 @@ private:
 
     void updateSignature(uint uoid, uint uOldId);
     [[nodiscard]] Kleo::CryptoMessageFormat cryptoMessageFormat() const;
-    void printComposeResult(KJob *job, bool preview);
+    void printComposeResult(KJob* job, bool preview);
     void printComposer(bool preview);
     /**
      * Install grid management and header fields. If fields exist that
@@ -479,17 +457,17 @@ private:
     /**
       Connect signals for moving focus by arrow keys. Returns next edit.
     */
-    QWidget *connectFocusMoving(QWidget *prev, QWidget *next);
+    QWidget* connectFocusMoving(QWidget* prev, QWidget* next);
 
     /**
      * Show or hide header lines
      */
-    void rethinkHeaderLine(int value, int mask, int &row, QLabel *lbl, QWidget *cbx);
+    void rethinkHeaderLine(int value, int mask, int& row, QLabel* lbl, QWidget* cbx);
 
     /**
      * Apply template to new or unmodified message.
      */
-    void applyTemplate(uint uoid, uint uOldId, const KIdentityManagementCore::Identity &ident, bool wasModified);
+    void applyTemplate(uint uoid, uint uOldId, const KIdentityManagementCore::Identity& ident, bool wasModified);
 
     /**
      * Set the quote prefix according to identity.
@@ -506,7 +484,7 @@ private:
      * Initialization methods
      */
     void setupActions();
-    void setupStatusBar(QWidget *w);
+    void setupStatusBar(QWidget* w);
     void setupEditor();
 
     /**
@@ -534,10 +512,11 @@ private:
                 MessageComposer::MessageSender::SaveIn saveIn = MessageComposer::MessageSender::SaveInNone,
                 bool willSendItWithoutReediting = false);
 
-    void doDelayedSend(MessageComposer::MessageSender::SendMethod method, MessageComposer::MessageSender::SaveIn saveIn);
+    void doDelayedSend(MessageComposer::MessageSender::SendMethod method,
+                       MessageComposer::MessageSender::SaveIn saveIn);
 
     void changeCryptoAction();
-    void applyComposerSetting(MessageComposer::ComposerViewBase *mComposerBase);
+    void applyComposerSetting(MessageComposer::ComposerViewBase* mComposerBase);
     /**
      * Creates a simple composer that creates a KMime::Message out of the composer content.
      * Crypto handling is not done, therefore the name "simple".
@@ -545,7 +524,7 @@ private:
      *
      * The caller takes ownership of the composer.
      */
-    [[nodiscard]] MessageComposer::ComposerJob *createSimpleComposer();
+    [[nodiscard]] MessageComposer::ComposerJob* createSimpleComposer();
 
     [[nodiscard]] bool canSignEncryptAttachments() const;
 
@@ -565,23 +544,24 @@ private:
     void slotFccIsInvalid();
     void slotIdentityDeleted(uint uoid);
     void slotInvalidIdentity();
-    void slotTransportRemoved(int id, const QString &name);
+    void slotTransportRemoved(int id, const QString& name);
 
-    void updateComposerAfterIdentityChanged(const KIdentityManagementCore::Identity &ident, uint uoid, bool wasModified);
-    void checkOwnKeyExpiry(const KIdentityManagementCore::Identity &ident);
+    void updateComposerAfterIdentityChanged(const KIdentityManagementCore::Identity& ident, uint uoid,
+                                            bool wasModified);
+    void checkOwnKeyExpiry(const KIdentityManagementCore::Identity& ident);
 
-    void insertUrls(const QMimeData *source, const QList<QUrl> &urlList);
+    void insertUrls(const QMimeData* source, const QList<QUrl>& urlList);
     void initializePluginActions();
-    bool showErrorMessage(KJob *job);
+    bool showErrorMessage(KJob* job);
     [[nodiscard]] int validateLineWrapWidth() const;
     void slotSelectionChanged();
-    void slotMessage(const QString &str);
-    void slotEditorPluginInsertText(const QString &str);
-    void insertSnippetInfo(const MailCommon::SnippetInfo &info);
+    void slotMessage(const QString& str);
+    void slotEditorPluginInsertText(const QString& str);
+    void insertSnippetInfo(const MailCommon::SnippetInfo& info);
     [[nodiscard]] bool sendLaterRegistered() const;
     void slotRecipientEditorLineFocused();
     void updateHamburgerMenu();
-    void addFaceHeaders(const KIdentityManagementCore::Identity &ident, const KMime::Message::Ptr &msg);
+    void addFaceHeaders(const KIdentityManagementCore::Identity& ident, const KMime::Message::Ptr& msg);
     void slotTooManyRecipients(bool b);
     void createAttachmentFromExternalMissing();
     void createTooMyRecipientWarning();
@@ -591,29 +571,30 @@ private:
 
     std::unique_ptr<Kleo::KeyResolverCore> fillKeyResolver();
     void runKeyResolver();
-    void annotateRecipientEditorLineWithCryptoInfo(MessageComposer::RecipientLineNG *line, bool autocryptKey, bool gossipKey);
+    void annotateRecipientEditorLineWithCryptoInfo(MessageComposer::RecipientLineNG* line, bool autocryptKey,
+                                                   bool gossipKey);
 
     Akonadi::Collection mCollectionForNewMessage;
     QMap<QByteArray, QString> mExtraHeaders;
 
     EncryptionState mEncryptionState;
 
-    QWidget *mMainWidget = nullptr;
-    MessageComposer::ComposerLineEdit *mEdtFrom = nullptr;
-    SubjectLineEditWithAutoCorrection *mEdtSubject = nullptr;
-    QLabel *mLblIdentity = nullptr;
-    QLabel *mLblTransport = nullptr;
-    QLabel *mLblFcc = nullptr;
-    QLabel *mLblFrom = nullptr;
-    QLabel *mLblSubject = nullptr;
-    QLabel *mDictionaryLabel = nullptr;
-    QLabel *mCursorLineLabel = nullptr;
-    QLabel *mCursorColumnLabel = nullptr;
-    QLabel *mStatusbarLabel = nullptr;
+    QWidget* mMainWidget = nullptr;
+    MessageComposer::ComposerLineEdit* mEdtFrom = nullptr;
+    SubjectLineEditWithAutoCorrection* mEdtSubject = nullptr;
+    QLabel* mLblIdentity = nullptr;
+    QLabel* mLblTransport = nullptr;
+    QLabel* mLblFcc = nullptr;
+    QLabel* mLblFrom = nullptr;
+    QLabel* mLblSubject = nullptr;
+    QLabel* mDictionaryLabel = nullptr;
+    QLabel* mCursorLineLabel = nullptr;
+    QLabel* mCursorColumnLabel = nullptr;
+    QLabel* mStatusbarLabel = nullptr;
     bool mDone = false;
 
     KMime::Message::Ptr mMsg;
-    QGridLayout *mGrid = nullptr;
+    QGridLayout* mGrid = nullptr;
     const QString mTextSelection;
     const QString mCustomTemplate;
     bool mLastSignActionState = false;
@@ -631,46 +612,46 @@ private:
     uint mId = 0;
     const TemplateContext mContext = TemplateContext::NoTemplate;
 
-    KRecentFilesAction *mRecentAction = nullptr;
+    KRecentFilesAction* mRecentAction = nullptr;
 
-    KToggleAction *mSignAction = nullptr;
-    KToggleAction *mEncryptAction = nullptr;
-    KToggleAction *mRequestMDNAction = nullptr;
-    KToggleAction *mRequestDeliveryConfirmation = nullptr;
-    KToggleAction *mUrgentAction = nullptr;
-    KToggleAction *mAllFieldsAction = nullptr;
-    KToggleAction *mFromAction = nullptr;
-    KToggleAction *mSubjectAction = nullptr;
-    KToggleAction *mIdentityAction = nullptr;
-    KToggleAction *mTransportAction = nullptr;
-    KToggleAction *mFccAction = nullptr;
-    KToggleAction *mWordWrapAction = nullptr;
-    KToggleAction *mFixedFontAction = nullptr;
-    KToggleAction *mAutoSpellCheckingAction = nullptr;
-    KToggleAction *mDictionaryAction = nullptr;
-    KToggleAction *mSnippetAction = nullptr;
-    KToggleAction *mShowMenuBarAction = nullptr;
-    QAction *mAppendSignature = nullptr;
-    QAction *mPrependSignature = nullptr;
-    QAction *mInsertSignatureAtCursorPosition = nullptr;
+    KToggleAction* mSignAction = nullptr;
+    KToggleAction* mEncryptAction = nullptr;
+    KToggleAction* mRequestMDNAction = nullptr;
+    KToggleAction* mRequestDeliveryConfirmation = nullptr;
+    KToggleAction* mUrgentAction = nullptr;
+    KToggleAction* mAllFieldsAction = nullptr;
+    KToggleAction* mFromAction = nullptr;
+    KToggleAction* mSubjectAction = nullptr;
+    KToggleAction* mIdentityAction = nullptr;
+    KToggleAction* mTransportAction = nullptr;
+    KToggleAction* mFccAction = nullptr;
+    KToggleAction* mWordWrapAction = nullptr;
+    KToggleAction* mFixedFontAction = nullptr;
+    KToggleAction* mAutoSpellCheckingAction = nullptr;
+    KToggleAction* mDictionaryAction = nullptr;
+    KToggleAction* mSnippetAction = nullptr;
+    KToggleAction* mShowMenuBarAction = nullptr;
+    QAction* mAppendSignature = nullptr;
+    QAction* mPrependSignature = nullptr;
+    QAction* mInsertSignatureAtCursorPosition = nullptr;
 
-    KToggleAction *mMarkupAction = nullptr;
+    KToggleAction* mMarkupAction = nullptr;
 
-    KSelectAction *mCryptoModuleAction = nullptr;
+    KSelectAction* mCryptoModuleAction = nullptr;
 
-    QAction *mFindText = nullptr;
-    QAction *mFindNextText = nullptr;
-    QAction *mReplaceText = nullptr;
-    QAction *mSelectAll = nullptr;
+    QAction* mFindText = nullptr;
+    QAction* mFindNextText = nullptr;
+    QAction* mReplaceText = nullptr;
+    QAction* mSelectAll = nullptr;
 
-    QSplitter *mHeadersToEditorSplitter = nullptr;
-    QWidget *mHeadersArea = nullptr;
-    QSplitter *mSplitter = nullptr;
-    QSplitter *mSnippetSplitter = nullptr;
+    QSplitter* mHeadersToEditorSplitter = nullptr;
+    QWidget* mHeadersArea = nullptr;
+    QSplitter* mSplitter = nullptr;
+    QSplitter* mSnippetSplitter = nullptr;
 
-    MessageComposer::ComposerJob *mDummyComposer = nullptr;
+    MessageComposer::ComposerJob* mDummyComposer = nullptr;
     // used for auto saving, printing, etc. Not for sending, which happens in ComposerViewBase
-    QList<MessageComposer::ComposerJob *> mMiscComposers;
+    QList<MessageComposer::ComposerJob*> mMiscComposers;
 
     int mLabelWidth = 0;
 
@@ -679,44 +660,44 @@ private:
     QMetaObject::Connection mIdentityConnection;
     QMetaObject::Connection mUpdateWindowTitleConnection;
 
-    MessageComposer::ComposerViewBase *mComposerBase = nullptr;
+    MessageComposer::ComposerViewBase* mComposerBase = nullptr;
 
-    MailCommon::SnippetTreeView *mSnippetWidget = nullptr;
-    PimCommon::CustomToolsWidgetNg *mCustomToolsWidget = nullptr;
-    AttachmentMissingWarning *const mAttachmentMissing;
-    ExternalEditorWarning *mExternalEditorWarning = nullptr;
-    TooManyRecipientsWarning *mTooMyRecipientWarning = nullptr;
-    NearExpiryWarning *const mNearExpiryWarning;
-    QTimer *mVerifyMissingAttachment = nullptr;
-    QTimer *mRunKeyResolverTimer = nullptr;
-    MailCommon::FolderRequester *mFccFolder = nullptr;
+    MailCommon::SnippetTreeView* mSnippetWidget = nullptr;
+    PimCommon::CustomToolsWidgetNg* mCustomToolsWidget = nullptr;
+    AttachmentMissingWarning* const mAttachmentMissing;
+    ExternalEditorWarning* mExternalEditorWarning = nullptr;
+    TooManyRecipientsWarning* mTooMyRecipientWarning = nullptr;
+    NearExpiryWarning* const mNearExpiryWarning;
+    QTimer* mVerifyMissingAttachment = nullptr;
+    QTimer* mRunKeyResolverTimer = nullptr;
+    MailCommon::FolderRequester* mFccFolder = nullptr;
     bool mPreventFccOverwrite = false;
     bool mCheckForForgottenAttachments = true;
     bool mWasModified = false;
-    CryptoStateIndicatorWidget *const mCryptoStateIndicatorWidget;
+    CryptoStateIndicatorWidget* const mCryptoStateIndicatorWidget;
     bool mSendNowByShortcutUsed = false;
-    KSplitterCollapserButton *mSnippetSplitterCollapser = nullptr;
-    KToggleAction *mFollowUpToggleAction = nullptr;
-    MessageComposer::StatusBarLabelToggledState *mStatusBarLabelToggledOverrideMode = nullptr;
-    MessageComposer::StatusBarLabelToggledState *mStatusBarLabelSpellCheckingChangeMode = nullptr;
-    PotentialPhishingEmailWarning *mPotentialPhishingEmailWarning = nullptr;
-    IncorrectIdentityFolderWarning *const mIncorrectIdentityFolderWarning;
-    KMComposerGlobalAction *mGlobalAction = nullptr;
-    TextCustomEditor::RichTextEditorWidget *mRichTextEditorWidget = nullptr;
+    KSplitterCollapserButton* mSnippetSplitterCollapser = nullptr;
+    KToggleAction* mFollowUpToggleAction = nullptr;
+    MessageComposer::StatusBarLabelToggledState* mStatusBarLabelToggledOverrideMode = nullptr;
+    MessageComposer::StatusBarLabelToggledState* mStatusBarLabelSpellCheckingChangeMode = nullptr;
+    PotentialPhishingEmailWarning* mPotentialPhishingEmailWarning = nullptr;
+    IncorrectIdentityFolderWarning* const mIncorrectIdentityFolderWarning;
+    KMComposerGlobalAction* mGlobalAction = nullptr;
+    TextCustomEditor::RichTextEditorWidget* mRichTextEditorWidget = nullptr;
 
-    KMailPluginEditorManagerInterface *const mPluginEditorManagerInterface;
-    KMailPluginEditorCheckBeforeSendManagerInterface *mPluginEditorCheckBeforeSendManagerInterface = nullptr;
-    KMailPluginEditorInitManagerInterface *mPluginEditorInitManagerInterface = nullptr;
-    KMailPluginEditorConvertTextManagerInterface *mPluginEditorConvertTextManagerInterface = nullptr;
-    KMailPluginGrammarEditorManagerInterface *const mPluginEditorGrammarManagerInterface;
+    KMailPluginEditorManagerInterface* const mPluginEditorManagerInterface;
+    KMailPluginEditorCheckBeforeSendManagerInterface* mPluginEditorCheckBeforeSendManagerInterface = nullptr;
+    KMailPluginEditorInitManagerInterface* mPluginEditorInitManagerInterface = nullptr;
+    KMailPluginEditorConvertTextManagerInterface* mPluginEditorConvertTextManagerInterface = nullptr;
+    KMailPluginGrammarEditorManagerInterface* const mPluginEditorGrammarManagerInterface;
 
-    AttachmentAddedFromExternalWarning *mAttachmentFromExternalMissing = nullptr;
-    KHamburgerMenu *mHamburgerMenu = nullptr;
-    PimCommon::PurposeMenuMessageWidget *const mPluginEditorMessageWidget;
+    AttachmentAddedFromExternalWarning* mAttachmentFromExternalMissing = nullptr;
+    KHamburgerMenu* mHamburgerMenu = nullptr;
+    PimCommon::PurposeMenuMessageWidget* const mPluginEditorMessageWidget;
 
     std::shared_ptr<Kleo::KeyCache> mKeyCache;
 
     ModeType mModeType = ModeType::ComposerType;
-    QVBoxLayout *mEditorAndCryptoStateIndicatorsLayout = nullptr;
-    QVBoxLayout *mMainlayoutMainWidget = nullptr;
+    QVBoxLayout* mEditorAndCryptoStateIndicatorsLayout = nullptr;
+    QVBoxLayout* mMainlayoutMainWidget = nullptr;
 };

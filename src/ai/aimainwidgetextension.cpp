@@ -5,29 +5,24 @@
  */
 
 #include "aimainwidgetextension.h"
-#include "kmmainwidgetaifilter.h"
-#include "aireplydialog.h"
-#include "aitaskdialog.h"
 #include "../kmmainwidget.h"
 #include "../kmmessage.h"
+#include "aireplydialog.h"
+#include "aitaskdialog.h"
+#include "kmmainwidgetaifilter.h"
 
+#include <KActionCollection>
 #include <KActionMenu>
 #include <KLocalizedString>
-#include <KActionCollection>
 #include <QAction>
 #include "korganizerintegration.h"
 
 namespace KMail {
 
-AIMainWidgetExtension::AIMainWidgetExtension(KMMainWidget *mainWidget)
-    : QObject(mainWidget)
-    , m_mainWidget(mainWidget)
-    , m_aiFilter(new KMMainWidgetAIFilter(mainWidget))
-    , m_aiMenu(nullptr)
-    , m_generateReplyAction(nullptr)
-    , m_summarizeAction(nullptr)
-    , m_prioritizeAction(nullptr)
-    , m_extractTasksAction(nullptr)
+AIMainWidgetExtension::AIMainWidgetExtension(KMMainWidget* mainWidget)
+    : QObject(mainWidget), m_mainWidget(mainWidget), m_aiFilter(new KMMainWidgetAIFilter(mainWidget)),
+      m_aiMenu(nullptr), m_generateReplyAction(nullptr), m_summarizeAction(nullptr), m_prioritizeAction(nullptr),
+      m_extractTasksAction(nullptr)
 {
     createActions();
     setupConnections();
@@ -42,16 +37,13 @@ void AIMainWidgetExtension::createActions()
 {
     // Create AI menu
     m_aiMenu = new KActionMenu(QIcon::fromTheme(QStringLiteral("brain")), i18n("AI Tools"), this);
-    
+
     // Create actions
-    m_generateReplyAction = new QAction(QIcon::fromTheme(QStringLiteral("mail-reply-sender")),
-                                      i18n("Generate AI Reply"), this);
-    m_summarizeAction = new QAction(QIcon::fromTheme(QStringLiteral("view-list-text")),
-                                  i18n("Summarize Email"), this);
-    m_prioritizeAction = new QAction(QIcon::fromTheme(QStringLiteral("flag")),
-                                   i18n("Prioritize Email"), this);
-    m_extractTasksAction = new QAction(QIcon::fromTheme(QStringLiteral("view-task")),
-                                     i18n("Extract Tasks"), this);
+    m_generateReplyAction =
+        new QAction(QIcon::fromTheme(QStringLiteral("mail-reply-sender")), i18n("Generate AI Reply"), this);
+    m_summarizeAction = new QAction(QIcon::fromTheme(QStringLiteral("view-list-text")), i18n("Summarize Email"), this);
+    m_prioritizeAction = new QAction(QIcon::fromTheme(QStringLiteral("flag")), i18n("Prioritize Email"), this);
+    m_extractTasksAction = new QAction(QIcon::fromTheme(QStringLiteral("view-task")), i18n("Extract Tasks"), this);
 
     // Add actions to menu
     m_aiMenu->addAction(m_generateReplyAction);
@@ -65,17 +57,13 @@ void AIMainWidgetExtension::createActions()
 
 void AIMainWidgetExtension::setupConnections()
 {
-    connect(m_generateReplyAction, &QAction::triggered,
-            this, &AIMainWidgetExtension::slotGenerateAIReply);
-    connect(m_summarizeAction, &QAction::triggered,
-            this, &AIMainWidgetExtension::slotSummarizeEmail);
-    connect(m_prioritizeAction, &QAction::triggered,
-            this, &AIMainWidgetExtension::slotPrioritizeEmail);
-    connect(m_extractTasksAction, &QAction::triggered,
-            this, &AIMainWidgetExtension::slotExtractTasks);
+    connect(m_generateReplyAction, &QAction::triggered, this, &AIMainWidgetExtension::slotGenerateAIReply);
+    connect(m_summarizeAction, &QAction::triggered, this, &AIMainWidgetExtension::slotSummarizeEmail);
+    connect(m_prioritizeAction, &QAction::triggered, this, &AIMainWidgetExtension::slotPrioritizeEmail);
+    connect(m_extractTasksAction, &QAction::triggered, this, &AIMainWidgetExtension::slotExtractTasks);
 }
 
-void AIMainWidgetExtension::handleNewMessage(KMMessage *message)
+void AIMainWidgetExtension::handleNewMessage(KMMessage* message)
 {
     if (message) {
         m_aiFilter->processNewMessage(message);
@@ -85,7 +73,7 @@ void AIMainWidgetExtension::handleNewMessage(KMMessage *message)
 void AIMainWidgetExtension::updateActions()
 {
     bool hasSelection = m_mainWidget->currentMessage() != nullptr;
-    
+
     m_generateReplyAction->setEnabled(hasSelection);
     m_summarizeAction->setEnabled(hasSelection);
     m_prioritizeAction->setEnabled(hasSelection);
@@ -94,7 +82,7 @@ void AIMainWidgetExtension::updateActions()
 
 void AIMainWidgetExtension::slotGenerateAIReply()
 {
-    KMMessage *currentMessage = m_mainWidget->currentMessage();
+    KMMessage* currentMessage = m_mainWidget->currentMessage();
     if (!currentMessage) {
         return;
     }
@@ -102,9 +90,9 @@ void AIMainWidgetExtension::slotGenerateAIReply()
     auto dialog = new AIReplyDialog(currentMessage, m_mainWidget);
     if (dialog->exec() == QDialog::Accepted) {
         QString replyText = dialog->replyText();
-        
+
         // Create a new message as a reply
-        KMMessage *reply = currentMessage->createReply();
+        KMMessage* reply = currentMessage->createReply();
         if (reply) {
             reply->setBody(replyText.toUtf8());
             m_mainWidget->slotCompose(reply); // Open composer with the reply
@@ -115,7 +103,7 @@ void AIMainWidgetExtension::slotGenerateAIReply()
 
 void AIMainWidgetExtension::slotSummarizeEmail()
 {
-    KMMessage *currentMessage = m_mainWidget->currentMessage();
+    KMMessage* currentMessage = m_mainWidget->currentMessage();
     if (!currentMessage) {
         return;
     }
@@ -134,7 +122,7 @@ void AIMainWidgetExtension::slotPrioritizeEmail()
 
 void AIMainWidgetExtension::slotExtractTasks()
 {
-    KMMessage *currentMessage = m_mainWidget->currentMessage();
+    KMMessage* currentMessage = m_mainWidget->currentMessage();
     if (!currentMessage) {
         return;
     }
@@ -142,16 +130,13 @@ void AIMainWidgetExtension::slotExtractTasks()
     auto dialog = new AITaskDialog(currentMessage, m_mainWidget);
     if (dialog->exec() == QDialog::Accepted) {
         QList<ExtractedTask> tasks = dialog->selectedTasks();
-        
+
         // Create tasks in KOrganizer
         KOrganizerIntegration korg(this);
-        connect(&korg, &KOrganizerIntegration::taskAdded,
-                m_mainWidget, &KMMainWidget::showStatusMessage);
+        connect(&korg, &KOrganizerIntegration::taskAdded, m_mainWidget, &KMMainWidget::showStatusMessage);
         connect(&korg, &KOrganizerIntegration::error,
-                [this](const QString &error) {
-                    KMessageBox::error(m_mainWidget, error);
-                });
-        
+                [this](const QString& error) { KMessageBox::error(m_mainWidget, error); });
+
         korg.addTasks(tasks);
     }
     delete dialog;

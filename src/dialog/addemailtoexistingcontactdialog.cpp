@@ -25,12 +25,10 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 #include <QWindow>
-namespace
-{
+namespace {
 static const char myAddEmailToExistingContactDialogGroupName[] = "AddEmailToExistingContactDialog";
 }
-AddEmailToExistingContactDialog::AddEmailToExistingContactDialog(QWidget *parent)
-    : QDialog(parent)
+AddEmailToExistingContactDialog::AddEmailToExistingContactDialog(QWidget* parent) : QDialog(parent)
 {
     setWindowTitle(i18nc("@title:window", "Select Contact"));
     setModal(true);
@@ -56,11 +54,10 @@ AddEmailToExistingContactDialog::AddEmailToExistingContactDialog(QWidget *parent
     mainLayout->addWidget(mEmailSelectionWidget);
     mEmailSelectionWidget->view()->setSelectionMode(QAbstractItemView::SingleSelection);
     readConfig();
-    connect(mEmailSelectionWidget->view()->selectionModel(),
-            &QItemSelectionModel::selectionChanged,
-            this,
+    connect(mEmailSelectionWidget->view()->selectionModel(), &QItemSelectionModel::selectionChanged, this,
             &AddEmailToExistingContactDialog::slotSelectionChanged);
-    connect(mEmailSelectionWidget->view(), &QTreeView::doubleClicked, this, &AddEmailToExistingContactDialog::slotDoubleClicked);
+    connect(mEmailSelectionWidget->view(), &QTreeView::doubleClicked, this,
+            &AddEmailToExistingContactDialog::slotDoubleClicked);
     auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     mOkButton = buttonBox->button(QDialogButtonBox::Ok);
     mOkButton->setDefault(true);

@@ -6,9 +6,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QDialog>
 #include <QList>
-#include <memory>
 class QProgressDialog;
 class QDBusInterface;
 
@@ -18,7 +18,7 @@ class IncompleteIndexDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit IncompleteIndexDialog(const QList<qint64> &unindexedCollections, QWidget *parent = nullptr);
+    explicit IncompleteIndexDialog(const QList<qint64>& unindexedCollections, QWidget* parent = nullptr);
     ~IncompleteIndexDialog() override;
 
 private Q_SLOTS:
@@ -36,7 +36,7 @@ private:
     void updateAllSelection(bool select);
 
     std::unique_ptr<Ui_IncompleteIndexDialog> mUi;
-    QProgressDialog *mProgressDialog = nullptr;
-    QDBusInterface *mIndexer = nullptr;
+    QProgressDialog* mProgressDialog = nullptr;
+    QDBusInterface* mIndexer = nullptr;
     QList<qlonglong> mIndexingQueue;
 };

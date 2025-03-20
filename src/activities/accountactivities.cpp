@@ -7,15 +7,14 @@
 #include "accountactivities.h"
 #include "activitiesmanager.h"
 
-AccountActivities::AccountActivities(ActivitiesManager *manager)
-    : Akonadi::AccountActivitiesAbstract{manager}
-    , mActivitiesManager(manager)
+AccountActivities::AccountActivities(ActivitiesManager* manager)
+    : Akonadi::AccountActivitiesAbstract{manager}, mActivitiesManager(manager)
 {
 }
 
 AccountActivities::~AccountActivities() = default;
 
-bool AccountActivities::filterAcceptsRow(const QStringList &activities) const
+bool AccountActivities::filterAcceptsRow(const QStringList& activities) const
 {
     if (mActivitiesManager && mActivitiesManager->enabled()) {
         if (!activities.isEmpty()) {

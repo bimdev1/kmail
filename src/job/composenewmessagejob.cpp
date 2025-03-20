@@ -5,33 +5,30 @@
 */
 
 #include "composenewmessagejob.h"
-#include "kmkernel.h"
 #include <MessageComposer/ComposerJob>
+#include "kmkernel.h"
 
 #include <KMime/Message>
 #include <MessageComposer/MessageHelper>
 #include <TemplateParser/TemplateParserJob>
 
-ComposeNewMessageJob::ComposeNewMessageJob(QObject *parent)
-    : QObject(parent)
-{
-}
+ComposeNewMessageJob::ComposeNewMessageJob(QObject* parent) : QObject(parent) {}
 
 ComposeNewMessageJob::~ComposeNewMessageJob() = default;
 
-void ComposeNewMessageJob::setCurrentCollection(const Akonadi::Collection &col)
+void ComposeNewMessageJob::setCurrentCollection(const Akonadi::Collection& col)
 {
     mCurrentCollection = col;
 }
 
-static void copyAddresses(const KMime::Headers::Generics::AddressList *from, KMime::Headers::Generics::AddressList *to)
+static void copyAddresses(const KMime::Headers::Generics::AddressList* from, KMime::Headers::Generics::AddressList* to)
 {
     if (!from) { // no such headers to copy from
         return;
     }
 
     const KMime::Types::Mailbox::List mailboxes = from->mailboxes();
-    for (const KMime::Types::Mailbox &mbox : mailboxes) {
+    for (const KMime::Types::Mailbox& mbox : mailboxes) {
         to->addAddress(mbox);
     }
 }
@@ -67,7 +64,7 @@ void ComposeNewMessageJob::start()
 
 void ComposeNewMessageJob::slotOpenComposer(bool forceCursorPosition)
 {
-    KMail::Composer *win = KMail::makeComposer(mMsg, false, false, KMail::Composer::TemplateContext::New, mIdentity);
+    KMail::Composer* win = KMail::makeComposer(mMsg, false, false, KMail::Composer::TemplateContext::New, mIdentity);
     win->setCollectionForNewMessage(mCurrentCollection);
 
     if (forceCursorPosition) {
@@ -77,12 +74,12 @@ void ComposeNewMessageJob::slotOpenComposer(bool forceCursorPosition)
     deleteLater();
 }
 
-void ComposeNewMessageJob::setFolderSettings(const QSharedPointer<MailCommon::FolderSettings> &folder)
+void ComposeNewMessageJob::setFolderSettings(const QSharedPointer<MailCommon::FolderSettings>& folder)
 {
     mFolder = folder;
 }
 
-void ComposeNewMessageJob::setRecipientsFromMessage(const Akonadi::Item &from)
+void ComposeNewMessageJob::setRecipientsFromMessage(const Akonadi::Item& from)
 {
     mRecipientsFrom = from;
 }
