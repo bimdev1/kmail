@@ -1,16 +1,15 @@
 # SPDX-FileCopyrightText: none
 # SPDX-License-Identifier: BSD-3-Clause
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-set(PIM_VERSION "6.4.40")
+set(PIM_VERSION "5.24.5")
 
 project(kmail VERSION ${PIM_VERSION})
 
 include(CheckIncludeFiles)
 
-
-set(KF_MIN_VERSION "6.11.0")
-set(QT_REQUIRED_VERSION "6.8.0")
-set(CMAKE_CXX_STANDARD 20)
+set(KF_MIN_VERSION "5.116.0")
+set(QT_REQUIRED_VERSION "5.15.2")
+set(CMAKE_CXX_STANDARD 17)
 find_package(ECM ${KF_MIN_VERSION} CONFIG REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
@@ -37,10 +36,10 @@ include(ECMFeatureSummary)
 
 # Do NOT add quote
 set(KDEPIM_DEV_VERSION alpha)
-set(RELEASE_SERVICE_VERSION "25.07.40")
+set(RELEASE_SERVICE_VERSION "23.08.5")
 
 # Update it for each release
-set(KMAIL_RELEASE_VERSION_DATE "25.08.10") # yy.MM.dd
+set(KMAIL_RELEASE_VERSION_DATE "23.08.05") # yy.MM.dd
 
 # add an extra space
 if(DEFINED KDEPIM_DEV_VERSION)
@@ -49,203 +48,142 @@ endif()
 
 set(KDEPIM_VERSION "${PIM_VERSION}${KDEPIM_DEV_VERSION} (${RELEASE_SERVICE_VERSION})")
 
-
-set(AKONADI_MIMELIB_VERSION "6.4.40")
-set(AKONADI_CONTACT_VERSION "6.4.40")
-set(CALENDARUTILS_LIB_VERSION "6.4.40")
-set(IDENTITYMANAGEMENT_LIB_VERSION "6.4.41")
-set(KLDAP_LIB_VERSION "6.4.40")
-set(KMAILTRANSPORT_LIB_VERSION "6.4.40")
-set(KONTACTINTERFACE_LIB_VERSION "6.4.40")
-set(KMIME_LIB_VERSION "6.4.40")
-set(KPIMTEXTEDIT_LIB_VERSION "6.4.40")
-set(AKONADI_VERSION "6.4.41")
-set(KTNEF_LIB_VERSION "6.4.40")
+set(AKONADI_MIMELIB_VERSION "5.24.5")
+set(AKONADI_CONTACT_VERSION "5.24.5")
+set(CALENDARUTILS_LIB_VERSION "5.24.5")
+set(IDENTITYMANAGEMENT_LIB_VERSION "5.24.5")
+set(KLDAP_LIB_VERSION "5.24.5")
+set(KMAILTRANSPORT_LIB_VERSION "5.24.5")
+set(KONTACTINTERFACE_LIB_VERSION "5.24.5")
+set(KMIME_LIB_VERSION "5.24.5")
+set(KPIMTEXTEDIT_LIB_VERSION "5.24.5")
+set(AKONADI_VERSION "5.24.5")
+set(KTNEF_LIB_VERSION "5.24.5")
 set(GPG_ERROR_REQUIRED_VERSION "1.36")
 
 set(KDEPIM_LIB_VERSION "${PIM_VERSION}")
-set(KDEPIM_LIB_SOVERSION "6")
+set(KDEPIM_LIB_SOVERSION "5")
 
 set(KTEXTADDONS_MIN_VERSION "1.5.4")
 option(KDEPIM_ENTERPRISE_BUILD "Enable features specific to the enterprise branch, which are normally disabled. Also, it disables many components not needed for Kontact such as the Kolab client." FALSE)
 
-find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED DBus Network Test Widgets WebEngineWidgets)
-set(LIBGRAVATAR_VERSION "6.4.40")
-set(MAILCOMMON_LIB_VERSION "6.4.42")
-set(MESSAGELIB_LIB_VERSION "6.4.40")
-set(LIBKLEO_LIB_VERSION "6.4.40")
-set(PIMCOMMON_LIB_VERSION "6.4.40")
-set(LIBKDEPIM_LIB_VERSION "6.4.40")
-set(LIBKSIEVE_LIB_VERSION "6.4.40")
-set(AKONADI_SEARCH_VERSION "6.4.40")
-set(QT6KEYCHAIN_LIB_VERSION "0.14.2")
-
-find_package(KPim6WebEngineViewer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED DBus Network Test Widgets WebEngineWidgets)
+set(LIBGRAVATAR_VERSION "5.24.5")
+set(MAILCOMMON_LIB_VERSION "5.24.5")
+set(MESSAGELIB_LIB_VERSION "5.24.5")
+set(LIBKLEO_LIB_VERSION "5.24.5")
+set(PIMCOMMON_LIB_VERSION "5.24.5")
+set(LIBKDEPIM_LIB_VERSION "5.24.5")
+set(LIBKSIEVE_LIB_VERSION "5.24.5")
+set(AKONADI_SEARCH_VERSION "5.24.5")
+set(QT5KEYCHAIN_LIB_VERSION "0.14.2")
 
 option(FORCE_DISABLE_AKONADI_SEARCH "Disable features and API that require akonadi-search, e.g. because xapian isn't available" OFF)
 if(UNIX)
     if(NOT FORCE_DISABLE_AKONADI_SEARCH)
-        find_package(KPim6AkonadiSearch ${AKONADI_SEARCH_VERSION} CONFIG REQUIRED)
-        set_package_properties(KPim6AkonadiSearch PROPERTIES DESCRIPTION "The Akonadi Search libraries" URL "https://invent.kde.org/pim/akonadi-search" TYPE REQUIRED PURPOSE "Provides search capabilities in KMail and Akonadi")
+        find_package(KF5AkonadiSearch ${AKONADI_SEARCH_VERSION} CONFIG REQUIRED)
+        set_package_properties(KF5AkonadiSearch PROPERTIES DESCRIPTION "The Akonadi Search libraries" URL "https://invent.kde.org/pim/akonadi-search" TYPE REQUIRED PURPOSE "Provides search capabilities in KMail and Akonadi")
     endif()
 else()
     if(NOT FORCE_DISABLE_AKONADI_SEARCH)
-        find_package(KPim6AkonadiSearch ${AKONADI_SEARCH_VERSION} CONFIG)
-        set_package_properties(KPim6AkonadiSearch PROPERTIES DESCRIPTION "The Akonadi Search libraries" URL "https://invent.kde.org/pim/akonadi-search" TYPE OPTIONAL PURPOSE "Provides search capabilities in KMail and Akonadi")
+        find_package(KF5AkonadiSearch ${AKONADI_SEARCH_VERSION} CONFIG)
+        set_package_properties(KF5AkonadiSearch PROPERTIES DESCRIPTION "The Akonadi Search libraries" URL "https://invent.kde.org/pim/akonadi-search" TYPE OPTIONAL PURPOSE "Provides search capabilities in KMail and Akonadi")
     endif()
 endif()
 
-if(NOT KPim6AkonadiSearch_FOUND)
+if(NOT KF5AkonadiSearch_FOUND)
     set(KMAIL_FORCE_DISABLE_AKONADI_SEARCH TRUE)
 endif()
 
-set(GPGMEPP_LIB_VERSION "1.23.2")
-find_package(Gpgmepp ${GPGMEPP_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5I18n ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Config ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Crash ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5DBusAddons ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5DocTools ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5GuiAddons ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5IconThemes ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5ItemViews ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5JobWidgets ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5KIO ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Notifications ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5NotifyConfig ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Parts ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Service ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Sonnet ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5TextWidgets ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5WidgetsAddons ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5WindowSystem ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5XmlGui ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Contacts ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5CalendarCore ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5StatusNotifierItem ${KF_MIN_VERSION} CONFIG REQUIRED)
 
-# Find KF6 package
-find_package(KF6Bookmarks ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Config ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Crash ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6DBusAddons ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6DocTools ${KF_MIN_VERSION})
-set_package_properties(KF6DocTools PROPERTIES DESCRIPTION
-    "Tools to generate documentation"
-    TYPE OPTIONAL
-)
-find_package(KF6GuiAddons ${KF_MIN_VERSION} REQUIRED)
-find_package(KF6I18n ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6ItemViews ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6JobWidgets ${KF_MIN_VERSION} REQUIRED)
-find_package(KF6KIO ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6KCMUtils ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Notifications ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6NotifyConfig ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Parts ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Service ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Sonnet ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6WidgetsAddons ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6WindowSystem ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6XmlGui ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6IconThemes ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Contacts ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6CalendarCore ${KF_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6StatusNotifierItem ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5Akonadi ${AKONADI_VERSION} CONFIG REQUIRED)
+find_package(KF5AkonadiMime ${AKONADI_MIMELIB_VERSION} CONFIG REQUIRED)
+find_package(KF5AkonadiContact ${AKONADI_CONTACT_VERSION} CONFIG REQUIRED)
+find_package(KF5CalendarUtils ${CALENDARUTILS_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5IdentityManagement ${IDENTITYMANAGEMENT_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5IMAP ${KIMAP_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5LDAP ${KLDAP_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5LibKleo ${LIBKLEO_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MailTransport ${KMAILTRANSPORT_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MessageCore ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MessageList ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MessageViewer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MessageComposer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MimeTreeParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5TemplateParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5PimCommon ${PIMCOMMON_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5LibKdepim ${LIBKDEPIM_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5KSieve ${LIBKSIEVE_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5KontactInterface ${KONTACTINTERFACE_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5Libkdepim ${LIBKDEPIM_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5MailCommon ${MAILCOMMON_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5Gravatar ${LIBGRAVATAR_VERSION} CONFIG REQUIRED)
+find_package(KF5Tnef ${KTNEF_LIB_VERSION} CONFIG REQUIRED)
 
-find_package(KPim6Akonadi ${AKONADI_VERSION} CONFIG REQUIRED)
-find_package(KPim6AkonadiContactWidgets ${AKONADI_CONTACT_VERSION} CONFIG REQUIRED)
-find_package(KPim6AkonadiMime ${AKONADI_MIMELIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6CalendarUtils ${CALENDARUTILS_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6IdentityManagementCore ${IDENTITYMANAGEMENT_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6LdapWidgets ${KLDAP_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MailTransport ${KMAILTRANSPORT_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6TextEdit ${KPIMTEXTEDIT_LIB_VERSION} CONFIG REQUIRED)
+find_package(Gpgmepp ${GPGME_REQUIRED_VERSION} CONFIG REQUIRED)
+find_package(QGpgme ${GPGME_REQUIRED_VERSION} CONFIG REQUIRED)
+find_package(Gpgmepp ${GPGME_REQUIRED_VERSION} CONFIG REQUIRED)
 
-find_package(KPim6KontactInterface ${KONTACTINTERFACE_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6Mime ${KMIME_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5TextEditTextToSpeech ${KTEXTADDONS_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5TextWidgets ${KF_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF5TextUtils ${KTEXTADDONS_MIN_VERSION} CONFIG REQUIRED)
 
-find_package(KPim6Gravatar ${LIBGRAVATAR_VERSION} CONFIG REQUIRED)
-find_package(KPim6Libkdepim ${LIBKDEPIM_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6Libkleo ${LIBKLEO_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6KSieveUi ${LIBKSIEVE_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MailCommon ${MAILCOMMON_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MessageCore ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MessageComposer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MessageList ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MessageViewer ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6PimCommonAkonadi ${PIMCOMMON_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6TemplateParser ${MESSAGELIB_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6Tnef ${KTNEF_LIB_VERSION} CONFIG REQUIRED)
-find_package(KPim6MailTransportDBusService CONFIG REQUIRED)
-find_package(KPim6PimCommonActivities ${PIMCOMMON_LIB_VERSION} CONFIG)
-
-set(CMAKE_MODULE_PATH ${LIBKLEO_MODULE_PATH} ${CMAKE_MODULE_PATH})
-find_package(LibGpgError ${GPG_ERROR_REQUIRED_VERSION} REQUIRED)
-
-find_package(KF6TextEditTextToSpeech ${KTEXTADDONS_MIN_VERSION} CONFIG)
-set_package_properties(KF6TextEditTextToSpeech PROPERTIES DESCRIPTION
-    "Add support for text to speech"
-    TYPE OPTIONAL
-)
-if(TARGET KF6::TextEditTextToSpeech)
-    add_definitions(-DHAVE_TEXT_TO_SPEECH_SUPPORT)
-endif()
-find_package(KF6TextAutoCorrectionWidgets ${KTEXTADDONS_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6TextUtils ${KTEXTADDONS_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6TextCustomEditor ${KTEXTADDONS_MIN_VERSION} CONFIG REQUIRED)
-find_package(Qt6Keychain ${QT6KEYCHAIN_LIB_VERSION} CONFIG)
-set_package_properties(Qt6Keychain PROPERTIES
-    DESCRIPTION "Provides support for secure credentials storage"
+find_package(Qt5Keychain ${QT5KEYCHAIN_LIB_VERSION} CONFIG)
+set_package_properties(Qt5Keychain PROPERTIES
+    DESCRIPTION "Qt API to store passwords and other secret data securely"
     URL "https://github.com/frankosterfeld/qtkeychain"
-    TYPE REQUIRED)
-
-configure_file(config-enterprise.h.in ${CMAKE_CURRENT_BINARY_DIR}/config-enterprise.h)
-
-include_directories(${kmail_SOURCE_DIR} ${kmail_BINARY_DIR})
-configure_file(kmail-version.h.in ${CMAKE_CURRENT_BINARY_DIR}/kmail-version.h @ONLY)
-if(BUILD_TESTING)
-    add_definitions(-DBUILD_TESTING)
-endif()
-add_definitions(-DQT_NO_CONTEXTLESS_CONNECT)
-ecm_set_disabled_deprecation_versions(QT 6.9.0
-    KF 6.12.0
+    TYPE OPTIONAL
 )
-find_package(KF6UserFeedback ${KF_MIN_VERSION} CONFIG)
-set_package_properties(KF6UserFeedback PROPERTIES DESCRIPTION "User Feedback lib" TYPE OPTIONAL PURPOSE "Allow to send Telemetry Information (optional).")
 
-if(TARGET KF6::UserFeedbackWidgets)
-    set(KMAIL_WITH_KUSERFEEDBACK true)
+find_package(Cups)
+set_package_properties(Cups PROPERTIES DESCRIPTION "Common UNIX Printing System"
+    URL "http://www.cups.org"
+    TYPE OPTIONAL
+)
+
+configure_file(config-enterprise.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-enterprise.h)
+configure_file(kmail-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/kmail-version.h)
+
+add_definitions(-DTRANSLATION_DOMAIN=\"kmail\")
+add_definitions(-DQT_NO_CONTEXTLESS_CONNECT)
+
+if(BUILD_TESTING)
+   add_definitions(-DBUILD_TESTING)
 endif()
-
-
-option(USE_UNITY_CMAKE_SUPPORT "Use UNITY cmake support (speedup compile time)" OFF)
-
-set(COMPILE_WITH_UNITY_CMAKE_SUPPORT OFF)
-if(USE_UNITY_CMAKE_SUPPORT)
-    set(COMPILE_WITH_UNITY_CMAKE_SUPPORT ON)
-endif()
-
-
-if(TARGET KPim6::PimCommonActivities)
-    option(OPTION_USE_PLASMA_ACTIVITIES "Activate plasma activities (experimental)" ON)
-    if(OPTION_USE_PLASMA_ACTIVITIES)
-        if(NOT WIN32 AND NOT APPLE)
-            set(OPTION_USE_PLASMA_ACTIVITIES true)
-        else()
-            set(OPTION_USE_PLASMA_ACTIVITIES false) 
-        endif()
-    endif()
-    if(OPTION_USE_PLASMA_ACTIVITIES)
-        if(NOT WIN32 AND NOT APPLE)
-            find_package(PlasmaActivities "6.1.0")
-            set_package_properties(PlasmaActivities PROPERTIES DESCRIPTION
-                "Allow to compile with plasma activities"
-                TYPE OPTIONAL
-            )
-        endif()
-
-        if(TARGET Plasma::Activities)
-            set(KMAIL_HAVE_ACTIVITY_SUPPORT TRUE)
-        endif()
-    endif()
-endif()
-
-configure_file(config-kmail.h.in ${CMAKE_CURRENT_BINARY_DIR}/config-kmail.h)
 
 add_subdirectory(src)
 add_subdirectory(agents)
-add_subdirectory(ktnef)
-add_subdirectory(kmail-refresh-settings)
-ecm_qt_install_logging_categories(
-    EXPORT KMAIL
-    FILE kmail.categories
-    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
-)
+if(BUILD_TESTING)
+    add_subdirectory(autotests)
+endif()
 
-kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
-ki18n_install(po)
-if(KF6DocTools_FOUND)
+if(KF5DocTools_FOUND)
     kdoctools_install(po)
     add_subdirectory(doc)
 endif()
+
 ecm_feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
+kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
