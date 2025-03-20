@@ -45,11 +45,23 @@ set_package_properties(KF5StatusNotifierItem PROPERTIES
 **Error**: Missing KF5Akonadi
 **Solution**: Installed akonadi-devel
 
+### Build Attempt 6 - Latest
+**Action**: Installed additional KDE PIM dependencies:
+```bash
+sudo dnf install -y kf5-akonadi-mime kf5-akonadi-contacts kf5-akonadi-calendar \
+    kf5-akonadi-notes kf5-messagelib kf5-pimcommon kf5-mailcommon kf5-libkleo \
+    kf5-libkdepim kf5-libksieve kf5-kontactinterface kf5-ktnef
+```
+**Error**: Still missing KF5Akonadi (version 5.24.5)
+**Next Steps**: 
+1. Check version requirements in CMakeLists.txt
+2. Look for alternative package names
+3. Consider building Akonadi from source
+
 ### Current Status
-- Successfully installed all base dependencies
-- Modified CMakeLists.txt for compatibility
-- Made problematic dependencies optional
+- Successfully installed most dependencies
 - Build system properly configured
+- Still need to resolve Akonadi version mismatch
 
 ### Next Steps
 1. Complete remaining dependency installations
@@ -77,8 +89,8 @@ set_package_properties(KF5StatusNotifierItem PROPERTIES
 
 ### Known Issues
 1. KF5StatusNotifierItem integration incomplete
-2. Some KF6 conflicts may persist
-3. Akonadi Search features limited when disabled
+2. Akonadi version mismatch
+3. Some KF6 conflicts may persist
 
 ### Build Configuration Notes
 - Debug build enabled
